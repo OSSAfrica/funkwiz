@@ -100,3 +100,28 @@ export const quiz = sqliteTable(
     index("quiz_owner_updated_idx").on(table.ownerId, table.updatedAt),
   ],
 );
+
+export const liveSession = sqliteTable(
+  "live_session",
+  {
+    id: text("id").primaryKey(),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    code: text("code").notNull(),
+    title: text("title").notNull(),
+    status: text("status", {
+      enum: ["lobby", "active", "finished", "closed"],
+    }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+    startedAt: integer("started_at", { mode: "timestamp_ms" }),
+    endedAt: integer("ended_at", { mode: "timestamp_ms" }),
+    expiresAt: integer("expires_at", { mode: "timestamp_ms" }).notNull(),
+    report: text("report", { mode: "json" }).$type<
+      import("@/lib/live/protocol").GameReport
+    >(),
+  },
+  (table) => [
+    index("live_session_owner_created_idx").on(table.ownerId, table.createdAt),
+  ],
+);

@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { beginRehearsal, rehearsalReducer as reduce } from "./rehearsal";
 import { defaultSettings } from "./quiz";
-import { sampleQuizzes } from "./sample-quizzes";
+import { sampleQuizzes } from "./sample-quizzes.server";
 const quiz = sampleQuizzes[0];
 const automatic = {
   ...defaultSettings,

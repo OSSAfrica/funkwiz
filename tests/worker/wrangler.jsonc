@@ -1,0 +1,25 @@
+{
+  "name": "fun-quiz-runtime-tests",
+  "main": "../worker-entry.ts",
+  "compatibility_date": "2025-09-02",
+  "compatibility_flags": ["nodejs_compat"],
+  "durable_objects": {
+    "bindings": [
+      { "name": "LIVE_ROOMS", "class_name": "GameRoom" },
+      { "name": "LIVE_JOIN_LIMITER", "class_name": "JoinLimiter" },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1-live-rooms",
+      "new_sqlite_classes": ["GameRoom", "JoinLimiter"],
+    },
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "runtime-tests",
+      "database_id": "00000000-0000-0000-0000-000000000003",
+    },
+  ],
+}

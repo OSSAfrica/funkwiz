@@ -54,7 +54,7 @@ test("signs in with email and signs out", async ({ page }) => {
   await page.getByRole("button", { name: "Let’s go", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: /Your quiz collection/ }),
-  ).toBeVisible();
+  ).toBeVisible({ timeout: 15_000 });
   await page
     .getByRole("button", { name: "Teacher account", exact: true })
     .click();

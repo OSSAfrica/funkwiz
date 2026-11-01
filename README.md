@@ -35,11 +35,13 @@ Open http://127.0.0.1:3000. See [teacher account setup](docs/AUTH.md) for your p
   progression switching, and next-question display changes.
 - Colorful illustrations and brief feedback animations with reduced-motion support.
 
-This is a **teacher workspace with local rehearsal**. Authentication and quiz
-storage run against a local D1 database during development. Google requires real
-OAuth credentials; its button is absent until both are configured. No production
-database has been provisioned or deployed. There are no connected students or live
-join codes yet. Support for 100+ players will be verified with multiplayer.
+Live games now support student join codes, reconnecting, authoritative timers,
+locked answers, leaderboards, and teacher-only saved reports. Sound and music are
+optional. See [live game instructions](docs/LIVE_GAMES.md).
+
+Development uses local D1 and Durable Objects. Production D1 and secrets still
+need configuration before deployment. Google requires real OAuth credentials;
+its button stays hidden until both are configured.
 
 See [authentication setup](docs/AUTH.md) and [the database schema](docs/DATABASE_SCHEMA.md).
 
@@ -59,16 +61,17 @@ CSV imports are planned later.
 
 ## Commands
 
-| Command              | Purpose                                          |
-| -------------------- | ------------------------------------------------ |
-| `bun run dev`        | Start development on port 3000                   |
-| `bun run typecheck`  | Generate routes and check TypeScript             |
-| `bun test src/lib`   | Test import validation and rehearsal transitions |
-| `bun run test:e2e`   | Check desktop and phone flows with Playwright    |
-| `bun run build`      | Build browser and Cloudflare Worker bundles      |
-| `bun run preview`    | Build and preview the production app             |
-| `bun run cf-typegen` | Regenerate types after changing Worker bindings  |
-| `bun run deploy`     | Build and deploy to Cloudflare Workers           |
+| Command                | Purpose                                               |
+| ---------------------- | ----------------------------------------------------- |
+| `bun run dev`          | Start development on port 3000                        |
+| `bun run typecheck`    | Generate routes and check TypeScript                  |
+| `bun test src/lib`     | Test validation, rehearsal, and live transitions      |
+| `bun run test:workers` | Test room persistence, alarms, and scoring in Workers |
+| `bun run test:e2e`     | Check desktop and phone flows with Playwright         |
+| `bun run build`        | Build browser and Cloudflare Worker bundles           |
+| `bun run preview`      | Build and preview the production app                  |
+| `bun run cf-typegen`   | Regenerate types after changing Worker bindings       |
+| `bun run deploy`       | Build and deploy to Cloudflare Workers                |
 
 For browser tests, install Chromium once with `bunx playwright install chromium`.
 There is no linter configured. Generated routes live in `src/routeTree.gen.ts`;
@@ -86,8 +89,7 @@ Lucide icons, so the app does not depend on an external image service.
 
 ## Cloudflare
 
-Authenticate with `bunx wrangler login` before deployment. D1 is bound locally, with a placeholder database ID that must be replaced before production deployment. Durable Object, object storage, and AI bindings are not configured yet. Add bindings to
-`wrangler.jsonc`, then run `bun run cf-typegen`.
+Authenticate with `bunx wrangler login` before deployment. D1 is bound locally, with a placeholder database ID that must be replaced before production deployment. Durable Objects are bound as `LIVE_ROOMS` and `LIVE_JOIN_LIMITER`, with a SQLite class migration. Object storage and AI bindings are not configured. After changing bindings in `wrangler.jsonc`, run `bun run cf-typegen`.
 
 Keep local secrets in `.dev.vars` (ignored by Git), and set production secrets
 with `bunx wrangler secret put SECRET_NAME`.

@@ -8,7 +8,7 @@ import {
   LockKeyhole,
   Zap,
 } from "lucide-react";
-import { useRouter } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -195,6 +195,7 @@ export function SignInScreen({
           )}
         </div>
       </section>
+      <div className="student-join-from-login"><Link to="/join" search={{}}>Joining a classroom game? Enter your code <ArrowRight size={15} /></Link></div>
     </main>
   );
 }

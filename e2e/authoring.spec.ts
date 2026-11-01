@@ -16,7 +16,9 @@ test("renders without hydration errors, fits the viewport, and respects reduced 
   await page.reload();
   await page.waitForLoadState("networkidle");
   await expect(
-    page.getByRole("heading", { name: "Out of this world" }),
+    page
+      .locator(".quiz-card")
+      .getByRole("heading", { name: "Out of this world" }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Import questions", exact: true }),

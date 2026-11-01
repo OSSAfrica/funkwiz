@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { parseQuiz, type Quiz } from "./quiz";
-import { sampleQuizzes } from "./sample-quizzes";
 import {
   copyBrowserDrafts,
   listQuizzes,
@@ -61,7 +60,7 @@ export function useQuizLibrary(initial: Quiz[]) {
     }
   }
   return {
-    quizzes: [...saved, ...sampleQuizzes],
+    quizzes: saved,
     error,
     busy,
     save,

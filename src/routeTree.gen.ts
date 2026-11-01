@@ -10,7 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as JoinRouteImport } from './routes/join'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as HostCodeRouteImport } from './routes/host.$code'
+import { Route as PlayCodeRouteImport } from './routes/play.$code'
+import { Route as ReportsIdRouteImport } from './routes/reports.$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -18,9 +22,29 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HostCodeRoute = HostCodeRouteImport.update({
+  id: '/host/$code',
+  path: '/host/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayCodeRoute = PlayCodeRouteImport.update({
+  id: '/play/$code',
+  path: '/play/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsIdRoute = ReportsIdRouteImport.update({
+  id: '/reports/$id',
+  path: '/reports/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -31,31 +55,69 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/host/$code': typeof HostCodeRoute
+  '/play/$code': typeof PlayCodeRoute
+  '/reports/$id': typeof ReportsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/host/$code': typeof HostCodeRoute
+  '/play/$code': typeof PlayCodeRoute
+  '/reports/$id': typeof ReportsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/host/$code': typeof HostCodeRoute
+  '/play/$code': typeof PlayCodeRoute
+  '/reports/$id': typeof ReportsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/join'
+    | '/login'
+    | '/host/$code'
+    | '/play/$code'
+    | '/reports/$id'
+    | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/api/auth/$'
-  id: '__root__' | '/' | '/login' | '/api/auth/$'
+  to:
+    | '/'
+    | '/join'
+    | '/login'
+    | '/host/$code'
+    | '/play/$code'
+    | '/reports/$id'
+    | '/api/auth/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/join'
+    | '/login'
+    | '/host/$code'
+    | '/play/$code'
+    | '/reports/$id'
+    | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  JoinRoute: typeof JoinRoute
   LoginRoute: typeof LoginRoute
+  HostCodeRoute: typeof HostCodeRoute
+  PlayCodeRoute: typeof PlayCodeRoute
+  ReportsIdRoute: typeof ReportsIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -68,11 +130,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/host/$code': {
+      id: '/host/$code'
+      path: '/host/$code'
+      fullPath: '/host/$code'
+      preLoaderRoute: typeof HostCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play/$code': {
+      id: '/play/$code'
+      path: '/play/$code'
+      fullPath: '/play/$code'
+      preLoaderRoute: typeof PlayCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports/$id': {
+      id: '/reports/$id'
+      path: '/reports/$id'
+      fullPath: '/reports/$id'
+      preLoaderRoute: typeof ReportsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -87,7 +177,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  JoinRoute: JoinRoute,
   LoginRoute: LoginRoute,
+  HostCodeRoute: HostCodeRoute,
+  PlayCodeRoute: PlayCodeRoute,
+  ReportsIdRoute: ReportsIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

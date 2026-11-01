@@ -18,7 +18,7 @@ import {
 export function database() {
   return drizzle(env.DB, { schema });
 }
-export function createAuth() {
+export function createAuth(useStartCookies = true) {
   if (!authConfigured(env))
     throw new Error("Teacher sign-in is not configured.");
   const db = database();
@@ -130,12 +130,12 @@ export function createAuth() {
         },
       },
     },
-    plugins: [tanstackStartCookies()],
+    plugins: useStartCookies ? [tanstackStartCookies()] : [],
   });
 }
-export async function getTeacherSession(headers: Headers) {
+export async function getTeacherSession(headers: Headers, useStartCookies = true) {
   if (!authConfigured(env)) return null;
-  const session = await createAuth().api.getSession({ headers });
+  const session = await createAuth(useStartCookies).api.getSession({ headers });
   return session && isTeacher(session.user.email, env) ? session : null;
 }
 export async function requireTeacher(headers: Headers) {

@@ -10,6 +10,7 @@ import {
 import { QuizEditor } from "./quiz-editor";
 import { ImportDialog } from "./import-dialog";
 import { RehearsalDialog, SetupDialog } from "./rehearsal";
+import { HostSetupDialog } from "@/components/live/host-setup";
 import { MigrationDialog } from "./migration-dialog";
 import { exportQuiz } from "@/lib/quiz-store";
 import type { GameSettings, Quiz } from "@/lib/quiz";
@@ -17,6 +18,7 @@ import type { GameSettings, Quiz } from "@/lib/quiz";
 export type WorkspaceModal =
   | { type: "editor"; quiz: Quiz }
   | { type: "setup"; quiz: Quiz }
+  | { type: "host"; quiz: Quiz }
   | { type: "rehearsal"; quiz: Quiz; settings: GameSettings }
   | { type: "delete"; quiz: Quiz }
   | { type: "import" | "guide" }
@@ -29,6 +31,7 @@ type Props = {
   onSave: (quiz: Quiz) => Promise<void>;
   onDelete: (quiz: Quiz) => Promise<void>;
   onCopy: (quizzes: Quiz[]) => Promise<void>;
+  onHost: (quiz: Quiz, settings: GameSettings) => Promise<void>;
   busy: boolean;
   error: string;
 };
@@ -50,6 +53,7 @@ function ModalContent({
   onSave,
   onDelete,
   onCopy,
+  onHost,
   busy,
   error,
 }: Props) {
@@ -62,6 +66,13 @@ function ModalContent({
     case "import":
       return (
         <ImportDialog onReview={(quiz) => onChange({ type: "editor", quiz })} />
+      );
+    case "host":
+      return (
+        <HostSetupDialog
+          quiz={modal.quiz}
+          onHost={(settings) => onHost(modal.quiz, settings)}
+        />
       );
     case "setup":
       return (
@@ -173,8 +184,8 @@ function Guide() {
           <ShieldCheck size={20} />
           <p>
             <strong>You’re exploring the first chapter.</strong> Your quizzes
-            are saved to your teacher account. Export JSON for a backup. Live
-            join codes and multiplayer are planned next.
+            are saved to your teacher account. Export JSON for a backup. Open a
+            live lobby to play with your class, or rehearse on your own.
           </p>
         </div>
       </div>

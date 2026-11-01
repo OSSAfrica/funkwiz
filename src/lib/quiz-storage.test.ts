@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { prepareQuizForStorage } from "./quiz-storage";
-import { sampleQuizzes } from "./sample-quizzes";
+import { sampleQuizzes } from "./sample-quizzes.server";
 
 test("server storage normalizes identities and strips the example flag", () => {
   const quiz = prepareQuizForStorage(sampleQuizzes[0]);

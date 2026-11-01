@@ -1,5 +1,5 @@
 import { useState, useSyncExternalStore } from "react";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import {
   ArrowRight,
   Check,
@@ -25,11 +25,13 @@ import {
   type WorkspaceModal,
 } from "@/components/quiz/workspace-dialog";
 import { QuizCard } from "@/components/quiz/quiz-card";
-import { sampleQuizzes } from "@/lib/sample-quizzes";
 import { readBrowserDrafts, useQuizLibrary } from "@/lib/quiz-store";
 import { AccountDialog } from "@/components/auth/account-dialog";
 import { getTeacher, getPasswordStatus } from "@/lib/auth.functions";
 import { listQuizzes } from "@/lib/quizzes.functions";
+import { RecentGames } from "@/components/live/recent-games";
+import { listLiveSessions } from "@/lib/live/reports.functions";
+import { openLiveRoom } from "@/lib/live/client";
 import { newQuiz } from "@/lib/quiz";
 
 export const Route = createFileRoute("/")({
@@ -39,11 +41,12 @@ export const Route = createFileRoute("/")({
     return { teacher };
   },
   loader: async () => {
-    const [quizzes, password] = await Promise.all([
+    const [quizzes, password, sessions] = await Promise.all([
       listQuizzes(),
       getPasswordStatus(),
+      listLiveSessions(),
     ]);
-    return { quizzes, hasPassword: password.hasPassword };
+    return { quizzes, hasPassword: password.hasPassword, sessions };
   },
   component: Home,
 });
@@ -54,6 +57,8 @@ const serverReady = () => false;
 
 function Home() {
   const initial = Route.useLoaderData();
+  const navigate = useNavigate();
+  const [hosting, setHosting] = useState(false);
   const { teacher } = Route.useRouteContext();
   const { quizzes, error, busy, save, remove, migrate } = useQuizLibrary(
     initial.quizzes,
@@ -161,9 +166,7 @@ function Home() {
             </Button>
           </div>
           <WelcomeBanner
-            onPractice={() =>
-              setModal({ type: "setup", quiz: quizzes[0] ?? sampleQuizzes[0] })
-            }
+            onPractice={() => setModal({ type: "setup", quiz: quizzes[0] })}
           />
           <div className="quick-actions reveal-in">
             <button onClick={openEditor}>
@@ -267,6 +270,7 @@ function Home() {
               </div>
             )}
           </section>
+          <RecentGames sessions={initial.sessions} />
           <section className="bottom-note">
             <div className="flex items-center gap-3">
               <span className="bottom-note-icon">
@@ -288,7 +292,7 @@ function Home() {
           <footer className="workspace-footer">
             <span>Made for curious minds & happy classrooms.</span>
             <span>
-              <span className="tiny-dot" /> Teacher workspace · Local rehearsal
+              <span className="tiny-dot" /> Teacher workspace · Live & playful
             </span>
           </footer>
         </main>
@@ -296,7 +300,7 @@ function Home() {
       <WorkspaceDialog
         modal={modal}
         onChange={setModal}
-        busy={busy}
+        busy={busy || hosting}
         error={modal?.type === "migrate" ? error || migrationError : error}
         onSave={async (quiz) => {
           await save(quiz);
@@ -311,6 +315,15 @@ function Home() {
             setNotice("Quiz removed from your account.");
           } catch {
             /* Error remains visible in the dialog. */
+          }
+        }}
+        onHost={async (quiz, settings) => {
+          setHosting(true);
+          try {
+            const room = await openLiveRoom(quiz.id, settings);
+            await navigate({ to: "/host/$code", params: { code: room.code } });
+          } finally {
+            setHosting(false);
           }
         }}
         onCopy={async (drafts) => {

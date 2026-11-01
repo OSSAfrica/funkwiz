@@ -85,31 +85,32 @@ join code or simulated students as a real session.
 - [ ] Add transactional email verification and password recovery.
 - [ ] Add validated CSV import. JSON import/export is already available.
 
-Session/result tables will be added with the live-room implementation, when their
-lifecycle and scoring fields are defined. Setup details live in `docs/AUTH.md`;
+Session/result tables are now included in migration `0001_live_sessions.sql`. Setup details live in `docs/AUTH.md`;
 table details live in `docs/DATABASE_SCHEMA.md`.
 
-### 3. Live classroom game
+### 3. Live classroom game — implemented locally
 
-- Implement room lifecycle: lobby → question → reveal/cooldown → next → finished.
-- Add student join and reconnect flows, nickname handling, authoritative deadlines,
-  scoring, leaderboard, and duplicate/late-answer handling.
-- Implement host-only controls and runtime mode/visibility changes.
-- Add controlled audio, celebrations, and accessible game feedback.
+- [x] Implement room lifecycle: lobby → question → reveal/cooldown → next → finished.
+- [x] Add student join and reconnect flows, nickname handling, authoritative deadlines,
+      scoring, leaderboard, and duplicate/late-answer handling.
+- [x] Implement host-only controls and runtime mode/visibility changes.
+- [x] Add controlled audio, celebrations, and accessible game feedback.
 
-### 4. Reliability and classroom pilot
+### 4. Reliability and classroom pilot — local checks implemented
 
-- Test timing/state transitions with a controllable clock.
-- Load-test at least 150 connected players, including a burst of answers,
-  disconnect/reconnect, backgrounded phones, and a reconnecting host.
-- Verify answer secrecy, host authorization, input limits, room cleanup, and costs.
-- Run a classroom pilot before promising support for 100+ participants.
+- [x] Test transitions with a controlled clock and actual Workers alarms.
+- [x] Force room eviction and verify identity, answers, deadlines and scoring survive.
+- [x] Load-test 150 connected players, an answer burst, duplicates and reconnects.
+- [x] Check answer secrecy, host authorization, input limits and room cleanup.
+- [ ] Pilot the deployed app on school Wi-Fi with backgrounded phones and a reconnecting host.
+- [ ] Measure production resource use and costs before promising 100+ participants.
 
 ### Later
 
 Built-in AI generation, image questions, additional question types, teacher sharing,
-and richer reports. Decide scoring details and late-join behavior before live-game
-implementation. Do not add these features to the first authoring slice.
+and richer reports. Current scoring gives 1,000 points per correct answer, with
+shared ranks for ties. New joins close at start; existing players can reconnect.
+See `docs/LIVE_GAMES.md` for operating instructions and lifecycle limits.
 
 ## Implementation references
 
@@ -149,3 +150,27 @@ implementation. Do not add these features to the first authoring slice.
 - The existing CSS source-map warning remains.
 - Real Google OAuth callbacks, password recovery email, and production deployment
   require external configuration and remain explicitly unverified.
+
+## Validation of phase 3
+
+- 26 unit tests pass; four isolated Workers tests pass, including forced eviction,
+  automatic alarms, single scoring and expiry.
+- The local capacity run passed with 150 connected simulated students, 150 answers,
+  ten duplicate submissions and fifteen reconnects. Joins took 1,523 ms, the answer
+  burst 673 ms, and reveal fan-out 118 ms. These are local measurements, not a
+  production capacity guarantee.
+- All 28 Playwright checks pass, covering desktop/phone authoring and live games,
+  teacher access, Google visibility, reports, the 150-player scenario, and password
+  changes revoking other sessions. Browser scenarios run serially to reduce local
+  emulator contention; the capacity scenario still connects 150 players at once.
+- The live-session migration is applied to the normal local development database.
+- Host lobby, student reveal and reports were visually inspected on desktop and phone.
+- Production builds and client private-value checks pass. The full sample bank
+  stays server-side; the import template is still available in the teacher UI.
+- React Doctor's full scan retains the previously documented JOSE format-marker
+  false positive in a server-only source map. Its remaining source note concerns
+  an effect guarded by cancellation checks and an AbortController, including a
+  guard immediately after the awaited request and before applying its result. No rules were suppressed. These
+  diagnostics are recorded rather than represented as a clean full scan.
+- The upstream CSS source-map warning remains. Google Tasks was unreachable;
+  this document records the deliverables and remaining pilot work.

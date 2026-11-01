@@ -3,6 +3,7 @@ import { getRequestHeaders } from "@tanstack/react-start/server";
 import { and, desc, eq } from "drizzle-orm";
 import { quiz as quizTable } from "@/db/schema";
 import { database, requireTeacher } from "./auth.server";
+import { sampleQuizzes } from "./sample-quizzes.server";
 import { prepareQuizForStorage } from "./quiz-storage";
 
 export const listQuizzes = createServerFn({ method: "GET" }).handler(
@@ -13,15 +14,18 @@ export const listQuizzes = createServerFn({ method: "GET" }).handler(
       .from(quizTable)
       .where(eq(quizTable.ownerId, teacher.id))
       .orderBy(desc(quizTable.updatedAt));
-    return rows.map((row) => ({
-      id: row.id,
-      title: row.title,
-      description: row.description,
-      cover: row.cover,
-      questions: row.questions,
-      updatedAt: row.updatedAt.toISOString(),
-      isExample: false,
-    }));
+    return [
+      ...rows.map((row) => ({
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        cover: row.cover,
+        questions: row.questions,
+        updatedAt: row.updatedAt.toISOString(),
+        isExample: false,
+      })),
+      ...sampleQuizzes,
+    ];
   },
 );
 export const persistQuiz = createServerFn({ method: "POST" })

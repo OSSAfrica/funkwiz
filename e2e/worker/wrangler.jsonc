@@ -1,7 +1,7 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "fun-quiz-e2e",
-  "main": "@tanstack/react-start/server-entry",
+  "main": "../../src/server.ts",
   "compatibility_date": "2025-09-02",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
@@ -17,6 +17,24 @@
       "database_name": "fun-quiz-e2e",
       "database_id": "00000000-0000-0000-0000-000000000001",
       "migrations_dir": "../../migrations",
+    },
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "LIVE_ROOMS",
+        "class_name": "GameRoom",
+      },
+      {
+        "name": "LIVE_JOIN_LIMITER",
+        "class_name": "JoinLimiter",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1-live-rooms",
+      "new_sqlite_classes": ["GameRoom", "JoinLimiter"],
     },
   ],
 }

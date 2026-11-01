@@ -4,6 +4,7 @@ import {
   Clock3,
   Pencil,
   Play,
+  Radio,
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,7 @@ export function QuizCard({
   onAction,
 }: {
   quiz: Quiz;
-  onAction: (type: "editor" | "setup" | "delete", quiz: Quiz) => void;
+  onAction: (type: "editor" | "setup" | "delete" | "host", quiz: Quiz) => void;
 }) {
   return (
     <article className="quiz-card" key={quiz.id}>
@@ -49,15 +50,25 @@ export function QuizCard({
           </span>
         </div>
         <div className="quiz-card-footer">
-          <Button
-            className="practice-button"
-            variant="outline"
-            size="sm"
-            onClick={() => onAction("setup", quiz)}
-          >
-            <Play size={14} fill="currentColor" />
-            Practice
-          </Button>
+          <div className="quiz-play-actions">
+            <Button
+              size="sm"
+              className="host-button"
+              onClick={() => onAction("host", quiz)}
+            >
+              <Radio size={14} />
+              Host live
+            </Button>{" "}
+            <Button
+              className="practice-button"
+              variant="outline"
+              size="sm"
+              onClick={() => onAction("setup", quiz)}
+            >
+              <Play size={14} fill="currentColor" />
+              Practice
+            </Button>
+          </div>
           <div className="flex gap-1">
             <Button
               variant="ghost"

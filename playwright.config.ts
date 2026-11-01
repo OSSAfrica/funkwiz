@@ -4,7 +4,9 @@ export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
   globalSetup: "./e2e/global-setup.ts",
-  workers: 2,
+  // Keep local browser/Workers scenarios from competing for the same CPU.
+  // The capacity scenario still connects 150 students concurrently.
+  workers: 1,
   reporter: "list",
   use: {
     baseURL: "http://127.0.0.1:3100",
@@ -14,7 +16,11 @@ export default defineConfig({
   projects: [
     {
       name: "desktop",
-      testIgnore: ["**/google.spec.ts", "**/account-settings.spec.ts"],
+      testIgnore: [
+        "**/google.spec.ts",
+        "**/account-settings.spec.ts",
+        "**/capacity.spec.ts",
+      ],
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1440, height: 1100 },
@@ -22,13 +28,23 @@ export default defineConfig({
     },
     {
       name: "phone",
-      testIgnore: ["**/google.spec.ts", "**/account-settings.spec.ts"],
+      testIgnore: [
+        "**/google.spec.ts",
+        "**/account-settings.spec.ts",
+        "**/capacity.spec.ts",
+      ],
       use: { ...devices["iPhone 13"], defaultBrowserType: "chromium" },
+    },
+    {
+      name: "live-capacity",
+      testMatch: "**/capacity.spec.ts",
+      dependencies: ["desktop", "phone", "google-provider"],
+      use: { ...devices["Desktop Chrome"] },
     },
     {
       name: "account-settings",
       testMatch: "**/account-settings.spec.ts",
-      dependencies: ["desktop", "phone", "google-provider"],
+      dependencies: ["desktop", "phone", "google-provider", "live-capacity"],
       use: {
         ...devices["Desktop Chrome"],
         storageState: { cookies: [], origins: [] },
