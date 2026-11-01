@@ -1,200 +1,99 @@
-Welcome to your new TanStack Start app!
+# Fun Quiz
 
-# Getting Started
+A playful classroom quiz app built with React, TanStack Start, TypeScript,
+Tailwind CSS, and shadcn/ui. It targets Cloudflare Workers through the Cloudflare
+Vite plugin.
 
-To run this application:
+The agreed product behavior, architecture direction, and remaining work live in
+[the implementation plan](docs/PLAN.md).
 
-```bash
-npm install
-npm run dev
+## Run locally
+
+Use Bun 1.3.14 or newer:
+
+```sh
+bun install
+bun run dev
 ```
 
-# Building For Production
+Open http://localhost:3000.
 
-To build this application for production:
+## What works now
 
-```bash
-npm run build
-```
+- Responsive teacher library with search, example quizzes, and draft filters.
+- Create/edit quizzes with four-choice questions and one correct answer.
+- Apply a common time limit to all questions or customize individual durations.
+- Import JSON by pasting or uploading; validate and review before saving.
+- Save drafts in this browser; export JSON backups and import them elsewhere.
+- Set display mode (shared screen, student devices, both), manual or automatic
+  progression, and an automatic cooldown.
+- Rehearse locally with host/student views, timers, answer reveal, pause/resume,
+  progression switching, and next-question display changes.
+- Colorful illustrations and brief feedback animations with reduced-motion support.
 
-## Styling
+This is a **local authoring preview**. There are no connected students, teacher
+accounts, live join codes, or server-side quiz storage yet. Clearing browser data
+removes saved quizzes; export important drafts. Support for 100+ players will be
+verified when the multiplayer backend is implemented.
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+## Question imports
 
-### Removing Tailwind CSS
+See [the example JSON](docs/quiz-import-example.json). Imports accept a quiz title,
+an optional description, and up to 100 questions. Each question has:
 
-If you prefer not to use Tailwind CSS:
+- `prompt`: question text.
+- `answers`: exactly four nonempty strings.
+- `correctIndex`: zero-based correct answer (`0` through `3`).
+- `duration`: a whole number of seconds from `5` to `300` (defaults to `20`).
 
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Remove `@tailwindcss/vite` and `tailwindcss` from `package.json`
+Paste this format into your AI tool to request matching output, then review the
+result in the editor. Imports are processed locally; built-in AI generation and
+CSV imports are planned later.
 
+## Commands
 
-## Deploy to Cloudflare Workers
+| Command              | Purpose                                          |
+| -------------------- | ------------------------------------------------ |
+| `bun run dev`        | Start development on port 3000                   |
+| `bun run typecheck`  | Generate routes and check TypeScript             |
+| `bun test src/lib`   | Test import validation and rehearsal transitions |
+| `bun run test:e2e`   | Check desktop and phone flows with Playwright    |
+| `bun run build`      | Build browser and Cloudflare Worker bundles      |
+| `bun run preview`    | Build and preview the production app             |
+| `bun run cf-typegen` | Regenerate types after changing Worker bindings  |
+| `bun run deploy`     | Build and deploy to Cloudflare Workers           |
 
-This project uses the Cloudflare Vite plugin (configured in `vite.config.ts`) and `wrangler.jsonc`:
+For browser tests, install Chromium once with `bunx playwright install chromium`.
+There is no linter configured. Generated routes live in `src/routeTree.gen.ts`;
+do not edit them by hand.
 
-1. Install Wrangler: `npm install -g wrangler`
-2. Authenticate: `wrangler login`
-3. Deploy: `npx wrangler deploy`
+## UI components
 
-For production env vars, run `wrangler secret put MY_VAR` for each secret listed in `.env.example`. Public (non-secret) vars go in `wrangler.jsonc` under `vars`.
+shadcn/ui configuration lives in `components.json`; shared primitives are in
+`src/components/ui`. Add components with `bunx --bun shadcn@latest add <component>`.
+Quiz screens live in `src/components/quiz`; data validation, browser storage, and
+rehearsal transitions live in `src/lib`.
 
-KV, D1, R2, and Durable Object bindings are configured in `wrangler.jsonc` — see https://developers.cloudflare.com/workers/wrangler/configuration/.
+Fonts are bundled locally through Fontsource. The illustrations use CSS and
+Lucide icons, so the app does not depend on an external image service.
 
+## Cloudflare
 
+Authenticate with `bunx wrangler login` before deployment. No D1, Durable Object,
+object storage, or AI bindings are configured yet. Add bindings to
+`wrangler.jsonc`, then run `bun run cf-typegen`.
 
-## Routing
+Keep local secrets in `.dev.vars` (ignored by Git), and set production secrets
+with `bunx wrangler secret put SECRET_NAME`.
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
+The Cloudflare build currently emits an upstream CSS source-map warning. It does
+not prevent the production bundles from being generated.
 
-### Adding A Route
+## Scaffold history
 
-To add a new route to your application just add a new file in the `./src/routes` directory.
+Created with `npx wrangler init`, selecting TanStack Start / React / Cloudflare.
+The starter demo was removed, and package management has been migrated to Bun.
 
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+The original creation log reported a failed TanStack Intent installation. To retry
+the optional agent integration, use `bunx @tanstack/intent install`. It is separate
+from building and running the application.
