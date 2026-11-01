@@ -13,6 +13,8 @@ import { HeroArt } from "./quiz-art";
 
 type SidebarProps = {
   count: number;
+  teacher: { name: string };
+  onAccount: () => void;
   onCreate: () => void;
   onImport: () => void;
   onGuide: () => void;
@@ -20,6 +22,8 @@ type SidebarProps = {
 };
 export function WorkspaceSidebar({
   count,
+  teacher,
+  onAccount,
   onCreate,
   onImport,
   onGuide,
@@ -75,13 +79,19 @@ export function WorkspaceSidebar({
             <Plus size={16} />
           </Button>
         </div>
-        <div className="teacher-profile">
-          <span className="teacher-avatar">T</span>
+        <button
+          className="teacher-profile"
+          onClick={onAccount}
+          aria-label="Open teacher account"
+        >
+          <span className="teacher-avatar">
+            {teacher.name.charAt(0).toUpperCase()}
+          </span>
           <div>
-            <strong>Teacher workspace</strong>
-            <span>Let the good questions roll</span>
+            <strong>{teacher.name}</strong>
+            <span>Your private teacher space</span>
           </div>
-        </div>
+        </button>
       </div>
     </aside>
   );

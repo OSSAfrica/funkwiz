@@ -72,12 +72,22 @@ This phase has no authentication, multiplayer joining, production persistence, o
 capacity guarantee. Rehearsal must be explicitly labeled and never present a fake
 join code or simulated students as a real session.
 
-### 2. Teacher access and durable quiz storage
+### 2. Teacher access and durable quiz storage — core implemented locally
 
-- Add Better Auth and restrict teacher mutations to the owner.
-- Add D1 schema/migrations for quizzes, questions, sessions, and results.
-- Replace browser draft storage with authenticated server persistence; offer an
-  explicit migration path for local drafts. Add validated CSV import and export.
+- [x] Better Auth email/password and optional Google, restricted to the configured teacher email.
+- [x] Google hidden and disabled server-side unless both credentials are configured.
+- [x] Private setup code protects initial email/password registration.
+- [x] D1 schema/migrations for authentication, rate limiting, and owned quizzes.
+- [x] Authenticated account storage and explicit migration of browser drafts.
+- [x] Add/change password and sign-out controls.
+- [ ] Provision production D1 and configure production secrets before deployment.
+- [ ] Configure real Google OAuth credentials when ready; test the full provider callback.
+- [ ] Add transactional email verification and password recovery.
+- [ ] Add validated CSV import. JSON import/export is already available.
+
+Session/result tables will be added with the live-room implementation, when their
+lifecycle and scoring fields are defined. Setup details live in `docs/AUTH.md`;
+table details live in `docs/DATABASE_SCHEMA.md`.
 
 ### 3. Live classroom game
 
@@ -118,3 +128,24 @@ implementation. Do not add these features to the first authoring slice.
 - React Doctor reports 100/100 across the full app.
 - The build retains the upstream CSS source-map warning described in the README.
 - Google Tasks was unreachable; this file is the available record of remaining work.
+
+## Validation of phase 2
+
+- Bun frozen-lockfile install, TypeScript, 18 unit tests, and production build pass.
+- 21 browser checks pass against isolated D1 databases, including initial account
+  setup, teacher restrictions, Google visibility with partial/full configuration,
+  server-function authorization, password changes/session revocation, account
+  persistence, browser-draft migration, and the existing authoring/rehearsal flows.
+- Desktop and phone login screenshots were inspected.
+- The normal local app was checked separately: teacher setup is available and
+  Google is hidden with the actual local configuration. No real teacher account
+  was created by the tests.
+- The built client-assets check confirms the configured private values are absent.
+- React Doctor's source checks are clean. Its artifact scanner reports a false
+  positive for JOSE's literal PKCS#8 format marker in a server-only source map.
+  The flagged source is `jose/dist/webapi/key/import.js`, and the Worker serves
+  assets from `dist/client`, not `dist/server`. No private key or configured
+  secret was present in that map. No scan suppressions were added.
+- The existing CSS source-map warning remains.
+- Real Google OAuth callbacks, password recovery email, and production deployment
+  require external configuration and remain explicitly unverified.

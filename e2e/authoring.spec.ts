@@ -4,7 +4,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.waitForLoadState("networkidle");
   await expect(
-    page.getByRole("heading", { name: "Your quiz collection 3" }),
+    page.getByRole("heading", { name: /Your quiz collection/ }),
   ).toBeVisible();
 });
 
@@ -42,13 +42,12 @@ test("renders without hydration errors, fits the viewport, and respects reduced 
 
 test("creates a quiz, applies common timing, overrides one question, and survives reload", async ({
   page,
-}) => {
+}, testInfo) => {
+  const title = `${testInfo.project.name} Classroom science`;
   await page
     .getByRole("button", { name: "Create a quiz", exact: true })
     .click();
-  await page
-    .getByLabel("Quiz title", { exact: true })
-    .fill("Classroom science");
+  await page.getByLabel("Quiz title", { exact: true }).fill(title);
   await page
     .getByLabel("Question", { exact: true })
     .fill("Which planet is red?");
@@ -78,12 +77,12 @@ test("creates a quiz, applies common timing, overrides one question, and survive
   await page.getByLabel("Time limit", { exact: true }).fill("35");
   await page.getByRole("button", { name: "Save quiz", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Classroom science" }),
+    page.getByRole("heading", { name: title, exact: true }),
   ).toBeVisible();
   await page.reload();
   await page.waitForLoadState("networkidle");
   await page
-    .getByRole("button", { name: "Edit Classroom science", exact: true })
+    .getByRole("button", { name: `Edit ${title}`, exact: true })
     .click();
   await expect(page.getByLabel("Time limit", { exact: true })).toHaveValue(
     "15",
@@ -95,14 +94,17 @@ test("creates a quiz, applies common timing, overrides one question, and survive
   await page.getByRole("button", { name: "Close", exact: true }).click();
   const download = page.waitForEvent("download");
   await page
-    .getByRole("button", { name: "Export Classroom science", exact: true })
+    .getByRole("button", { name: `Export ${title}`, exact: true })
     .click();
-  expect((await download).suggestedFilename()).toBe("classroom-science.json");
+  expect((await download).suggestedFilename()).toBe(
+    `${testInfo.project.name}-classroom-science.json`,
+  );
 });
 
 test("validates imports and requires review before saving", async ({
   page,
-}) => {
+}, testInfo) => {
+  const title = `${testInfo.project.name} Space adventure`;
   await page
     .getByRole("button", { name: "Import questions", exact: true })
     .click();
@@ -114,16 +116,15 @@ test("validates imports and requires review before saving", async ({
   await expect(page.getByLabel("Quiz title", { exact: true })).toHaveValue(
     "A little space adventure",
   );
+  await page.getByLabel("Quiz title", { exact: true }).fill(title);
   await page.getByRole("button", { name: "Save quiz", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "A little space adventure" }),
+    page.getByRole("heading", { name: title, exact: true }),
   ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Delete A little space adventure" })
-    .click();
+  await page.getByRole("button", { name: `Delete ${title}` }).click();
   await page.getByRole("button", { name: "Keep quiz" }).click();
   await expect(
-    page.getByRole("heading", { name: "A little space adventure" }),
+    page.getByRole("heading", { name: title, exact: true }),
   ).toBeVisible();
 });
 
@@ -131,7 +132,16 @@ test("supports runtime display changes and cancels automatic cooldown in manual 
   page,
 }) => {
   await page.clock.install();
-  await page.getByRole("button", { name: "Try a practice round" }).click();
+  await page
+    .getByRole("article")
+    .filter({
+      has: page.getByRole("heading", {
+        name: "Out of this world",
+        exact: true,
+      }),
+    })
+    .getByRole("button", { name: "Practice", exact: true })
+    .click();
   await expect(page.getByLabel("Cooldown between questions")).toBeDisabled();
   await page.getByText("Keep it rolling", { exact: true }).click();
   await expect(page.getByLabel("Cooldown between questions")).toBeEnabled();

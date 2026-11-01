@@ -1727,3 +1727,326 @@ button:active:not(:disabled) {
   display: grid;
   place-items: center;
 }
+
+/* A welcoming front door for the private teacher workspace. */
+.auth-page {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #fffefb;
+}
+.auth-story {
+  background: #153f35;
+  color: #f7faec;
+  padding: 44px 48px 30px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.auth-story .brand {
+  margin: 0;
+  width: fit-content;
+}
+.auth-story-copy {
+  margin: auto 0;
+  padding: 55px 0 20px;
+}
+.auth-story .eyebrow {
+  color: #d6e5a7;
+  font-size: 10px;
+}
+.auth-story h1 {
+  font: 450 clamp(40px, 4.4vw, 67px)/1.08 var(--font-display);
+  letter-spacing: -1px;
+  margin: 24px 0;
+}
+.auth-story h1 > span {
+  color: #f9d673;
+}
+.auth-story-copy > p {
+  color: #bfd2c2;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.auth-story .hero-art {
+  min-height: 310px;
+  margin-top: 35px;
+  max-width: 420px;
+}
+.auth-story .hero-art::before {
+  background: #345b45;
+}
+.auth-story .hero-spark {
+  color: #d6e5a7;
+}
+.auth-story .hero-caption {
+  color: #e8edc8;
+}
+.auth-story-footer {
+  font-size: 11px;
+  color: #b8cdbd;
+}
+.auth-form-side {
+  display: grid;
+  place-items: center;
+  padding: 45px;
+}
+.auth-form-card {
+  width: 100%;
+  max-width: 390px;
+}
+.auth-welcome-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  background: #fae0ab;
+  color: #7b5925;
+  border-radius: 18px;
+  transform: rotate(-6deg);
+  margin-bottom: 28px;
+}
+.auth-form-card h2 {
+  font: 450 34px/1.12 var(--font-display);
+  letter-spacing: -0.5px;
+  margin: 12px 0;
+}
+.auth-form-card > p {
+  color: #687361;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.auth-form {
+  margin-top: 28px;
+}
+.auth-form label {
+  font-weight: 800;
+  font-size: 12px;
+}
+.auth-form input {
+  height: 44px;
+  box-shadow: none;
+}
+.password-input {
+  position: relative;
+}
+.password-input > input {
+  padding-right: 45px;
+}
+.password-input > button {
+  position: absolute;
+  right: 6px;
+  top: 4px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  color: #687361;
+}
+.auth-submit {
+  width: 100%;
+  height: 44px;
+  font-weight: 800;
+  box-shadow: 0 3px 0 #97371d;
+}
+.auth-submit svg:last-child {
+  margin-left: auto;
+}
+.auth-submit svg:first-child:last-child {
+  margin: 0;
+}
+.auth-mode-switch {
+  margin-top: 24px;
+  font-size: 12px !important;
+}
+.auth-mode-switch > button {
+  color: #b13e20;
+  font-weight: 800;
+  margin-left: 7px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.auth-private-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 25px;
+  font-size: 10px !important;
+}
+.auth-field-help {
+  font-size: 11px;
+  color: #687361;
+  line-height: 1.6;
+}
+.google-button {
+  width: 100%;
+  height: 44px;
+  margin-top: 25px;
+  font-weight: 700;
+  box-shadow: none;
+}
+.google-letter {
+  font-size: 19px;
+  font-weight: 900;
+  color: #356ac3;
+}
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #697561;
+  font-size: 10px;
+  margin-top: 23px;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  height: 1px;
+  background: #e4e7db;
+  flex: 1;
+}
+.auth-divider + .auth-form {
+  margin-top: 23px;
+}
+.auth-setup-note {
+  background: #f8eed5;
+  border: 1px solid #e7d5a6;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 25px;
+  font-size: 13px;
+}
+.auth-setup-note p {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.workspace-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+button.teacher-profile {
+  width: 100%;
+  text-align: left;
+}
+.migration-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid #e1e7d7;
+  border-radius: 11px;
+  padding: 12px 15px;
+}
+.migration-row label {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+}
+.migration-row input {
+  width: 18px;
+  height: 18px;
+  accent-color: #3d704d;
+}
+.migration-row strong {
+  display: block;
+  font-size: 13px;
+}
+.migration-row small {
+  display: block;
+  color: #687361;
+  margin-top: 3px;
+  font-size: 11px;
+}
+@media (max-width: 950px) {
+  .auth-story {
+    padding: 35px;
+  }
+  .auth-story h1 {
+    font-size: 46px;
+  }
+  .auth-form-side {
+    padding: 30px;
+  }
+  .auth-form-card h2 {
+    font-size: 31px;
+  }
+  .auth-story .hero-art {
+    transform: scale(0.95);
+  }
+}
+@media (max-width: 700px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+  .auth-story {
+    padding: 25px;
+  }
+  .auth-story-copy {
+    padding: 28px 0 5px;
+  }
+  .auth-story h1 {
+    font-size: 40px;
+    margin: 17px 0;
+  }
+  .auth-story-copy > p {
+    font-size: 12px;
+  }
+  .auth-story .hero-art,
+  .auth-story-footer {
+    display: none;
+  }
+  .auth-form-side {
+    padding: 35px 25px 45px;
+  }
+  .auth-welcome-icon {
+    margin-bottom: 23px;
+    width: 45px;
+    height: 45px;
+    border-radius: 14px;
+  }
+  .auth-form-card h2 {
+    font-size: 31px;
+  }
+  .workspace-header-actions {
+    gap: 16px;
+  }
+  .workspace-header-actions .help-link > span {
+    display: none;
+  }
+  .workspace-header-actions .help-link {
+    width: 28px;
+    height: 28px;
+    justify-content: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-form .animate-spin {
+    animation: none;
+  }
+}
+.auth-story .hero-art {
+  height: 310px;
+}
+.auth-story .hero-card {
+  color: #263b34;
+}
+.workspace-error {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 25px;
+  background: #faf5e7;
+}
+.workspace-error h1 {
+  font: 450 36px/1.2 var(--font-display);
+  margin: 15px 0;
+}
+.workspace-error p {
+  font-size: 14px;
+  color: #687361;
+  line-height: 1.7;
+  margin-bottom: 22px;
+}

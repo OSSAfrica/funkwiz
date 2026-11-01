@@ -1,0 +1,36 @@
+# D1 schema
+
+Source: `src/db/schema.ts`. Initial migration:
+`migrations/0000_teacher_auth_and_quizzes.sql`.
+
+| Table          | Stored data                                                  | Constraints and indexes                                                        |
+| -------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `user`         | Teacher name, email, verified state, image, timestamps       | Text primary key; unique email                                                 |
+| `account`      | Credential hash or OAuth identity/tokens                     | User foreign key with cascade delete; user index; unique provider/account pair |
+| `session`      | Session token, expiry, user, request metadata                | Unique token; user foreign key with cascade delete; user index                 |
+| `verification` | Better Auth verification and OAuth state values              | Identifier index and expiry                                                    |
+| `rate_limit`   | Authentication request counters                              | Unique limiter key                                                             |
+| `quiz`         | Title, description, cover, question array, timestamps, owner | Owner foreign key with cascade delete; owner/updated-time index                |
+
+Dates use SQLite integers with Drizzle `timestamp_ms` conversion. Booleans use
+integers. Question arrays are validated and stored as JSON text. Each quiz write
+uses fewer than 100 SQL parameters. Browser-draft migration uses a D1 batch of
+individual inserts, each within that bound, rather than one large values list.
+
+All quiz queries and mutations require the allowed teacher's session. Mutations
+scope deletes and conflict updates to the current owner. The client cannot assign
+an owner or a server timestamp. Example quizzes remain static and are copied into
+account drafts when edited; they are not deleted from the shared sample library.
+
+The Better Auth Drizzle adapter is configured without SQL transactions because D1
+uses its batch API for atomic groups of statements. The explicit draft-copy path
+uses that batch API.
+
+Generate a migration after editing the schema with `bun run db:generate`.
+Apply it locally with `bun run db:migrate:local`. Apply to the configured remote
+D1 database with `bun run db:migrate:remote` only when preparing that environment.
+Never edit an already-applied migration to change the schema.
+
+Local development uses `.wrangler/state`. Browser tests use isolated
+`.wrangler/e2e-state` and `.wrangler/e2e-google-state` directories that are reset
+by the test runner. No production database has been provisioned by this change.

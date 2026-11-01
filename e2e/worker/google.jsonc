@@ -1,0 +1,23 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "fun-quiz-e2e-google",
+  "main": "@tanstack/react-start/server-entry",
+  "compatibility_date": "2025-09-02",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "BETTER_AUTH_URL": "http://127.0.0.1:3101",
+    "BETTER_AUTH_SECRET": "e2e-only-fake-secret-never-use-in-production-2026",
+    "TEACHER_EMAIL": "teacher@example.test",
+    "TEACHER_SETUP_TOKEN": "e2e-only-fake-setup-code-never-use-in-production",
+    "GOOGLE_CLIENT_ID": "fake-google-id-for-render-test",
+    "GOOGLE_CLIENT_SECRET": "fake-google-secret-for-render-test",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fun-quiz-e2e-google",
+      "database_id": "00000000-0000-0000-0000-000000000002",
+      "migrations_dir": "../../migrations",
+    },
+  ],
+}

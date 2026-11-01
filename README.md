@@ -13,10 +13,12 @@ Use Bun 1.3.14 or newer:
 
 ```sh
 bun install
+bun run setup:local your-teacher-email@example.com
+bun run db:migrate:local
 bun run dev
 ```
 
-Open http://localhost:3000.
+Open http://127.0.0.1:3000. See [teacher account setup](docs/AUTH.md) for your private setup code and optional Google sign-in.
 
 ## What works now
 
@@ -24,17 +26,22 @@ Open http://localhost:3000.
 - Create/edit quizzes with four-choice questions and one correct answer.
 - Apply a common time limit to all questions or customize individual durations.
 - Import JSON by pasting or uploading; validate and review before saving.
-- Save drafts in this browser; export JSON backups and import them elsewhere.
+- Teacher-only email/password sign-in and optional Google sign-in, hidden unless both Google credentials are configured.
+- Account-backed quiz storage in D1, with JSON backups and explicit browser-draft migration.
+- Account controls for adding/changing a password and signing out.
 - Set display mode (shared screen, student devices, both), manual or automatic
   progression, and an automatic cooldown.
 - Rehearse locally with host/student views, timers, answer reveal, pause/resume,
   progression switching, and next-question display changes.
 - Colorful illustrations and brief feedback animations with reduced-motion support.
 
-This is a **local authoring preview**. There are no connected students, teacher
-accounts, live join codes, or server-side quiz storage yet. Clearing browser data
-removes saved quizzes; export important drafts. Support for 100+ players will be
-verified when the multiplayer backend is implemented.
+This is a **teacher workspace with local rehearsal**. Authentication and quiz
+storage run against a local D1 database during development. Google requires real
+OAuth credentials; its button is absent until both are configured. No production
+database has been provisioned or deployed. There are no connected students or live
+join codes yet. Support for 100+ players will be verified with multiplayer.
+
+See [authentication setup](docs/AUTH.md) and [the database schema](docs/DATABASE_SCHEMA.md).
 
 ## Question imports
 
@@ -79,8 +86,7 @@ Lucide icons, so the app does not depend on an external image service.
 
 ## Cloudflare
 
-Authenticate with `bunx wrangler login` before deployment. No D1, Durable Object,
-object storage, or AI bindings are configured yet. Add bindings to
+Authenticate with `bunx wrangler login` before deployment. D1 is bound locally, with a placeholder database ID that must be replaced before production deployment. Durable Object, object storage, and AI bindings are not configured yet. Add bindings to
 `wrangler.jsonc`, then run `bun run cf-typegen`.
 
 Keep local secrets in `.dev.vars` (ignored by Git), and set production secrets

@@ -1,6 +1,14 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+import {
+  HeadContent,
+  Scripts,
+  createRootRoute,
+  useRouter,
+  type ErrorComponentProps,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
+
+import { Button } from "@/components/ui/button";
 
 import appCss from "../styles.css?url";
 
@@ -22,6 +30,7 @@ export const Route = createRootRoute({
     ],
   }),
   shellComponent: RootDocument,
+  errorComponent: WorkspaceError,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -46,5 +55,28 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
+  );
+}
+
+function WorkspaceError({ reset }: ErrorComponentProps) {
+  const router = useRouter();
+  return (
+    <main className="workspace-error">
+      <div className="auth-form-card">
+        <span className="eyebrow">A LITTLE HICCUP</span>
+        <h1>Let’s give that another go.</h1>
+        <p>
+          We couldn’t open your workspace. Check your connection, then try
+          again.
+        </p>
+        <Button
+          onClick={() => {
+            void router.invalidate().then(reset);
+          }}
+        >
+          Try again
+        </Button>
+      </div>
+    </main>
   );
 }

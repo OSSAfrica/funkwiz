@@ -1,11 +1,13 @@
 import { useState, useSyncExternalStore } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
   ArrowRight,
   Check,
   ChevronRight,
   CircleHelp,
   FileJson,
+  FolderInput,
+  UserRound,
   Monitor,
   Plus,
   Search,
@@ -24,17 +26,40 @@ import {
 } from "@/components/quiz/workspace-dialog";
 import { QuizCard } from "@/components/quiz/quiz-card";
 import { sampleQuizzes } from "@/lib/sample-quizzes";
-import { deleteQuiz, saveQuiz, useQuizLibrary } from "@/lib/quiz-store";
+import { readBrowserDrafts, useQuizLibrary } from "@/lib/quiz-store";
+import { AccountDialog } from "@/components/auth/account-dialog";
+import { getTeacher, getPasswordStatus } from "@/lib/auth.functions";
+import { listQuizzes } from "@/lib/quizzes.functions";
 import { newQuiz } from "@/lib/quiz";
 
-export const Route = createFileRoute("/")({ component: Home });
+export const Route = createFileRoute("/")({
+  beforeLoad: async () => {
+    const teacher = await getTeacher();
+    if (!teacher) throw redirect({ to: "/login", search: {} });
+    return { teacher };
+  },
+  loader: async () => {
+    const [quizzes, password] = await Promise.all([
+      listQuizzes(),
+      getPasswordStatus(),
+    ]);
+    return { quizzes, hasPassword: password.hasPassword };
+  },
+  component: Home,
+});
 
 const subscribeHydration = () => () => {};
 const clientReady = () => true;
 const serverReady = () => false;
 
 function Home() {
-  const { quizzes, error } = useQuizLibrary();
+  const initial = Route.useLoaderData();
+  const { teacher } = Route.useRouteContext();
+  const { quizzes, error, busy, save, remove, migrate } = useQuizLibrary(
+    initial.quizzes,
+  );
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [migrationError, setMigrationError] = useState("");
   const [modal, setModal] = useState<WorkspaceModal>(null);
   const hydrated = useSyncExternalStore(
     subscribeHydration,
@@ -55,6 +80,17 @@ function Home() {
   function openEditor() {
     setModal({ type: "editor", quiz: newQuiz() });
   }
+  function openBrowserDrafts() {
+    const legacy = readBrowserDrafts();
+    setMigrationError(legacy.error);
+    setModal({
+      type: "migrate",
+      drafts: legacy.drafts.filter(
+        (draft) =>
+          !quizzes.some((quiz) => quiz.id === draft.id && !quiz.isExample),
+      ),
+    });
+  }
   return (
     <div className="app-shell" inert={!hydrated}>
       <a className="skip-link" href="#main">
@@ -62,6 +98,8 @@ function Home() {
       </a>
       <WorkspaceSidebar
         count={quizzes.length}
+        teacher={teacher}
+        onAccount={() => setAccountOpen(true)}
         onCreate={openEditor}
         onImport={() => setModal({ type: "import" })}
         onGuide={() => setModal({ type: "guide" })}
@@ -80,13 +118,30 @@ function Home() {
             <ChevronRight size={14} />
             <span>My library</span>
           </div>
-          <button
-            className="help-link"
-            onClick={() => setModal({ type: "guide" })}
-          >
-            <CircleHelp size={17} />
-            <span>Quick guide</span>
-          </button>
+          <div className="workspace-header-actions">
+            <button
+              className="help-link"
+              onClick={openBrowserDrafts}
+              aria-label="Browser drafts"
+            >
+              <FolderInput size={17} />
+              <span>Browser drafts</span>
+            </button>{" "}
+            <button
+              className="help-link"
+              onClick={() => setModal({ type: "guide" })}
+            >
+              <CircleHelp size={17} />
+              <span>Quick guide</span>
+            </button>
+            <button
+              className="help-link"
+              aria-label="Teacher account"
+              onClick={() => setAccountOpen(true)}
+            >
+              <UserRound size={17} />
+            </button>
+          </div>
         </header>
         <main id="main" className="workspace-main">
           <div className="page-heading reveal-in">
@@ -165,7 +220,7 @@ function Home() {
               </Tabs>
               <span className="storage-label">
                 <ShieldCheck size={14} />
-                Saved in this browser
+                Saved to your account
               </span>
             </div>
             {(error || notice) && (
@@ -233,7 +288,7 @@ function Home() {
           <footer className="workspace-footer">
             <span>Made for curious minds & happy classrooms.</span>
             <span>
-              <span className="tiny-dot" /> Local authoring preview
+              <span className="tiny-dot" /> Teacher workspace · Local rehearsal
             </span>
           </footer>
         </main>
@@ -241,17 +296,41 @@ function Home() {
       <WorkspaceDialog
         modal={modal}
         onChange={setModal}
-        onSave={(quiz) => {
-          saveQuiz(quiz);
+        busy={busy}
+        error={modal?.type === "migrate" ? error || migrationError : error}
+        onSave={async (quiz) => {
+          await save(quiz);
           setModal(null);
           setFilter("mine");
-          setNotice(`“${quiz.title}” saved in this browser.`);
+          setNotice(`“${quiz.title}” saved to your account.`);
         }}
-        onDelete={(quiz) => {
-          deleteQuiz(quiz.id);
-          setModal(null);
-          setNotice("Quiz removed from this browser.");
+        onDelete={async (quiz) => {
+          try {
+            await remove(quiz.id);
+            setModal(null);
+            setNotice("Quiz removed from your account.");
+          } catch {
+            /* Error remains visible in the dialog. */
+          }
         }}
+        onCopy={async (drafts) => {
+          try {
+            const imported = await migrate(drafts);
+            setModal(null);
+            setFilter("mine");
+            setNotice(
+              `${imported} browser ${imported === 1 ? "draft" : "drafts"} copied to your account. Originals were kept.`,
+            );
+          } catch {
+            /* Originals remain untouched and the dialog shows the error. */
+          }
+        }}
+      />
+      <AccountDialog
+        open={accountOpen}
+        onOpenChange={setAccountOpen}
+        teacher={teacher}
+        hasPassword={initial.hasPassword}
       />
     </div>
   );

@@ -19,3 +19,6 @@ todos.json
 # Browser verification artifacts
 /test-results/
 /playwright-report/
+
+# Local browser-test sessions
+/.playwright/

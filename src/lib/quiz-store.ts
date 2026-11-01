@@ -1,75 +1,91 @@
-import { useSyncExternalStore } from "react";
+import { useState } from "react";
 import { parseQuiz, type Quiz } from "./quiz";
 import { sampleQuizzes } from "./sample-quizzes";
+import {
+  copyBrowserDrafts,
+  listQuizzes,
+  persistQuiz,
+  removeQuiz,
+} from "./quizzes.functions";
 
-const storageKey = "fun-quiz.library.v1";
-type Library = { quizzes: Quiz[]; error: string | null };
-const serverSnapshot: Library = { quizzes: sampleQuizzes, error: null };
-let snapshot = serverSnapshot;
-let initialized = false;
-const listeners = new Set<() => void>();
-function load() {
+export function useQuizLibrary(initial: Quiz[]) {
+  const [saved, setSaved] = useState(initial);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  async function save(quiz: Quiz) {
+    setBusy(true);
+    setError("");
+    try {
+      const clean = await persistQuiz({ data: quiz });
+      setSaved((quizzes) => [
+        clean,
+        ...quizzes.filter((q) => q.id !== clean.id),
+      ]);
+    } catch {
+      throw new Error(
+        "Your quiz couldn’t be saved. Check your connection and sign-in, then try again. Your edits are still here.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function remove(id: string) {
+    setBusy(true);
+    setError("");
+    try {
+      await removeQuiz({ data: id });
+      setSaved((quizzes) => quizzes.filter((q) => q.id !== id));
+    } catch {
+      setError(
+        "Your quiz couldn’t be removed. Please check your connection and try again.",
+      );
+      throw new Error("Delete failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function migrate(drafts: Quiz[]) {
+    setBusy(true);
+    setError("");
+    try {
+      const result = await copyBrowserDrafts({ data: drafts });
+      setSaved(await listQuizzes());
+      return result.imported;
+    } catch {
+      setError(
+        "The copy could not be confirmed. Your browser drafts are still safe; retry to check which drafts remain.",
+      );
+      throw new Error("Copy failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+  return {
+    quizzes: [...saved, ...sampleQuizzes],
+    error,
+    busy,
+    save,
+    remove,
+    migrate,
+  };
+}
+export function readBrowserDrafts(): { drafts: Quiz[]; error: string } {
   try {
-    const saved = localStorage.getItem(storageKey);
-    if (!saved) return serverSnapshot;
-    const data: unknown = JSON.parse(saved);
-    if (!Array.isArray(data)) throw new Error("Invalid library");
-    return { quizzes: data.map(parseQuiz), error: null };
+    const text = localStorage.getItem("fun-quiz.library.v1");
+    if (!text) return { drafts: [], error: "" };
+    const raw: unknown = JSON.parse(text);
+    if (!Array.isArray(raw)) throw new Error("Invalid library");
+    return {
+      drafts: raw.map(parseQuiz).filter((q) => !q.isExample),
+      error: "",
+    };
   } catch {
     return {
-      quizzes: sampleQuizzes,
+      drafts: [],
       error:
-        "Your saved library could not be read. Examples are shown; export any changes before leaving.",
+        "The old browser library could not be read. Its saved data has not been changed.",
     };
   }
-}
-function getSnapshot() {
-  if (!initialized) {
-    snapshot = load();
-    initialized = true;
-  }
-  return snapshot;
-}
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  const onStorage = (event: StorageEvent) => {
-    if (event.key === storageKey || event.key === null) {
-      snapshot = load();
-      listeners.forEach((fn) => fn());
-    }
-  };
-  window.addEventListener("storage", onStorage);
-  return () => {
-    listeners.delete(listener);
-    window.removeEventListener("storage", onStorage);
-  };
-}
-export function useQuizLibrary() {
-  return useSyncExternalStore(subscribe, getSnapshot, () => serverSnapshot);
-}
-function update(quizzes: Quiz[]) {
-  let error = null;
-  try {
-    localStorage.setItem(storageKey, JSON.stringify(quizzes));
-  } catch {
-    error =
-      "Browser storage is unavailable or full. Your changes are temporary; export them before leaving.";
-  }
-  snapshot = { quizzes, error };
-  listeners.forEach((fn) => fn());
-}
-export function saveQuiz(quiz: Quiz) {
-  const clean = parseQuiz(quiz);
-  const quizzes = getSnapshot().quizzes;
-  const exists = quizzes.some((q) => q.id === clean.id);
-  update(
-    exists
-      ? quizzes.map((q) => (q.id === clean.id ? clean : q))
-      : [clean, ...quizzes],
-  );
-}
-export function deleteQuiz(id: string) {
-  update(getSnapshot().quizzes.filter((q) => q.id !== id));
 }
 export function exportQuiz(quiz: Quiz) {
   const blob = new Blob([JSON.stringify(quiz, null, 2)], {

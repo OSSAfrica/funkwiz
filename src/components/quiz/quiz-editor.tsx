@@ -20,12 +20,13 @@ export function QuizEditor({
   onSave,
 }: {
   quiz: Quiz;
-  onSave: (quiz: Quiz) => void;
+  onSave: (quiz: Quiz) => Promise<void>;
 }) {
   const [draft, setDraft] = useState<Quiz>(() => structuredClone(quiz));
   const [active, setActive] = useState(0);
   const [uniform, setUniform] = useState(20);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
   const question = draft.questions[active];
   function patchQuestion(patch: Partial<typeof question>) {
     setDraft((d) => ({
@@ -35,16 +36,20 @@ export function QuizEditor({
       ),
     }));
   }
-  function save() {
+  async function save() {
+    setSaving(true);
+    setError("");
     try {
       const clean = parseQuiz({
         ...draft,
         updatedAt: new Date().toISOString(),
         isExample: false,
       });
-      onSave(clean);
+      await onSave(clean);
     } catch (e) {
       setError((e as Error).message);
+    } finally {
+      setSaving(false);
     }
   }
   return (
@@ -62,7 +67,7 @@ export function QuizEditor({
           Add your questions, pick the answers, and set the pace.
         </DialogDescription>
       </DialogHeader>
-      <div className="dialog-scroll space-y-6">
+      <div className="dialog-scroll space-y-6" inert={saving}>
         <div className="grid gap-4 sm:grid-cols-[1fr_180px]">
           <div className="space-y-3">
             <Label htmlFor="quiz-title">Quiz title</Label>
@@ -274,12 +279,11 @@ export function QuizEditor({
           className={error ? "form-error" : "text-sm text-muted-foreground"}
           role={error ? "alert" : undefined}
         >
-          {error ||
-            "Drafts are saved in this browser. Export a copy to keep them safe."}
+          {error || "Your quiz will be saved to your teacher account."}
         </p>
-        <Button onClick={save}>
+        <Button onClick={save} disabled={saving}>
           <Save size={16} />
-          Save quiz
+          {saving ? "Saving…" : "Save quiz"}
         </Button>
       </div>
     </DialogContent>

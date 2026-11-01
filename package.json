@@ -14,7 +14,15 @@
     "cf-typegen": "wrangler types",
     "typecheck": "bun run generate-routes && tsc --noEmit",
     "test": "bun test src/lib",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "setup:local": "bun scripts/setup-local.ts",
+    "setup:code": "bun scripts/show-setup-code.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "db:migrate:e2e": "wrangler d1 migrations apply DB --local --config e2e/worker/wrangler.jsonc --persist-to .wrangler/e2e-state",
+    "db:migrate:e2e-google": "wrangler d1 migrations apply DB --local --config e2e/worker/google.jsonc --persist-to .wrangler/e2e-google-state",
+    "check:client-secrets": "bun scripts/check-client-secrets.ts"
   },
   "dependencies": {
     "@fontsource-variable/fredoka": "^5.3.0",
@@ -29,8 +37,10 @@
     "@tanstack/react-router": "1.170.46",
     "@tanstack/react-router-devtools": "1.167.2",
     "@tanstack/react-start": "1.169.4",
+    "better-auth": "^1.7.15",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.45.4",
     "lucide-react": "^1.66.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -47,6 +57,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",
+    "drizzle-kit": "^0.31.11",
     "typescript": "^6.0.2",
     "vite": "^8.0.0",
     "wrangler": "^4.156.0"

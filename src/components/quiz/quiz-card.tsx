@@ -67,14 +67,16 @@ export function QuizCard({
             >
               <ArrowDownToLine size={16} />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label={`Delete ${quiz.title}`}
-              onClick={() => onAction("delete", quiz)}
-            >
-              <Trash2 size={16} />
-            </Button>
+            {!quiz.isExample && (
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={`Delete ${quiz.title}`}
+                onClick={() => onAction("delete", quiz)}
+              >
+                <Trash2 size={16} />
+              </Button>
+            )}
           </div>
         </div>
       </div>

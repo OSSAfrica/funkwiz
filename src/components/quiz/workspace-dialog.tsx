@@ -10,6 +10,7 @@ import {
 import { QuizEditor } from "./quiz-editor";
 import { ImportDialog } from "./import-dialog";
 import { RehearsalDialog, SetupDialog } from "./rehearsal";
+import { MigrationDialog } from "./migration-dialog";
 import { exportQuiz } from "@/lib/quiz-store";
 import type { GameSettings, Quiz } from "@/lib/quiz";
 
@@ -19,27 +20,39 @@ export type WorkspaceModal =
   | { type: "rehearsal"; quiz: Quiz; settings: GameSettings }
   | { type: "delete"; quiz: Quiz }
   | { type: "import" | "guide" }
+  | { type: "migrate"; drafts: Quiz[] }
   | null;
 
 type Props = {
   modal: WorkspaceModal;
   onChange: (modal: WorkspaceModal) => void;
-  onSave: (quiz: Quiz) => void;
-  onDelete: (quiz: Quiz) => void;
+  onSave: (quiz: Quiz) => Promise<void>;
+  onDelete: (quiz: Quiz) => Promise<void>;
+  onCopy: (quizzes: Quiz[]) => Promise<void>;
+  busy: boolean;
+  error: string;
 };
 export function WorkspaceDialog(props: Props) {
   return (
     <Dialog
       open={props.modal !== null}
       onOpenChange={(open) => {
-        if (!open) props.onChange(null);
+        if (!open && !props.busy) props.onChange(null);
       }}
     >
       <ModalContent {...props} />
     </Dialog>
   );
 }
-function ModalContent({ modal, onChange, onSave, onDelete }: Props) {
+function ModalContent({
+  modal,
+  onChange,
+  onSave,
+  onDelete,
+  onCopy,
+  busy,
+  error,
+}: Props) {
   if (!modal) return null;
   switch (modal.type) {
     case "editor":
@@ -69,16 +82,28 @@ function ModalContent({ modal, onChange, onSave, onDelete }: Props) {
       );
     case "guide":
       return <Guide />;
+    case "migrate":
+      return (
+        <MigrationDialog
+          drafts={modal.drafts}
+          busy={busy}
+          error={error}
+          onCopy={onCopy}
+        />
+      );
     case "delete":
       return (
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Make room for new ideas?</DialogTitle>
             <DialogDescription>
-              Remove “{modal.quiz.title}” from this browser? Export a copy first
+              Remove “{modal.quiz.title}” from your account? Export a copy first
               if you want to keep it.
             </DialogDescription>
           </DialogHeader>
+          <p className="form-error" role="alert">
+            {error}
+          </p>
           <div className="flex flex-wrap justify-end gap-2">
             <Button variant="outline" onClick={() => exportQuiz(modal.quiz)}>
               Export a copy
@@ -86,7 +111,13 @@ function ModalContent({ modal, onChange, onSave, onDelete }: Props) {
             <Button variant="outline" onClick={() => onChange(null)}>
               Keep quiz
             </Button>
-            <Button variant="destructive" onClick={() => onDelete(modal.quiz)}>
+            <Button
+              variant="destructive"
+              disabled={busy}
+              onClick={() => {
+                void onDelete(modal.quiz);
+              }}
+            >
               Remove quiz
             </Button>
           </div>
@@ -141,9 +172,9 @@ function Guide() {
         <div className="local-notice">
           <ShieldCheck size={20} />
           <p>
-            <strong>You’re exploring the first chapter.</strong> Drafts stay in
-            this browser; export JSON for backup. Teacher sign-in, live join
-            codes, and multiplayer are planned next.
+            <strong>You’re exploring the first chapter.</strong> Your quizzes
+            are saved to your teacher account. Export JSON for a backup. Live
+            join codes and multiplayer are planned next.
           </p>
         </div>
       </div>
