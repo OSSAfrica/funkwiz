@@ -1,11 +1,12 @@
 import { env } from "cloudflare:workers";
-import { createHash, timingSafeEqual } from "node:crypto";
 import { betterAuth } from "better-auth";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { drizzle } from "drizzle-orm/d1";
-import { eq } from "drizzle-orm";
+import { and, eq, like } from "drizzle-orm";
+import { teacherRecovery } from "./recovery.server";
+import { setupCodeMatches } from "./setup-code.server";
 import * as schema from "@/db/schema";
 import {
   authConfigured,
@@ -37,13 +38,29 @@ export function createAuth(useStartCookies = true) {
       enabled: true,
       minPasswordLength: 12,
       maxPasswordLength: 128,
+      revokeSessionsOnPasswordReset: true,
+      resetPasswordTokenExpiresIn: 30 * 60,
+      onPasswordReset: async ({ user }) => {
+        await db
+          .delete(schema.verification)
+          .where(
+            and(
+              eq(schema.verification.value, user.id),
+              like(schema.verification.identifier, "reset-password:%"),
+            ),
+          );
+      },
     },
+    disabledPaths: ["/request-password-reset"],
     socialProviders: google ? { google } : {},
     account: {
       accountLinking: { enabled: true, trustedProviders: ["google"] },
     },
     session: { expiresIn: 60 * 60 * 24 * 7, updateAge: 60 * 60 * 24 },
-    advanced: { ipAddress: { ipAddressHeaders: ["cf-connecting-ip"] } },
+    advanced: {
+      disableOriginCheck: false,
+      ipAddress: { ipAddressHeaders: ["cf-connecting-ip"] },
+    },
     rateLimit: {
       enabled: true,
       storage: "database",
@@ -52,6 +69,9 @@ export function createAuth(useStartCookies = true) {
       customRules: {
         "/sign-in/email": { window: 60, max: 10 },
         "/sign-up/email": { window: 60, max: 5 },
+        "/reset-with-setup-code": { window: 60, max: 5 },
+        "/request-teacher-password-reset": { window: 60, max: 3 },
+        "/reset-password": { window: 60, max: 5 },
       },
     },
     hooks: {
@@ -65,12 +85,7 @@ export function createAuth(useStartCookies = true) {
         if (ctx.path === "/sign-up/email") {
           const provided = ctx.headers?.get("x-teacher-setup-code") ?? "";
           const expected = env.TEACHER_SETUP_TOKEN ?? "";
-          const valid =
-            expected.length >= 32 &&
-            timingSafeEqual(
-              createHash("sha256").update(provided).digest(),
-              createHash("sha256").update(expected).digest(),
-            );
+          const valid = setupCodeMatches(provided, expected);
           if (!valid)
             throw new APIError("FORBIDDEN", {
               message:
@@ -130,10 +145,16 @@ export function createAuth(useStartCookies = true) {
         },
       },
     },
-    plugins: useStartCookies ? [tanstackStartCookies()] : [],
+    plugins: [
+      teacherRecovery(env),
+      ...(useStartCookies ? [tanstackStartCookies()] : []),
+    ],
   });
 }
-export async function getTeacherSession(headers: Headers, useStartCookies = true) {
+export async function getTeacherSession(
+  headers: Headers,
+  useStartCookies = true,
+) {
   if (!authConfigured(env)) return null;
   const session = await createAuth(useStartCookies).api.getSession({ headers });
   return session && isTeacher(session.user.email, env) ? session : null;

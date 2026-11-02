@@ -29,6 +29,8 @@ Open http://127.0.0.1:3000. See [teacher account setup](docs/AUTH.md) for your p
 - Teacher-only email/password sign-in and optional Google sign-in, hidden unless both Google credentials are configured.
 - Account-backed quiz storage in D1, with JSON backups and explicit browser-draft migration.
 - Account controls for adding/changing a password and signing out.
+- Forgot-password recovery using the private setup code or an email link; email
+  delivery enables when a Resend key and verified sender are configured.
 - Set display mode (shared screen, student devices, both), manual or automatic
   progression, and an automatic cooldown.
 - Rehearse locally with host/student views, timers, answer reveal, pause/resume,

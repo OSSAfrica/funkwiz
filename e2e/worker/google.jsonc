@@ -11,6 +11,8 @@
     "TEACHER_SETUP_TOKEN": "e2e-only-fake-setup-code-never-use-in-production",
     "GOOGLE_CLIENT_ID": "fake-google-id-for-render-test",
     "GOOGLE_CLIENT_SECRET": "fake-google-secret-for-render-test",
+    "RESEND_API_KEY": "fake-email-key-for-visibility-only",
+    "AUTH_EMAIL_FROM": "quiz@example.test",
   },
   "d1_databases": [
     {

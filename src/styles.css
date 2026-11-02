@@ -3517,3 +3517,13 @@ button.teacher-profile {
   font: 500 32px/1.2 var(--font-display);
   letter-spacing: 3px;
 }
+
+.auth-mode-switch > a {
+  color: #b13e20;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

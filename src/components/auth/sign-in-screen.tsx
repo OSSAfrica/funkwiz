@@ -6,13 +6,13 @@ import {
   KeyRound,
   LoaderCircle,
   LockKeyhole,
-  Zap,
 } from "lucide-react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { HeroArt } from "@/components/quiz/quiz-art";
+import { AuthLayout } from "./auth-layout";
+import { useHydrated } from "@/lib/use-hydrated";
 import { authClient } from "@/lib/auth-client";
 
 type LoginOptions = {
@@ -98,105 +98,78 @@ export function SignInScreen({
     }
   }
   return (
-    <main className="auth-page">
-      <section className="auth-story">
-        <div className="brand">
-          <span className="brand-mark">
-            <Zap size={26} fill="currentColor" />
-          </span>
-          <span>
-            fun<span className="brand-second">quiz</span>
-            <span className="brand-dot">.</span>
-          </span>
-        </div>
-        <div className="auth-story-copy">
-          <span className="eyebrow">FOR THE MAKERS OF “AHA!” MOMENTS</span>
-          <h1>
-            Great questions
-            <br />
-            start with <span>you.</span>
-          </h1>
-          <p>
-            A little curiosity. A splash of friendly competition.
-            <br />A classroom that can’t wait for the next question.
-          </p>
-          <HeroArt />
-        </div>
-        <p className="auth-story-footer">
-          Made for curious minds & happy classrooms.
+    <AuthLayout>
+      <div className="auth-form-card reveal-in">
+        <span className="auth-welcome-icon">
+          {setup ? <KeyRound size={27} /> : <LockKeyhole size={27} />}
+        </span>
+        <div className="eyebrow">YOUR TEACHER SPACE</div>
+        <h2>{setup ? "Let’s make it yours." : "Welcome back, quiz maker."}</h2>
+        <p>
+          {setup
+            ? "Create your private teacher account. Your setup code keeps this first step just for you."
+            : "Good questions are waiting. Sign in and bring a little more play to your day."}
         </p>
-      </section>
-      <section className="auth-form-side">
-        <div className="auth-form-card reveal-in">
-          <span className="auth-welcome-icon">
-            {setup ? <KeyRound size={27} /> : <LockKeyhole size={27} />}
-          </span>
-          <div className="eyebrow">YOUR TEACHER SPACE</div>
-          <h2>
-            {setup ? "Let’s make it yours." : "Welcome back, quiz maker."}
-          </h2>
-          <p>
-            {setup
-              ? "Create your private teacher account. Your setup code keeps this first step just for you."
-              : "Good questions are waiting. Sign in and bring a little more play to your day."}
-          </p>
-          {!options.configured ? (
-            <div className="auth-setup-note">
-              <strong>Your workspace needs its first setup.</strong>
-              <p>
-                Configure the teacher email, authentication URL, and private
-                secrets on the server, then restart the app.
+        {!options.configured ? (
+          <div className="auth-setup-note">
+            <strong>Your workspace needs its first setup.</strong>
+            <p>
+              Configure the teacher email, authentication URL, and private
+              secrets on the server, then restart the app.
+            </p>
+          </div>
+        ) : (
+          <>
+            {options.googleEnabled && (
+              <>
+                <Button
+                  variant="outline"
+                  className="google-button"
+                  disabled={busy}
+                  onClick={signInGoogle}
+                >
+                  <span className="google-letter" aria-hidden="true">
+                    G
+                  </span>
+                  Continue with Google
+                </Button>
+                <div className="auth-divider">
+                  <span>or use your email</span>
+                </div>
+              </>
+            )}
+            <form onSubmit={submit} className="auth-form" aria-busy={busy}>
+              <CredentialFields setup={setup} busy={busy} error={error} />
+            </form>
+            {!setup && (
+              <p className="auth-mode-switch">
+                <Link to="/forgot-password">Forgot your password?</Link>
               </p>
-            </div>
-          ) : (
-            <>
-              {options.googleEnabled && (
-                <>
-                  <Button
-                    variant="outline"
-                    className="google-button"
-                    disabled={busy}
-                    onClick={signInGoogle}
-                  >
-                    <span className="google-letter" aria-hidden="true">
-                      G
-                    </span>
-                    Continue with Google
-                  </Button>
-                  <div className="auth-divider">
-                    <span>or use your email</span>
-                  </div>
-                </>
-              )}
-              <form onSubmit={submit} className="auth-form" aria-busy={busy}>
-                <CredentialFields setup={setup} busy={busy} error={error} />
-              </form>
-              {options.registrationOpen && (
-                <p className="auth-mode-switch">
-                  {setup ? "Already have your account?" : "First time here?"}
-                  <button
-                    disabled={busy}
-                    onClick={() => {
-                      setSetup(!setup);
-                      setError("");
-                    }}
-                  >
-                    {setup ? "Sign in" : "Set up teacher account"}
-                  </button>
-                </p>
-              )}
-              {!setup && (
-                <p className="auth-private-note">
-                  <LockKeyhole size={13} />A private workspace for your teacher
-                  account.
-                </p>
-              )}
-            </>
-          )}
-        </div>
-      </section>
-      <div className="student-join-from-login"><Link to="/join" search={{}}>Joining a classroom game? Enter your code <ArrowRight size={15} /></Link></div>
-    </main>
+            )}
+            {options.registrationOpen && (
+              <p className="auth-mode-switch">
+                {setup ? "Already have your account?" : "First time here?"}
+                <button
+                  disabled={busy}
+                  onClick={() => {
+                    setSetup(!setup);
+                    setError("");
+                  }}
+                >
+                  {setup ? "Sign in" : "Set up teacher account"}
+                </button>
+              </p>
+            )}
+            {!setup && (
+              <p className="auth-private-note">
+                <LockKeyhole size={13} />A private workspace for your teacher
+                account.
+              </p>
+            )}
+          </>
+        )}
+      </div>
+    </AuthLayout>
   );
 }
 
@@ -210,8 +183,9 @@ function CredentialFields({
   error: string;
 }) {
   const [visible, setVisible] = useState(false);
+  const hydrated = useHydrated();
   return (
-    <fieldset disabled={busy} className="space-y-4 min-w-0">
+    <fieldset disabled={busy || !hydrated} className="space-y-4 min-w-0">
       {setup && (
         <div className="space-y-2">
           <Label htmlFor="teacher-name">Your name</Label>
@@ -269,7 +243,7 @@ function CredentialFields({
             type="password"
             autoComplete="off"
             required
-            placeholder="Your one-time teacher setup code"
+            placeholder="Your private teacher setup code"
           />
           <p className="auth-field-help">
             Use the code from your private server configuration.

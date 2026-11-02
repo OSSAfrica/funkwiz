@@ -48,3 +48,16 @@ test("teacher setup validates its private setup code before creating an account"
     page.getByRole("heading", { name: /Your quiz collection/ }),
   ).toBeVisible();
 });
+
+test("enables email recovery when sending credentials and a sender are configured", async ({
+  page,
+}) => {
+  await page.goto("/forgot-password");
+  await page.getByRole("tab", { name: "Email link", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Send reset link", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByLabel("Private setup code", { exact: true }),
+  ).toHaveCount(0);
+});

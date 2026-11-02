@@ -3,6 +3,14 @@
   "main": "../worker-entry.ts",
   "compatibility_date": "2025-09-02",
   "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "BETTER_AUTH_URL": "https://quiz.example.test",
+    "BETTER_AUTH_SECRET": "runtime-only-authentication-secret-never-use-in-production",
+    "TEACHER_EMAIL": "recovery@example.test",
+    "TEACHER_SETUP_TOKEN": "runtime-only-private-recovery-code-never-use-in-production",
+    "RESEND_API_KEY": "runtime-only-fake-mail-key",
+    "AUTH_EMAIL_FROM": "quiz@example.test",
+  },
   "durable_objects": {
     "bindings": [
       { "name": "LIVE_ROOMS", "class_name": "GameRoom" },

@@ -4,3 +4,7 @@ TEACHER_EMAIL=
 TEACHER_SETUP_TOKEN=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
+
+# Optional password reset email delivery (Resend + a verified sender address).
+RESEND_API_KEY=
+AUTH_EMAIL_FROM=

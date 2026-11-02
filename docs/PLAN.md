@@ -82,7 +82,8 @@ join code or simulated students as a real session.
 - [x] Add/change password and sign-out controls.
 - [ ] Provision production D1 and configure production secrets before deployment.
 - [ ] Configure real Google OAuth credentials when ready; test the full provider callback.
-- [ ] Add transactional email verification and password recovery.
+- [x] Add password recovery by private setup code and expiring email link.
+- [ ] Configure live reset-email delivery and add email verification.
 - [ ] Add validated CSV import. JSON import/export is already available.
 
 Session/result tables are now included in migration `0001_live_sessions.sql`. Setup details live in `docs/AUTH.md`;
@@ -185,3 +186,30 @@ See `docs/LIVE_GAMES.md` for operating instructions and lifecycle limits.
   native form submission from clearing a scanned code or nickname.
 - Two browser checks decode the rendered QR with an independent decoder, follow
   its URL, join the room, and verify dialog focus on desktop and phone. Both pass.
+
+## Teacher password recovery
+
+The sign-in page links to setup-code and email recovery. The private setup code
+now also acts as a reusable recovery key; it is not a student game code. Email
+recovery is enabled with a Resend key and verified sender address. Both methods
+revoke existing teacher sessions, preserve quizzes/reports, and require signing
+in again. Email links expire in 30 minutes, work once, and are all invalidated
+after a successful reset. See `docs/AUTH.md` for setup and operating details.
+
+Live email credentials and inbox delivery remain external configuration work;
+automated tests use a mocked sender and disposable accounts.
+
+Recovery validation: 28 unit tests, nine Workers runtime checks, and all 37 browser
+checks pass. Coverage includes wrong codes, other origins, sender failures, rate
+limits, session revocation, Google-only account recovery, expired/reused email
+proofs, pending-link invalidation, and desktop/phone recovery screens. The existing
+150-student scenario also passes. Browser email-token fixtures use only the
+disposable e2e database; runtime mail delivery is mocked. No real teacher password
+was changed and no reset email was sent during implementation.
+
+Production build, TypeScript and client private-value checks pass. The final route
+cleanup was followed by six passing recovery browser checks. React Doctor retains
+the documented server-only JOSE format-marker false positive and guarded live-room
+effect warning, plus a maintainability warning for the bounded recovery form
+controller. Route ordering and named route components were corrected; no scan
+rules were suppressed.

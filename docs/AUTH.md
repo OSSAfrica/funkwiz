@@ -26,22 +26,25 @@ bun run setup:code
 
 Do not paste the code, your password, or OAuth secrets into chat or commit them.
 Registration is limited to the configured teacher email and requires the setup
-code. After that account exists, setup closes. You can remove
-`TEACHER_SETUP_TOKEN` from the environment after setup, then restart/redeploy.
+code. After that account exists, registration closes. The private code also
+serves as a password recovery key, so keep it private. Removing
+`TEACHER_SETUP_TOKEN` and restarting/redeploying disables that recovery option.
 The allowed teacher email is checked again on every authenticated quiz operation.
 
 ## Configuration
 
 All configuration is server-side. Do not use `VITE_` variables for these values.
 
-| Variable               | Purpose                                                                         |
-| ---------------------- | ------------------------------------------------------------------------------- |
-| `BETTER_AUTH_URL`      | Exact app origin, such as `http://127.0.0.1:3000` locally                       |
-| `BETTER_AUTH_SECRET`   | Random secret of at least 32 characters                                         |
-| `TEACHER_EMAIL`        | The single email allowed to register and access the workspace                   |
-| `TEACHER_SETUP_TOKEN`  | Private token of at least 32 characters for initial email/password registration |
-| `GOOGLE_CLIENT_ID`     | Optional Google OAuth web client ID                                             |
-| `GOOGLE_CLIENT_SECRET` | Optional matching Google OAuth client secret                                    |
+| Variable               | Purpose                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------ |
+| `BETTER_AUTH_URL`      | Exact app origin, such as `http://127.0.0.1:3000` locally                      |
+| `BETTER_AUTH_SECRET`   | Random secret of at least 32 characters                                        |
+| `TEACHER_EMAIL`        | The single email allowed to register and access the workspace                  |
+| `TEACHER_SETUP_TOKEN`  | Private token of at least 32 characters for registration and password recovery |
+| `GOOGLE_CLIENT_ID`     | Optional Google OAuth web client ID                                            |
+| `RESEND_API_KEY`       | Optional Resend API key for password-reset delivery                            |
+| `AUTH_EMAIL_FROM`      | Verified sender email address for password resets                              |
+| `GOOGLE_CLIENT_SECRET` | Optional matching Google OAuth client secret                                   |
 
 Without the required URL, secret, and teacher email, sign-in fails closed and the
 login page shows a setup message. Google is enabled only when **both** Google
@@ -83,10 +86,58 @@ Google.
 - Sessions are stored in D1, last seven days, and refresh after a day of activity.
 - Better Auth's origin/CSRF protections remain enabled. Authentication requests
   use a database-backed rate limiter and Cloudflare's connecting IP header.
-- Password reset emails and email verification messages need a transactional
-  email sender and are not configured in this phase. There is no nonfunctional
-  password-reset link. Keep your password available, or configure Google as a
-  second sign-in method. The private setup code does not reset existing accounts.
+- Password recovery is available from **Forgot your password?** on the sign-in page.
+  Email verification is still a separate, unimplemented feature.
+
+## Recover a password
+
+Open `/forgot-password`. Two methods are available:
+
+- **Private setup code:** enter the configured teacher email, your private setup
+  code, and a new password twice. A student game code cannot recover the account.
+  To read your local private code in your own terminal, use `bun run setup:code`.
+- **Email link:** request a reset link at your teacher email. This option is enabled
+  only when the email API key and sender address are configured. Responses do not
+  disclose whether the submitted email has an account.
+
+Both methods require a 12–128 character password and revoke every existing teacher
+session. You sign in again afterward. A Google-only teacher can also recover by
+adding a password. Quizzes and reports are preserved.
+
+Email links expire after 30 minutes and work once. Completing any reset invalidates
+all outstanding reset links for the teacher. Expired or used links cannot change
+the password. Reset pages use no-store and no-referrer policies; successful email
+resets remove the token from the address bar. Attempts are rate limited.
+
+The setup code remains a reusable recovery key until you change or remove it in
+server configuration. It is never included in an email, URL, or browser bundle.
+If you believe the code has been exposed, replace `TEACHER_SETUP_TOKEN` and restart
+or redeploy. Keep a separate recovery method available before removing it.
+
+### Configure reset email delivery
+
+The app sends through the [Resend Email API](https://resend.com/docs/api-reference/emails/send-email).
+Create a sending key and verify a sender/domain, then add these server-only values
+to `.dev.vars` locally and restart the dev server:
+
+```dotenv
+RESEND_API_KEY=your-private-sending-key
+AUTH_EMAIL_FROM=quiz@your-verified-domain.example
+```
+
+`AUTH_EMAIL_FROM` must be a plain email address. For production, configure these on
+the deployed Worker, using `bunx wrangler secret put RESEND_API_KEY` for the key.
+`BETTER_AUTH_URL` must be the reachable HTTPS app origin. Never use a `VITE_` prefix
+or commit real keys. Reset links always use the configured app origin.
+
+Email delivery waits for the provider response and reports a failure if the
+provider rejects the send. The standard Better Auth request-email endpoint is
+replaced by `/api/auth/request-teacher-password-reset` so the UI can report those
+failures instead of claiming an email was sent. Better Auth still validates and
+consumes the reset token, stores password hashes, and revokes sessions.
+
+Automated email tests use a mock sender and disposable accounts. Live Resend
+credentials and inbox delivery have not been configured or verified locally.
 
 ## Existing browser drafts
 

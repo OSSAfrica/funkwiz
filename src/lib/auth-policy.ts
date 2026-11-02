@@ -6,6 +6,8 @@ export type AuthSettings = {
   TEACHER_SETUP_TOKEN?: string;
   GOOGLE_CLIENT_ID?: string;
   GOOGLE_CLIENT_SECRET?: string;
+  RESEND_API_KEY?: string;
+  AUTH_EMAIL_FROM?: string;
 };
 export function teacherEmail(settings: AuthSettings) {
   return settings.TEACHER_EMAIL?.trim().toLowerCase() ?? "";
@@ -47,4 +49,13 @@ export function trustedOrigins(settings: AuthSettings) {
     origins.push(url.origin);
   }
   return origins;
+}
+
+export function resetEmailConfigured(settings: AuthSettings) {
+  return Boolean(
+    settings.RESEND_API_KEY?.trim() &&
+    /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(
+      settings.AUTH_EMAIL_FROM?.trim() ?? "",
+    ),
+  );
 }

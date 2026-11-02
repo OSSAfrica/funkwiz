@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   authConfigured,
   googleProvider,
+  resetEmailConfigured,
   isTeacher,
   trustedOrigins,
 } from "./auth-policy";
@@ -64,4 +65,22 @@ test("production trusts only its configured origin; local aliases stay local", (
     "http://127.0.0.1:3000",
     "http://localhost:3000",
   ]);
+});
+
+test("email recovery requires both an API key and a valid sender address", () => {
+  for (const settings of [
+    {},
+    { RESEND_API_KEY: "key" },
+    { AUTH_EMAIL_FROM: "quiz@example.test" },
+    { RESEND_API_KEY: " ", AUTH_EMAIL_FROM: "quiz@example.test" },
+    { RESEND_API_KEY: "key", AUTH_EMAIL_FROM: "invalid sender" },
+  ])
+    assert.equal(resetEmailConfigured(settings), false);
+  assert.equal(
+    resetEmailConfigured({
+      RESEND_API_KEY: " key ",
+      AUTH_EMAIL_FROM: " quiz@example.test ",
+    }),
+    true,
+  );
 });

@@ -19,6 +19,7 @@ export default defineConfig({
       testIgnore: [
         "**/google.spec.ts",
         "**/account-settings.spec.ts",
+        "**/password-recovery.spec.ts",
         "**/capacity.spec.ts",
       ],
       use: {
@@ -31,6 +32,7 @@ export default defineConfig({
       testIgnore: [
         "**/google.spec.ts",
         "**/account-settings.spec.ts",
+        "**/password-recovery.spec.ts",
         "**/capacity.spec.ts",
       ],
       use: { ...devices["iPhone 13"], defaultBrowserType: "chromium" },
@@ -45,6 +47,15 @@ export default defineConfig({
       name: "account-settings",
       testMatch: "**/account-settings.spec.ts",
       dependencies: ["desktop", "phone", "google-provider", "live-capacity"],
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: { cookies: [], origins: [] },
+      },
+    },
+    {
+      name: "account-recovery",
+      testMatch: "**/password-recovery.spec.ts",
+      dependencies: ["account-settings"],
       use: {
         ...devices["Desktop Chrome"],
         storageState: { cookies: [], origins: [] },

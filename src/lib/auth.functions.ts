@@ -3,7 +3,12 @@ import { getRequestHeaders } from "@tanstack/react-start/server";
 import { env } from "cloudflare:workers";
 import { eq } from "drizzle-orm";
 import { account, user } from "@/db/schema";
-import { authConfigured, googleProvider, teacherEmail } from "./auth-policy";
+import {
+  authConfigured,
+  googleProvider,
+  resetEmailConfigured,
+  teacherEmail,
+} from "./auth-policy";
 import {
   createAuth,
   database,
@@ -81,3 +86,12 @@ export const addPassword = createServerFn({ method: "POST" })
     });
     return { success: true };
   });
+
+export const getRecoveryOptions = createServerFn({ method: "GET" }).handler(
+  async () => ({
+    configured: authConfigured(env),
+    setupCodeEnabled:
+      authConfigured(env) && (env.TEACHER_SETUP_TOKEN?.length ?? 0) >= 32,
+    emailEnabled: authConfigured(env) && resetEmailConfigured(env),
+  }),
+);
