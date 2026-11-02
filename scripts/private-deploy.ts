@@ -1,7 +1,7 @@
 import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
-import { parseConfigFileTextToJson } from "typescript";
+import { parseWranglerTemplate } from "./lib/wrangler-config";
 import { assertDeploymentTarget } from "./lib/deployment";
 
 const action = process.argv[2] ?? "dry-run";
@@ -21,17 +21,16 @@ if (!/^[a-f0-9]{32}$/i.test(target.accountId ?? "") ||
 const origin = new URL(target.origin);
 if (origin.protocol !== "https:" || origin.href !== origin.origin + "/" || origin.username || origin.password)
   throw new Error("Production origin must be an exact HTTPS origin without credentials, path or query.");
-const parsed = parseConfigFileTextToJson("wrangler.jsonc", readFileSync("wrangler.jsonc", "utf8"));
-if (parsed.error) throw new Error("Could not read the public Wrangler template.");
+const template = parseWranglerTemplate(readFileSync("wrangler.jsonc", "utf8"));
 const config = {
-  ...parsed.config,
+  ...template,
   $schema: "../node_modules/wrangler/config-schema.json",
   name: target.workerName,
   account_id: target.accountId,
   main: "../src/server.ts",
   workers_dev: true,
   keep_vars: true,
-  d1_databases: parsed.config.d1_databases.map((db: { binding: string }) => {
+  d1_databases: template.d1_databases.map((db) => {
     if (db.binding !== "DB") throw new Error("Review additional D1 bindings before privately deploying.");
     return { ...db, database_name: target.databaseName, database_id: target.databaseId, migrations_dir: "../migrations" };
   }),
