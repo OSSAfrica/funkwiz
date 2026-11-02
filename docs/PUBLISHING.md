@@ -30,6 +30,11 @@ The repository keeps legacy `fun-quiz` browser-storage keys so existing drafts,
 appearance preferences and audio settings continue to work after the Funkwiz rename.
 Those identifiers are internal compatibility details, not public branding.
 
+Personal production configuration is isolated under the ignored `.deploy/`
+directory. Follow [private deployment](PRIVATE_DEPLOY.md) to deploy an operator's
+own instance while leaving the public template generic. Do not copy private
+deployment logs, screenshots or resource metadata into release notes.
+
 ## Cleanup validation (2026-11-02)
 
 - 43 library tests, 19 isolated Worker tests and 15 focused desktop/phone browser

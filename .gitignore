@@ -39,3 +39,6 @@ todos.json
 *.db
 *.db-*
 .secrets/
+
+# Personal production targets, secrets, logs and build output
+/.deploy/

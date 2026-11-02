@@ -2,13 +2,18 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { parseEnv } from "node:util";
 
-if (!existsSync("dist/client")) throw new Error("Run bun run build first.");
-const config = existsSync(".dev.vars")
+const production = process.argv.includes("--private");
+const directory = production ? ".deploy/dist/client" : "dist/client";
+if (!existsSync(directory)) throw new Error("Build the intended public or private target first.");
+const config = production
+  ? JSON.parse(readFileSync(".deploy/secrets.json", "utf8"))
+  : existsSync(".dev.vars")
   ? parseEnv(readFileSync(".dev.vars", "utf8"))
   : {};
 const privateValues = [
   "BETTER_AUTH_SECRET",
   "TEACHER_SETUP_TOKEN",
+  "TEACHER_EMAIL",
   "GOOGLE_CLIENT_SECRET",
   "RESEND_API_KEY",
   "SMTP_PASSWORD",
@@ -17,6 +22,10 @@ const privateValues = [
   .filter(
     (value): value is string => typeof value === "string" && value.length >= 8,
   );
+if (production) {
+  const target = JSON.parse(readFileSync(".deploy/target.json", "utf8"));
+  privateValues.push(target.accountId, target.databaseId);
+}
 function check(directory: string) {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     const path = join(directory, entry.name);
@@ -28,7 +37,7 @@ function check(directory: string) {
     }
   }
 }
-check("dist/client");
+check(directory);
 console.log(
   `Client asset check passed for ${privateValues.length} configured private values.`,
 );

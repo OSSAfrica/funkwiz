@@ -18,6 +18,8 @@ current scope.
 - Original calming music, timer ticks, reveal cues and independent audio controls.
 - Server-rendered social metadata and branded cards that exclude private content.
 - MIT licensing, public repository documentation and guided Cloudflare deployment.
+- Private deployment configuration, isolated build output and target guards that
+  keep operator account/resource details out of the public template.
 
 ## Next work
 

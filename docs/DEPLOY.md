@@ -1,5 +1,10 @@
 # Deploy Funkwiz to Cloudflare
 
+For your own deployment of this public repository, use the
+[private deployment workflow](PRIVATE_DEPLOY.md) to keep account IDs, database
+IDs, production settings and secrets out of Git. The guided template flow below
+is intended for people creating their own copy of the project.
+
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2FOSSAfrica%2Ffunkwiz)
 
 ## Guided deployment

@@ -8,6 +8,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { cloudflare } from "@cloudflare/vite-plugin";
 
 const config = defineConfig(({ mode }) => ({
+  ...(mode === "private" ? { build: { outDir: ".deploy/dist" } } : {}),
   // Concurrent dev/test servers must not overwrite each other's React chunks.
   cacheDir: `node_modules/.vite/${mode}`,
   resolve: { tsconfigPaths: true, dedupe: ["react", "react-dom"] },
@@ -36,6 +37,7 @@ const config = defineConfig(({ mode }) => ({
     devtools(),
     cloudflare({
       viteEnvironment: { name: "ssr" },
+      ...(mode === "private" ? { configPath: "./.deploy/wrangler.json" } : {}),
       ...(mode.startsWith("e2e")
         ? {
             configPath:

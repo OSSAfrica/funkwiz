@@ -95,6 +95,7 @@ should not be edited manually. There is no linter configured.
 
 - [Contributing](CONTRIBUTING.md) and [security](SECURITY.md)
 - [Deploying to Cloudflare](docs/DEPLOY.md)
+- [Deploying privately without publishing account details](docs/PRIVATE_DEPLOY.md)
 - [Authentication and email templates](docs/AUTH.md)
 - [Database schema](docs/DATABASE_SCHEMA.md)
 - [Social previews](docs/SOCIAL_PREVIEWS.md)
