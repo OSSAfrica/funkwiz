@@ -1,3 +1,4 @@
+import { DEFAULT_SCORING } from "./scoring";
 import type { Quiz, GameSettings } from "../quiz";
 import {
   ROOM_LIFETIME,
@@ -18,6 +19,7 @@ export function createRoomMeta(
     id,
     code,
     ownerId,
+    scoring: DEFAULT_SCORING,
     quiz,
     settings,
     display: settings.display,

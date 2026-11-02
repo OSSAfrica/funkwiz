@@ -34,9 +34,17 @@ duration to every question and then changing individual durations.
 - Opening settings pauses an active timer; resume explicitly when ready.
 
 The server owns deadlines, accepts only the first answer, and awards points only
-when the answer is revealed. Each correct answer earns **1,000 points**, with no
-speed bonus. Equal scores share a rank. Ending early scores the current question
+when the answer is revealed. Correct answers earn **1,000 / 900 / 800 / 700** points for
+first / second / third / all later correct submissions. Wrong or missing answers
+earn 0 and do not consume a tier. Order resets per question and follows server
+acceptance order, including when submissions have identical timestamps. Equal
+scores share a rank. Ending early scores the current question
 and records only questions reached as asked.
+
+Rooms already in progress when this scoring change is installed keep their
+original flat scoring. Older reports retain their original values. New report
+JSON includes a `scoring` object; older exports may use `pointsPerCorrect`. CSV
+and PDF exports describe the scoring rules that applied to that game.
 
 ## Reconnecting and reports
 

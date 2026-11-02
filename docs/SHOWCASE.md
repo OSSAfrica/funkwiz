@@ -54,6 +54,18 @@ Choose a branded PDF, spreadsheet-friendly CSV or structured JSON export:
 
 [![Report download menu offering PDF, CSV and JSON formats.](screenshots/report-export.jpg)](screenshots/report-export.jpg)
 
+## A quiz moment worth sharing
+
+Players earn 1,000, 900 and 800 points for the first three correct answers;
+all later correct answers earn 700. Order resets for each question.
+
+At the end, **Share my result** downloads a branded PNG with the player's own
+nickname, quiz title, rank, score and correct-answer count.
+
+<img src="screenshots/student-result.jpg" alt="Student final screen with rank, points, correct answers and the Share my result button." width="300">
+
+[![Downloaded result card for fictional player Nova, with quiz title, rank and score.](screenshots/result-card.png)](screenshots/result-card.png)
+
 ## Comfortable in light or dark
 
 Choose light, dark or system appearance. The preference is saved on the device.
@@ -80,7 +92,8 @@ generation. Reduced motion keeps frames settled; the development-only devtools
 launcher is hidden during capture to match production. Application content is
 captured directly, with no image generation or replacement data painted over it.
 
-Images are JPEGs in `docs/screenshots/`, with descriptive alt text in these guides.
+Screenshots are JPEGs in `docs/screenshots/`; the downloaded result card is a PNG.
+All have descriptive alt text in these guides.
 Keep demo identities fictional and never capture a personal installation, private
 setup/invitation links, real learner reports or cloud account details for this gallery.
 Update the captions and README previews when refreshing a changed feature.

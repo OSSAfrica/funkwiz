@@ -145,15 +145,14 @@ test("server alarms advance custom timers automatically and pause survives a hos
   try {
     await page.goto(`/host/${code}`);
     await page.waitForLoadState("networkidle");
-    await page.getByRole("button", { name: "Start game", exact: true }).click();
+    // Pause via the API before waiting for browser rendering: a cold client
+    // can otherwise consume the entire five-second question before clicking.
+    await hostControl(request, code, { type: "start" });
+    await hostControl(request, code, { type: "pause" });
     await expect(
       student.page.getByRole("heading", { name: "Which planet is red?" }),
     ).toBeVisible();
     const first = await state(student.context.request, code);
-    await student.page
-      .getByRole("button", { name: "Mars", exact: true })
-      .click();
-    await page.getByRole("button", { name: "Pause", exact: true }).click();
     await expect(
       page.getByRole("button", { name: "Resume", exact: true }),
     ).toBeVisible();
@@ -169,6 +168,9 @@ test("server alarms advance custom timers automatically and pause survives a hos
       page.getByRole("button", { name: "Resume", exact: true }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Resume", exact: true }).click();
+    await student.page
+      .getByRole("button", { name: "Mars", exact: true })
+      .click();
     await expect(student.page.locator(".answer-feedback")).toContainText(
       "+1,000 points",
       { timeout: 8000 },

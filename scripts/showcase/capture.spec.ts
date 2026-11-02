@@ -286,6 +286,15 @@ test("capture a fictional classroom through the real application", async ({
       await control({ type: "reveal", questionIndex: index });
     }
     await control({ type: "end" });
+    await expect(
+      student.getByRole("button", { name: "Share my result", exact: true }),
+    ).toBeVisible();
+    await capture(student, "student-result");
+    const image = student.waitForEvent("download");
+    await student
+      .getByRole("button", { name: "Share my result", exact: true })
+      .click();
+    await (await image).saveAs(`${output}/result-card.png`);
     await page.goto(`/reports/${room.sessionId}`);
     await page.waitForLoadState("networkidle");
     await expect(

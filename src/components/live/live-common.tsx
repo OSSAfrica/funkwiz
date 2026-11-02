@@ -1,3 +1,8 @@
+import {
+  scoringSummary,
+  scoringFor,
+  type ScoringRules,
+} from "@/lib/live/scoring";
 import { useHydrated } from "@/lib/use-hydrated";
 import { AudioSettings, type AudioControls } from "./audio-settings";
 import { Link } from "@tanstack/react-router";
@@ -142,10 +147,12 @@ export function Leaderboard({
   players,
   selfId,
   full = false,
+  scoring = scoringFor({}),
 }: {
   players: RankedPlayer[];
   selfId?: string;
   full?: boolean;
+  scoring?: ScoringRules;
 }) {
   return (
     <section
@@ -184,7 +191,7 @@ export function Leaderboard({
         </p>
       )}
       <p className="scoring-note">
-        1,000 points per correct answer. Equal scores share a rank.
+        {scoringSummary(scoring)} Equal scores share a rank.
       </p>
     </section>
   );

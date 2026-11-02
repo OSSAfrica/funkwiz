@@ -1,3 +1,4 @@
+import { DEFAULT_SCORING, scoringSummary } from "@/lib/live/scoring";
 import { useState } from "react";
 import { ArrowRight, LoaderCircle, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -56,8 +57,7 @@ export function HostSetupDialog({
           <Users size={20} />
           <p>
             <strong>No student accounts needed.</strong> Players join with your
-            game code and a nickname. Correct answers earn 1,000 points; speed
-            doesn’t change the score.
+            game code and a nickname. {scoringSummary(DEFAULT_SCORING)}
           </p>
         </div>
         <p className="form-error mt-4" role="alert">

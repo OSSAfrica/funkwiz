@@ -1,3 +1,4 @@
+import { scoringFor } from "@/lib/live/scoring";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
@@ -325,7 +326,10 @@ function HostQuestion({
         </p>
       </section>
       {snapshot.phase === "reveal" && (
-        <Leaderboard players={snapshot.leaderboard} />
+        <Leaderboard
+          scoring={scoringFor(snapshot)}
+          players={snapshot.leaderboard}
+        />
       )}
     </>
   );
@@ -545,7 +549,11 @@ function HostFinish({ snapshot }: { snapshot: RoomView }) {
           )}
         </div>
       </section>
-      <Leaderboard players={snapshot.leaderboard} full />
+      <Leaderboard
+        scoring={scoringFor(snapshot)}
+        players={snapshot.leaderboard}
+        full
+      />
     </>
   );
 }
