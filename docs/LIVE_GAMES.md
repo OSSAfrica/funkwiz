@@ -3,7 +3,10 @@
 From the teacher library, choose **Host live**, select the display and progression
 settings, and open the lobby. Students visit `/join`, enter the six-digit code and
 a nickname, and wait for the teacher. They do not need an account. Copy the lobby
-link to prefill the code.
+link to prefill the code, or choose **Show QR code** in the lobby. Students can
+scan it with their phone camera to open that same join page; only a nickname is
+needed. The code is generated locally in the app. It uses the address you opened
+the host screen from, so use a reachable app address when sharing with phones.
 
 Start becomes available when at least one student is connected. A quiz is copied
 into the room when it opens, so subsequent edits do not alter a running game.

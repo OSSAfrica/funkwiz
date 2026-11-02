@@ -3472,3 +3472,48 @@ button.teacher-profile {
     transform: none;
   }
 }
+
+/* Give the camera an uninterrupted, high-contrast code and a quiet border. */
+.join-qr-trigger {
+  width: 100%;
+  margin-top: 14px;
+  background: #fff9e6;
+  border-color: #d3b969;
+  color: #33452c;
+  gap: 8px;
+}
+.join-qr-dialog {
+  text-align: center;
+  overflow-y: auto;
+  grid-template-rows: auto auto auto;
+}
+.join-qr-dialog > div:first-child {
+  text-align: center;
+  gap: 9px;
+}
+.join-qr-frame {
+  width: min(100%, 304px);
+  margin: 8px auto 0;
+  padding: 12px;
+  border-radius: 18px;
+  background: white;
+  border: 1px solid #e2e5d9;
+  box-shadow: 0 5px 0 #f2d575;
+}
+.join-qr-frame svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.join-qr-room-code {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin: 8px 0 0;
+}
+.join-qr-room-code strong {
+  color: var(--foreground);
+  font: 500 32px/1.2 var(--font-display);
+  letter-spacing: 3px;
+}

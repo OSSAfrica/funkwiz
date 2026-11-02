@@ -41,6 +41,7 @@ import {
   RoomUnavailable,
 } from "./live-common";
 import type { GameSettings as Settings } from "@/lib/quiz";
+import { JoinQrCode } from "./join-qr-code";
 
 export function HostGame({ code }: { code: string }) {
   const room = useLiveRoom(code, "host"),
@@ -406,6 +407,7 @@ function HostLobby({
         {copied && (
           <small role="status">Join link copied. Spread the curiosity!</small>
         )}
+        <JoinQrCode url={joinUrl} code={snapshot.code} />
       </div>
       <div className="lobby-roster-heading">
         <h2>

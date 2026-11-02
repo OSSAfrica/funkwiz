@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Gamepad2, LoaderCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,12 +8,19 @@ import { liveRequest } from "@/lib/live/client";
 import { nickname, roomCode } from "@/lib/live/protocol";
 import { LiveBrand } from "./live-common";
 
+const subscribeHydration = () => () => {};
+
 export function JoinGame({ initialCode }: { initialCode: string }) {
   const [code, setCode] = useState(initialCode),
     [name, setName] = useState("");
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const navigate = useNavigate();
+  const hydrated = useSyncExternalStore(
+    subscribeHydration,
+    () => true,
+    () => false,
+  );
   async function join(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
@@ -74,7 +81,10 @@ export function JoinGame({ initialCode }: { initialCode: string }) {
           <h2>Let’s get you in.</h2>
           <p>No account. Just your curious self.</p>
           <form onSubmit={join}>
-            <fieldset disabled={busy} className="space-y-5 min-w-0">
+            <fieldset
+              disabled={busy || !hydrated}
+              className="space-y-5 min-w-0"
+            >
               <div className="space-y-2">
                 <Label htmlFor="join-code">Game code</Label>
                 <Input

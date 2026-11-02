@@ -174,3 +174,14 @@ See `docs/LIVE_GAMES.md` for operating instructions and lifecycle limits.
   diagnostics are recorded rather than represented as a clean full scan.
 - The upstream CSS source-map warning remains. Google Tasks was unreachable;
   this document records the deliverables and remaining pilot work.
+
+## QR join option
+
+- The live lobby includes **Show QR code**. Its accessible dialog displays a
+  locally generated QR for the room's join link, with the game code prefilled.
+- Students still choose a nickname. Numeric codes and copyable links remain
+  available. The host address must be reachable from students' phones.
+- The join form waits for hydration before accepting input, preventing an early
+  native form submission from clearing a scanned code or nickname.
+- Two browser checks decode the rendered QR with an independent decoder, follow
+  its URL, join the room, and verify dialog focus on desktop and phone. Both pass.
