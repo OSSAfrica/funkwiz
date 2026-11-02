@@ -1,3 +1,4 @@
+import { socialHead } from "@/lib/social";
 import { createFileRoute } from "@tanstack/react-router";
 import { JoinGame } from "@/components/live/join-game";
 export const Route = createFileRoute("/join")({
@@ -8,6 +9,8 @@ export const Route = createFileRoute("/join")({
         : "";
     return { code: /^\d{6}$/.test(candidate) ? candidate : undefined };
   },
+  head: ({ match }) =>
+    socialHead("join", match.context.siteOrigin, { code: match.search.code }),
   component: Join,
 });
 function Join() {

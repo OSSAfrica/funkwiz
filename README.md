@@ -143,3 +143,13 @@ or in a hidden tab; answer correctness is heard only after the server reveals it
 The soundtrack is fetched only after music is enabled. Listen directly at
 `/audio/curious-garden.mp3`, or regenerate it with `bun run audio:generate`
 (requires ffmpeg). See `public/audio/README.md` for the score and asset details.
+
+### Open Graph previews
+
+The app, student invitations and teacher pages have branded social cards and
+server-rendered Open Graph/Twitter metadata. Private quiz/report data and reset
+tokens stay out of previews. Cards use a fixed palette in light and dark mode.
+
+Regenerate the PNGs with `bun run og:generate` (Playwright Chromium required).
+See `docs/SOCIAL_PREVIEWS.md` for page mappings, canonical links and deployment
+checks, and `public/og/README.md` for the artwork source.

@@ -13,19 +13,18 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { themeBootScript } from "@/lib/theme";
 
+import { socialHead } from "@/lib/social";
+import { getPublicSiteOrigin } from "@/lib/social-origin";
+
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
-  head: () => ({
+  beforeLoad: async () => ({ siteOrigin: await getPublicSiteOrigin() }),
+  head: ({ match }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Fun Quiz — A little curiosity. A lot of fun." },
-      {
-        name: "description",
-        content:
-          "Create colorful classroom quizzes, set your pace, and turn learning into play.",
-      },
+      ...socialHead("app", match.context.siteOrigin).meta,
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -38,7 +37,7 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" prefix="og: https://ogp.me/ns#" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <HeadContent />

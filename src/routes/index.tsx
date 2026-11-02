@@ -1,3 +1,4 @@
+import { socialHead } from "@/lib/social";
 import { useState, useSyncExternalStore } from "react";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import {
@@ -55,6 +56,7 @@ export const Route = createFileRoute("/")({
       emailSettings,
     };
   },
+  head: ({ match }) => socialHead("app", match.context.siteOrigin),
   component: Home,
 });
 

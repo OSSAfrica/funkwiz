@@ -64,6 +64,10 @@ test("paginates a PDF with 150 learners without dropping the final learner or qu
   test.setTimeout(90_000);
   page.setDefaultTimeout(20_000);
   await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: /Your quiz collection/ }),
+  ).toBeVisible();
+  await page.waitForLoadState("networkidle");
   const pending = page.waitForEvent("download", { timeout: 20_000 });
   await page.evaluate(async () => {
     const path = "/src/lib/live/report-export.ts";

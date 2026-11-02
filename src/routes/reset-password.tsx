@@ -1,3 +1,4 @@
+import { socialHead } from "@/lib/social";
 import { createFileRoute } from "@tanstack/react-router";
 import { ResetPasswordScreen } from "@/components/auth/password-recovery";
 export const Route = createFileRoute("/reset-password")({
@@ -11,7 +12,13 @@ export const Route = createFileRoute("/reset-password")({
         : undefined,
     error: search.error ? true : undefined,
   }),
-  head: () => ({ meta: [{ name: "referrer", content: "no-referrer" }] }),
+  head: ({ match }) => {
+    const head = socialHead("reset", match.context.siteOrigin);
+    return {
+      ...head,
+      meta: [...head.meta, { name: "referrer", content: "no-referrer" }],
+    };
+  },
   headers: () => ({
     "Cache-Control": "no-store",
     "Referrer-Policy": "no-referrer",

@@ -325,3 +325,43 @@ The generated soundtrack peaks at -3.1 dBFS without clipping before the quieter
 in-game mix; the local preview returns the MP3 correctly. No external audio
 recordings were downloaded or added. Playback feel can be auditioned at
 `/audio/curious-garden.mp3` and adjusted in the live audio controls.
+
+## Branded Open Graph previews
+
+Add three static, versioned social cards: general app, student invitation and
+teacher workspace. Use the existing forest/cream/gold palette, Fredoka/Nunito
+fonts and quiz shapes with page-specific headlines and artwork. Render committed
+1200×630 PNGs from a reusable local template; no image service or runtime renderer
+is needed in the Worker.
+
+Provide server-rendered Open Graph and large-image Twitter metadata for every
+page, with absolute URLs, accessible image text and leaf-owned canonical links.
+Reuse the configured public app origin. Preserve valid shareable room codes in
+join destinations while keeping codes out of artwork and preview copy. Exclude
+reset tokens, private quiz content, teacher details, student names and results
+from metadata. Preserve authentication redirects and recovery cache/referrer
+headers. Validate initial crawler HTML, image responses and client navigation.
+
+Implemented all three branded cards and metadata for the library, join, play,
+sign-in, host, report and recovery routes. The origin is resolved server-side and
+reused on client navigation without an extra request. Static PNGs are generated
+with Bun, local fonts and Playwright; no dependencies or runtime image service
+were added. See `docs/SOCIAL_PREVIEWS.md` for route and privacy policy.
+
+Validation: 43 unit tests, TypeScript and the production build pass; the changed
+React code scores 100/100 in React Doctor. All six new desktop/phone browser checks
+pass, covering no-JavaScript crawler HTML, canonical uniqueness, client navigation,
+appearance independence and private report data. Production-preview checks also
+pass for image hashes, PNG dimensions, join destinations and recovery protections.
+Client assets pass the configured private-value scan.
+
+The complete browser run recorded 58 passes, three failures and four dependent
+checks skipped. Existing PDF navigation and account setup/recovery checks showed
+intermittent timing failures. Focused reruns passed each original failing case,
+but also showed other timeouts; the final dependent-test attempt timed out starting
+its dev server. Added readiness waits to PDF pagination and the email recovery
+tab test. The full suite is not claimed as green. Follow-up: stabilize these
+browser regressions and rerun the complete suite. Google Tasks was unreachable,
+so task completion and this follow-up are recorded here.
+
+External social-platform previews still need a publicly reachable HTTPS deployment.

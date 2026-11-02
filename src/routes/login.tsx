@@ -1,3 +1,4 @@
+import { socialHead } from "@/lib/social";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { getLoginOptions, getTeacher } from "@/lib/auth.functions";
 import { SignInScreen } from "@/components/auth/sign-in-screen";
@@ -10,6 +11,7 @@ export const Route = createFileRoute("/login")({
     if (await getTeacher()) throw redirect({ to: "/" });
   },
   loader: () => getLoginOptions(),
+  head: ({ match }) => socialHead("teacher", match.context.siteOrigin),
   component: Login,
 });
 function Login() {

@@ -53,6 +53,7 @@ test("enables email recovery when sending credentials and a sender are configure
   page,
 }) => {
   await page.goto("/forgot-password");
+  await page.waitForLoadState("networkidle");
   await page.getByRole("tab", { name: "Email link", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Send reset link", exact: true }),
