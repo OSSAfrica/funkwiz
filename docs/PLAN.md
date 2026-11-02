@@ -12,6 +12,10 @@ future work is a school/team operating its own installation. See
 permissions and migration questions. An open-registration public service is not
 part of that proposed first School release.
 
+The agreed future library default is private teacher drafts with explicit
+workspace sharing. Report permissions and sharing/editing mechanics remain open
+in the discussion draft; no School-mode implementation has begun.
+
 ## Implemented
 
 - Quiz authoring, validated JSON imports, examples and account-backed storage.

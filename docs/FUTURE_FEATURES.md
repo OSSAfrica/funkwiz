@@ -5,7 +5,18 @@
 **Status: discussion draft.** These features are not implemented and do not imply
 a release date. The agreed first audience for multi-teacher work is **a school or
 team running its own installation**, rather than a public service where anyone
-can sign up. The design recommendations below still need agreement before coding.
+can sign up. Agreed decisions are listed below; the remaining design
+recommendations still need agreement before coding.
+
+## Agreed decisions
+
+- Design the first multi-teacher experience for a school/team operating its own installation.
+- Quizzes start as private drafts. Teachers explicitly choose **Share to workspace**
+  to make selected quizzes available to colleagues. Workspace membership alone
+  does not make a teacher's drafts shared.
+
+These decisions describe future behavior, not an implemented School-mode setting.
+Sharing mechanics, editing rights and report access remain separate decisions.
 
 ## Personal and School modes
 
@@ -72,8 +83,9 @@ Schools needing separate operational ownership should use separate installations
 
 ## Quiz collaboration without accidental disclosure
 
-Recommendation: quizzes start private. Add an explicit **Share to workspace**
-action, separate from report sharing. For the first collaboration version, let
+**Agreed:** quizzes start as private drafts, with an explicit **Share to workspace**
+action. This decision does not settle report access. For the first collaboration
+version, the recommendation is to let
 teachers copy a shared quiz into their own editable draft. This is easier to
 understand than simultaneous editing and avoids overwriting another lesson's content.
 
@@ -166,14 +178,12 @@ per-question timing and audio controls. Those are not future promises.
 
 ## Decisions to discuss next
 
-1. **Library defaults:** private drafts with explicit sharing (recommended), or
-   shared by default within a workspace?
-2. **Report access:** host-only by default with grants (recommended), or automatic
+1. **Report access:** host-only by default with grants (recommended), or automatic
    visibility for workspace administrators?
-3. **Workspace creation:** owners/operators create them initially, or can every
+2. **Workspace creation:** owners/operators create them initially, or can every
    invited teacher create one?
-4. **Collaboration depth:** is share-and-copy enough for the first School release?
-5. **Next small feature:** which classroom problem should we address before the
+3. **Collaboration depth:** is share-and-copy enough for the first School release?
+4. **Next small feature:** which classroom problem should we address before the
    workspace migration—reuse, explanations, spreadsheet import or result retention?
 
 Bring a concrete example of the school/team workflow to an issue or design
