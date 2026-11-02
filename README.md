@@ -107,3 +107,12 @@ The starter demo was removed, and package management has been migrated to Bun.
 The original creation log reported a failed TanStack Intent installation. To retry
 the optional agent integration, use `bunx @tanstack/intent install`. It is separate
 from building and running the application.
+
+## Development React runtime
+
+Vite resolves React and React DOM from the project root and prebundles their
+runtime entries consistently. Its cache is isolated by mode under
+`node_modules/.vite/<mode>` so normal development and parallel browser-test
+servers cannot overwrite each other's optimized modules. After changing
+runtime dependencies or restarting a previously broken dev session, reload any
+open app tabs to discard modules cached by that tab.

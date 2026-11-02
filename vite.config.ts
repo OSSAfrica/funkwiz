@@ -8,7 +8,30 @@ import tailwindcss from "@tailwindcss/vite";
 import { cloudflare } from "@cloudflare/vite-plugin";
 
 const config = defineConfig(({ mode }) => ({
-  resolve: { tsconfigPaths: true },
+  // Concurrent dev/test servers must not overwrite each other's React chunks.
+  cacheDir: `node_modules/.vite/${mode}`,
+  resolve: { tsconfigPaths: true, dedupe: ["react", "react-dom"] },
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom/client",
+      "react/jsx-runtime",
+      "react/jsx-dev-runtime",
+    ],
+  },
+  environments: {
+    ssr: {
+      optimizeDeps: {
+        include: [
+          "react",
+          "react-dom",
+          "react-dom/server",
+          "react/jsx-runtime",
+          "react/jsx-dev-runtime",
+        ],
+      },
+    },
+  },
   plugins: [
     devtools(),
     cloudflare({
