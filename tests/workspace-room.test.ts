@@ -1,4 +1,5 @@
 /// <reference types="@cloudflare/vitest-plugin/types" />
+import { randomInt } from "node:crypto";
 import { beforeAll, expect, test } from "vitest";
 import { applyD1Migrations } from "cloudflare:test";
 import { env } from "cloudflare:workers";
@@ -28,9 +29,7 @@ async function member() {
     .run();
 }
 async function room() {
-  const code = String(
-    100000 + (crypto.getRandomValues(new Uint32Array(1))[0] % 900000),
-  );
+  const code = String(randomInt(100000, 1000000));
   const stub = env.LIVE_ROOMS.getByName(code);
   const id = crypto.randomUUID();
   await stub.initialize(
