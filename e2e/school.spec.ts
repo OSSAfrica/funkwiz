@@ -7,7 +7,61 @@ const fixtureHeaders = () => ({ "cf-connecting-ip": `192.0.2.${fixtureIp++}` });
 const password = "Only-a-school-test-password-42!";
 let ownerState: Awaited<ReturnType<BrowserContext["storageState"]>>;
 
-test.beforeAll(async ({ playwright }) => {
+test.beforeAll(async ({ playwright, browser }) => {
+  test.setTimeout(90_000);
+  for (const viewport of [
+    { width: 1440, height: 1000 },
+    { width: 390, height: 844 },
+  ]) {
+    const context = await browser.newContext({
+      baseURL: base,
+      viewport,
+      storageState: { cookies: [], origins: [] },
+    });
+    try {
+      const page = await context.newPage();
+      await page.goto("/login");
+      await page.waitForLoadState("networkidle");
+      await expect(
+        page.getByText("SCHOOL / ORGANIZATION", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByLabel("Administrator setup code", { exact: true }),
+      ).toHaveCount(0);
+      await page
+        .getByRole("button", {
+          name: "Set up first administrator",
+          exact: true,
+        })
+        .click();
+      await expect(
+        page.getByRole("heading", {
+          name: "Set up the first administrator",
+          exact: true,
+        }),
+      ).toBeVisible();
+      await expect(
+        page.getByLabel("Administrator setup code", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByText("Invited teachers use their invitation link instead.", {
+          exact: false,
+        }),
+      ).toBeVisible();
+      await page.screenshot({
+        path: `/tmp/funkwiz-school-setup-${viewport.width}.jpg`,
+        fullPage: true,
+        type: "jpeg",
+        quality: 88,
+      });
+      await page.getByRole("button", { name: "Sign in", exact: true }).click();
+      await expect(
+        page.getByLabel("Administrator setup code", { exact: true }),
+      ).toHaveCount(0);
+    } finally {
+      await context.close();
+    }
+  }
   const request = await playwright.request.newContext({
     baseURL: base,
     extraHTTPHeaders: fixtureHeaders(),
@@ -23,6 +77,79 @@ test.beforeAll(async ({ playwright }) => {
   expect(result.ok()).toBe(true);
   ownerState = await request.storageState();
   await request.dispose();
+});
+
+test("distinguishes administrator setup from returning login and invited teacher signup", async ({
+  browser,
+}) => {
+  test.setTimeout(90_000);
+  const owner = await browser.newContext({
+    baseURL: base,
+    storageState: ownerState,
+    extraHTTPHeaders: fixtureHeaders(),
+  });
+  const invited = await browser.newContext({
+    baseURL: base,
+    storageState: { cookies: [], origins: [] },
+    viewport: { width: 390, height: 844 },
+    extraHTTPHeaders: fixtureHeaders(),
+  });
+  try {
+    const login = await invited.newPage();
+    await login.goto("/login");
+    await expect(
+      login.getByRole("heading", { name: "Sign in to your team", exact: true }),
+    ).toBeVisible();
+    await expect(
+      login.getByRole("button", {
+        name: "Set up first administrator",
+        exact: true,
+      }),
+    ).toHaveCount(0);
+    await expect(
+      login.getByLabel("Administrator setup code", { exact: true }),
+    ).toHaveCount(0);
+    const page = await owner.newPage();
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await workspaceCall(page, "createWorkspace", { name: "Onboarding team" });
+    const invitation = await workspaceCall(page, "inviteWorkspaceTeacher", {
+      email: "onboarding@example.test",
+      role: "teacher",
+      emailDelivery: false,
+    });
+    await login.goto(invitation.url);
+    await expect(
+      login.getByText("This invitation link authorizes your signup.", {
+        exact: false,
+      }),
+    ).toBeVisible();
+    await expect(
+      login.getByLabel("Administrator setup code", { exact: true }),
+    ).toHaveCount(0);
+    await login.screenshot({
+      path: "/tmp/funkwiz-invited-teacher-390.jpg",
+      fullPage: true,
+      type: "jpeg",
+      quality: 88,
+    });
+    await login
+      .getByLabel("Your name", { exact: true })
+      .fill("Invited Teacher");
+    await login.getByLabel("Choose a password", { exact: true }).fill(password);
+    await login
+      .getByRole("button", {
+        name: "Create account and join workspace",
+        exact: true,
+      })
+      .click();
+    await expect(
+      login.getByRole("heading", { name: /Your quiz collection/ }),
+    ).toBeVisible({ timeout: 20_000 });
+  } finally {
+    await owner.close();
+    await invited.close();
+  }
 });
 
 test("workspace UI shares privately and creates revocable invitation links", async ({

@@ -1,3 +1,4 @@
+import { accountCopy } from "./account-copy";
 import { useState, type FormEvent } from "react";
 import {
   ArrowRight,
@@ -28,6 +29,7 @@ export function SignInScreen({
   options: LoginOptions;
   oauthError: boolean;
 }) {
+  const copy = accountCopy(Boolean(options.school));
   const [setup, setSetup] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(
@@ -104,13 +106,9 @@ export function SignInScreen({
         <span className="auth-welcome-icon">
           {setup ? <KeyRound size={27} /> : <LockKeyhole size={27} />}
         </span>
-        <div className="eyebrow">YOUR TEACHER SPACE</div>
-        <h2>{setup ? "Let’s make it yours." : "Welcome back, quiz maker."}</h2>
-        <p>
-          {setup
-            ? "Create your private teacher account. Your setup code keeps this first step just for you."
-            : "Good questions are waiting. Sign in and bring a little more play to your day."}
-        </p>
+        <div className="eyebrow">{copy.eyebrow}</div>
+        <h2>{setup ? copy.setupHeading : copy.signInHeading}</h2>
+        <p>{setup ? copy.setupDescription : copy.signInDescription}</p>
         {!options.configured ? (
           <div className="auth-setup-note">
             <strong>Your workspace needs its first setup.</strong>
@@ -140,7 +138,12 @@ export function SignInScreen({
               </>
             )}
             <form onSubmit={submit} className="auth-form" aria-busy={busy}>
-              <CredentialFields setup={setup} busy={busy} error={error} />
+              <CredentialFields
+                setup={setup}
+                school={Boolean(options.school)}
+                busy={busy}
+                error={error}
+              />
             </form>
             {!setup && (
               <p className="auth-mode-switch">
@@ -157,16 +160,19 @@ export function SignInScreen({
                     setError("");
                   }}
                 >
-                  {setup ? "Sign in" : "Set up teacher account"}
+                  {setup ? "Sign in" : copy.setupLink}
                 </button>
               </p>
             )}
+            <AccountSetupNotes
+              setup={setup}
+              school={Boolean(options.school)}
+              googleSetup={options.googleEnabled && options.registrationOpen}
+            />
             {!setup && (
               <p className="auth-private-note">
                 <LockKeyhole size={13} />
-                {options.school
-                  ? "Invited teachers can sign in here. New members should open their private invitation link."
-                  : "A private workspace for your teacher account."}
+                {copy.signInNote}
               </p>
             )}
           </>
@@ -178,13 +184,16 @@ export function SignInScreen({
 
 function CredentialFields({
   setup,
+  school,
   busy,
   error,
 }: {
   setup: boolean;
+  school: boolean;
   busy: boolean;
   error: string;
 }) {
+  const copy = accountCopy(school);
   const [visible, setVisible] = useState(false);
   const hydrated = useHydrated();
   return (
@@ -239,18 +248,16 @@ function CredentialFields({
       </div>
       {setup && (
         <div className="space-y-2">
-          <Label htmlFor="teacher-setup-code">Private setup code</Label>
+          <Label htmlFor="teacher-setup-code">{copy.codeLabel}</Label>
           <Input
             id="teacher-setup-code"
             name="code"
             type="password"
             autoComplete="off"
             required
-            placeholder="Your private teacher setup code"
+            placeholder={copy.codePlaceholder}
           />
-          <p className="auth-field-help">
-            Use the code from your private server configuration.
-          </p>
+          <p className="auth-field-help">{copy.codeHelp}</p>
         </div>
       )}
       <p role="alert" className="form-error">
@@ -258,9 +265,36 @@ function CredentialFields({
       </p>
       <Button className="auth-submit" type="submit">
         {busy ? <LoaderCircle size={18} className="animate-spin" /> : null}
-        {busy ? "One moment…" : setup ? "Create teacher account" : "Let’s go"}
+        {busy ? "One moment…" : setup ? copy.createButton : "Let’s go"}
         {!busy && <ArrowRight size={17} />}
       </Button>
     </fieldset>
+  );
+}
+
+function AccountSetupNotes({
+  setup,
+  school,
+  googleSetup,
+}: {
+  setup: boolean;
+  school: boolean;
+  googleSetup: boolean;
+}) {
+  return (
+    <>
+      {setup && school && (
+        <p className="auth-private-note">
+          Invited teachers use their invitation link instead. Do not ask your
+          administrator to share this setup code.
+        </p>
+      )}
+      {googleSetup && (
+        <p className="auth-private-note">
+          Google setup uses the verified email chosen during deployment. The
+          private code is required for the email/password setup form.
+        </p>
+      )}
+    </>
   );
 }

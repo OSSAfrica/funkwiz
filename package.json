@@ -132,6 +132,9 @@
       },
       "TEACHER_SETUP_TOKEN": {
         "description": "Generate a second unique secret with `openssl rand -hex 32`. Keep it in your password manager: it is required to create the teacher account and recover its password."
+      },
+      "FUNKWIZ_MODE": {
+        "description": "Installation mode: personal for one teacher, or school for invited teachers and workspaces. The Personal and School deploy buttons preselect this non-secret value."
       }
     }
   }

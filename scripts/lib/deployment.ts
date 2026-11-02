@@ -1,6 +1,7 @@
 export type DeploymentConfig = {
   name?: string;
   account_id?: string;
+  vars?: Record<string, unknown>;
   d1_databases?: { binding: string; database_id?: string }[];
 };
 
@@ -21,6 +22,13 @@ export function assertDeploymentTarget(
   )
     throw new Error(
       "Deployment target does not match this build. Rebuild using the intended public or private command; no remote changes were made.",
+    );
+  if (
+    source.vars?.FUNKWIZ_MODE !== undefined &&
+    source.vars.FUNKWIZ_MODE !== built.vars?.FUNKWIZ_MODE
+  )
+    throw new Error(
+      "Deployment mode does not match this build. Rebuild with the intended Personal or School configuration; no remote changes were made.",
     );
   if (/^0{8}-0{4}-0{4}-0{4}-0{12}$/.test(actual.database_id))
     throw new Error(

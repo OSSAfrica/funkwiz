@@ -8,6 +8,7 @@ import {
 import { randomBytes } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
 import { parseWranglerTemplate } from "./lib/wrangler-config";
+import { variablesWithoutSecrets } from "./lib/deploy-template";
 import { assertDeploymentTarget } from "./lib/deployment";
 
 const action = process.argv[2] ?? "dry-run";
@@ -69,9 +70,6 @@ const config = {
 mkdirSync(".deploy", { recursive: true, mode: 0o700 });
 chmodSync(".deploy", 0o700);
 chmodSync(targetPath, 0o600);
-writeFileSync(".deploy/wrangler.json", JSON.stringify(config, null, 2) + "\n", {
-  mode: 0o600,
-});
 const secretsPath = ".deploy/secrets.json";
 if (!existsSync(secretsPath))
   writeFileSync(
@@ -100,6 +98,10 @@ if (
     "Private secrets do not match the target. Review them without printing or committing them.",
   );
 chmodSync(secretsPath, 0o600);
+config.vars = variablesWithoutSecrets(config.vars, secrets);
+writeFileSync(".deploy/wrangler.json", JSON.stringify(config, null, 2) + "\n", {
+  mode: 0o600,
+});
 function run(command: string, args: string[]) {
   const result = spawnSync(command, args, {
     stdio: "inherit",

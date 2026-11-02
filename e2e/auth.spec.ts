@@ -17,6 +17,15 @@ test("private workspace redirects to login and hides Google with partial credent
   await expect(
     page.getByText("or use your email", { exact: true }),
   ).toHaveCount(0);
+  await expect(page.getByText("PERSONAL MODE", { exact: true })).toBeVisible();
+  await expect(
+    page.getByLabel("Private setup code", { exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText("Your setup code is not needed for normal login.", {
+      exact: false,
+    }),
+  ).toBeVisible();
   await page.screenshot({
     path: `/tmp/fun-quiz-sign-in-${info.project.name}.png`,
     fullPage: true,

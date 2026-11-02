@@ -39,6 +39,9 @@ substituting your private target. They build into `.deploy/dist/`, leaving the
 public `dist/` separate. The first run creates `.deploy/secrets.json` containing
 the teacher email, app origin and two independent random secrets. Existing secrets
 are preserved, and a target/settings mismatch stops the command for review.
+If a public template supplies a variable with the same name as a private secret,
+the private secret takes precedence; the generated configuration omits that
+plain-text default to avoid conflicting bindings.
 The directory and configuration files receive restricted filesystem permissions.
 
 The dry run performs local packaging checks only. The deploy command applies
@@ -61,7 +64,8 @@ existing libraries are not moved or shared automatically.
 
 ## First teacher account
 
-Open your deployed `/login`, choose **Set up teacher account**, and use the email
+Open your deployed `/login`, choose **Set up teacher account** in Personal mode or **Set up first administrator**
+in School mode, and use the email
 from your private target with your own password. Read the production setup code
 in your own terminal:
 

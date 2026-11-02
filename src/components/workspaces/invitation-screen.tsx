@@ -95,6 +95,11 @@ export function WorkspaceInvitationScreen({
                 <strong className="break-all">{invitation.email}</strong>.
               </p>
               <p className="mt-2">
+                {invitation.registered
+                  ? "Sign in to accept this invitation. No setup code is needed."
+                  : "This invitation link authorizes your signup. You do not need an administrator setup code."}
+              </p>
+              <p className="mt-2">
                 Drafts stay private until shared. Workspace Admins and Owners
                 can view all reports in this workspace.
               </p>

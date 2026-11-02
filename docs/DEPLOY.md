@@ -7,7 +7,12 @@ For your own deployment of this public repository, use the
 IDs, production settings and secrets out of Git. The guided template flow below
 is intended for people creating their own copy of the project.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2FOSSAfrica%2Ffunkwiz)
+| Personal — one teacher                                                                                                                                                                               | School / organization — a teaching team                                                                                                                                                                          |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [![Deploy Personal to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2FOSSAfrica%2Ffunkwiz%2Ftree%2Fdeploy-personal) | [![Deploy School or organization to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2FOSSAfrica%2Ffunkwiz%2Ftree%2Fdeploy-school) |
+
+Each button preselects its mode and provisions a separate installation. The
+[deployment guide](DEPLOY.md) explains initial account setup and teacher invitations.
 
 ## Guided deployment
 
@@ -18,15 +23,20 @@ provisions a D1 database and the Durable Object bindings, and sets up Workers Bu
 An account and access to Workers, D1 and SQLite Durable Objects are required;
 Cloudflare's account limits and charges apply.
 
+Choose **Personal** for one teacher or **School / organization** for an invited
+team. Each link uses a generated, standalone template from the same checked app
+source. `FUNKWIZ_MODE` is prefilled with `personal` or `school`; keep that value
+unless you intentionally chose the wrong template. It is not a secret.
+
 Supply these four values in the setup form. Never reuse test fixtures or another
 installation's secrets:
 
-| Setting               | Value                                                                        |
-| --------------------- | ---------------------------------------------------------------------------- |
-| `BETTER_AUTH_URL`     | Exact HTTPS app origin, such as `https://funkwiz.YOUR-SUBDOMAIN.workers.dev` |
-| `TEACHER_EMAIL`       | Your own teacher email; this installation allows only this address           |
-| `BETTER_AUTH_SECRET`  | Unique random secret, at least 32 characters                                 |
-| `TEACHER_SETUP_TOKEN` | A second unique random secret, at least 32 characters                        |
+| Setting               | Value                                                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| `BETTER_AUTH_URL`     | Exact HTTPS app origin, such as `https://funkwiz.YOUR-SUBDOMAIN.workers.dev`             |
+| `TEACHER_EMAIL`       | Personal: your teacher email. School: the first administrator / installation owner email |
+| `BETTER_AUTH_SECRET`  | Unique random secret, at least 32 characters                                             |
+| `TEACHER_SETUP_TOKEN` | A second unique random secret, at least 32 characters                                    |
 
 Generate each secret separately using a password manager or
 `openssl rand -hex 32`. Store the setup token in your password manager; it is
@@ -54,18 +64,30 @@ only pending migrations. Review migrations and take appropriate backups when
 updating an existing installation. Keep production migration/deploy commands out
 of branch preview builds that share production resources.
 
-After deployment, open `/login`, choose **Set up teacher account**, and use your
-configured email and setup token with a new password. Registration closes after
-that teacher exists. Students use `/join` and need no account.
+After deployment, open `/login`:
 
-The button becomes usable once this repository and its files are public on
-GitHub. Its complete account-provisioning flow must be checked on a real
-Cloudflare account; a local dry run verifies packaging but does not provision.
+| Account flow                                 | What is needed                                                                                                   |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Personal owner: **Set up teacher account**   | Configured email, private setup code and a chosen password, once.                                                |
+| School owner: **Set up first administrator** | Configured administrator email, private setup code and a chosen password, once. Then create the first workspace. |
+| Invited teacher signup                       | The private invitation link, invited email and a chosen password. No administrator setup code.                   |
+| Returning user login                         | Email/password, or Google when configured. No setup code.                                                        |
+
+Optional Google setup uses the configured, verified initial-owner email instead
+of the email/password setup form. Keep the installation code with the owner; do
+not distribute it as a teacher invitation. Students use `/join` and need no account.
+
+The two buttons become usable after the generated public template branches have
+been published (see below). Their complete account-provisioning flow must be
+checked on a real Cloudflare account; a local dry run verifies packaging but does
+not provision.
 
 ## Optional School mode
 
-Personal mode remains the default. To host an invited teaching team, follow
-[School mode setup](WORKSPACES.md). The runtime setting `FUNKWIZ_MODE=school`
+The **School / organization** button preselects School mode. After first
+administrator setup, create a workspace and invite teachers using
+[School mode setup](WORKSPACES.md). For an existing Personal installation,
+the runtime setting `FUNKWIZ_MODE=school`
 enables workspaces after the release's migrations have been applied; it does not
 open public teacher registration. The configured teacher email remains the
 bootstrap/operator identity.
@@ -125,3 +147,25 @@ HTTPS URL for external platforms to crawl them.
 References: [Deploy buttons](https://developers.cloudflare.com/workers/platform/deploy-buttons/),
 [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/),
 [D1 migrations](https://developers.cloudflare.com/d1/reference/migrations/).
+
+## How the two templates stay current
+
+The `deploy-personal` and `deploy-school` branches are generated from checked
+`main` commits by the **Publish deployment templates** workflow. They contain the
+complete app, with different mode defaults, generic Worker/database names and
+setup descriptions. `deployment-template.json` records the source commit.
+
+Application changes belong on `main`; do not edit generated branches. Publishing
+uses ordinary fast-forward pushes and never resets main or other branches. The
+publisher job is restricted to the upstream OSSAfrica/funkwiz repository and
+skips installation copies. Workflow files otherwise remain byte-for-byte copies
+of checked main; publication does not generate or modify workflows. Source contribution
+commits retain the repository's signing requirements; generated configuration
+commits use the automation bot's DCO sign-off without a private signing key.
+
+On first release, merge the template workflow and wait for **Checks** and
+**Publish deployment templates** to succeed before using the two links. A manual
+workflow run on main can retry publication. Local builds validate the packages;
+a complete Cloudflare clone/provisioning run still needs verification in a real
+account. Cloudflare's [deploy-button documentation](https://developers.cloudflare.com/workers/platform/deploy-buttons/)
+explains how it copies standalone templates and provisions their resources.
