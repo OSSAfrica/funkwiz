@@ -81,7 +81,7 @@
     "@vitejs/plugin-react": "^6.0.1",
     "drizzle-kit": "^0.31.11",
     "jsqr": "^1.4.0",
-    "typescript": "^6.0.2",
+    "typescript": "^7.0.2",
     "vite": "^8.0.0",
     "vitest": "^5.0.5",
     "wrangler": "^4.156.0",
