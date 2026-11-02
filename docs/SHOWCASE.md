@@ -55,8 +55,14 @@ Students answer from their own devices without creating accounts:
 ## Find the next teaching moment
 
 Review answer accuracy, scores and question-level results after the game.
+Wrong choices that received responses are red and labeled; the correct answer
+is highlighted separately. These counts summarize the class.
 
 [![Completed game report with accuracy and a six-student leaderboard.](screenshots/report.jpg)](screenshots/report.jpg)
+
+The same answer labels and theme-aware destructive colors work in dark mode:
+
+[![Question review in dark mode showing selected wrong choices in red and the correct answer labeled.](screenshots/report-dark.jpg)](screenshots/report-dark.jpg)
 
 Choose a branded PDF, spreadsheet-friendly CSV or structured JSON export:
 

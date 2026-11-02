@@ -324,7 +324,62 @@ test("capture a fictional classroom through the real application", async ({
     await expect(
       page.getByRole("heading", { name: "Space explorers", exact: true }),
     ).toBeVisible();
+    const review = page.locator(".question-review-card").first();
+    await expect(review.locator(".review-correct-answer")).toContainText(
+      "Correct answer",
+    );
+    await expect(review.locator(".review-incorrect-answer")).toContainText(
+      "Incorrect selection",
+    );
+    await expect(review.locator(".review-incorrect-answer")).toContainText(
+      "Venus",
+    );
+    await expect(
+      review.locator(
+        ".review-answer-list > div:not(.review-correct-answer):not(.review-incorrect-answer)",
+      ),
+    ).toHaveCount(2);
     await capture(page, "report");
+    await page.getByRole("button", { name: "Appearance settings" }).click();
+    await page
+      .getByRole("menuitemradio", { name: "Dark", exact: true })
+      .click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    const contrast = await review
+      .locator(".review-incorrect-answer")
+      .evaluate((row) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = 1;
+        const ctx = canvas.getContext("2d")!;
+        const style = getComputedStyle(row);
+        ctx.fillStyle = style.backgroundColor;
+        ctx.fillRect(0, 0, 1, 1);
+        ctx.fillStyle = getComputedStyle(
+          row.querySelector(".review-answer-track")!,
+        ).backgroundColor;
+        ctx.fillRect(0, 0, 1, 1);
+        const background = [...ctx.getImageData(0, 0, 1, 1).data].slice(0, 3);
+        ctx.fillStyle = style.color;
+        ctx.fillRect(0, 0, 1, 1);
+        const foreground = [...ctx.getImageData(0, 0, 1, 1).data].slice(0, 3);
+        const luminance = (rgb: number[]) =>
+          rgb.reduce((sum, value, i) => {
+            const c = value / 255;
+            return (
+              sum +
+              (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4) *
+                [0.2126, 0.7152, 0.0722][i]
+            );
+          }, 0);
+        return (luminance(foreground) + 0.05) / (luminance(background) + 0.05);
+      });
+    expect(contrast).toBeGreaterThanOrEqual(4.5);
+    await review.scrollIntoViewIfNeeded();
+    await capture(page, "report-dark");
+    await page.getByRole("button", { name: "Appearance settings" }).click();
+    await page
+      .getByRole("menuitemradio", { name: "Light", exact: true })
+      .click();
     await page
       .getByRole("button", { name: "Download report", exact: true })
       .click();

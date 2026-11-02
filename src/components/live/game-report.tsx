@@ -1,7 +1,7 @@
 import { scoringFor } from "@/lib/live/scoring";
 import { ReportDownload } from "@/components/reports/report-download";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Check, Target, Trophy, Users } from "lucide-react";
+import { ArrowLeft, Check, Target, Trophy, Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { GameReport } from "@/lib/live/protocol";
 import { Leaderboard, LiveBrand } from "./live-common";
@@ -79,7 +79,10 @@ export function GameReportScreen({ report }: { report: GameReport | null }) {
         <section className="question-review">
           <span className="eyebrow">TURN ANSWERS INTO INSIGHTS</span>
           <h2>A closer look at the questions.</h2>
-          <p>See what clicked—and what could use another little “aha!”.</p>
+          <p>
+            Class totals: selected wrong choices are marked red, and the correct
+            answer is labeled.
+          </p>
           {report.questions.map((question, index) => (
             <article className="question-review-card" key={question.id}>
               <div className="review-question-heading">
@@ -92,28 +95,53 @@ export function GameReportScreen({ report }: { report: GameReport | null }) {
                 </strong>
               </div>
               <div className="review-answer-list">
-                {question.answers.map((answer, answerIndex) => (
-                  <div
-                    className={
-                      question.correctIndex === answerIndex
-                        ? "review-correct-answer"
-                        : ""
-                    }
-                    key={["a", "b", "c", "d"][answerIndex]}
-                  >
-                    <span
-                      className="review-answer-track"
-                      style={{
-                        transform: `scaleX(${question.answered ? question.counts[answerIndex] / question.answered : 0})`,
-                      }}
-                    />
-                    <span>{answer}</span>
-                    {question.correctIndex === answerIndex && (
-                      <Check size={16} />
-                    )}
-                    <strong>{question.counts[answerIndex]}</strong>
-                  </div>
-                ))}
+                {question.answers.map((answer, answerIndex) => {
+                  const correct = question.correctIndex === answerIndex;
+                  const count = question.counts[answerIndex];
+                  const selectedWrong = question.asked && count > 0 && !correct;
+                  return (
+                    <div
+                      className={
+                        correct
+                          ? "review-correct-answer"
+                          : selectedWrong
+                            ? "review-incorrect-answer"
+                            : ""
+                      }
+                      key={["a", "b", "c", "d"][answerIndex]}
+                    >
+                      <span
+                        className="review-answer-track"
+                        aria-hidden="true"
+                        style={{
+                          transform: `scaleX(${question.answered ? count / question.answered : 0})`,
+                        }}
+                      />
+                      <span className="review-answer-copy">
+                        <span>{answer}</span>
+                        {correct && (
+                          <small className="review-answer-status text-green-800">
+                            <Check size={14} aria-hidden="true" />
+                            Correct answer
+                          </small>
+                        )}
+                        {selectedWrong && (
+                          <small className="review-answer-status">
+                            <X size={14} aria-hidden="true" />
+                            Incorrect selection
+                          </small>
+                        )}
+                      </span>
+                      <strong>
+                        {count}
+                        <span className="sr-only">
+                          {" "}
+                          {count === 1 ? "response" : "responses"}
+                        </span>
+                      </strong>
+                    </div>
+                  );
+                })}
               </div>
             </article>
           ))}
