@@ -287,8 +287,19 @@ test("capture a fictional classroom through the real application", async ({
     }
     await control({ type: "end" });
     await expect(
+      page.getByRole("region", { name: "Final podium" }),
+    ).toBeVisible();
+    await expect(page.locator(".podium-stage .place-1")).toHaveCSS(
+      "opacity",
+      "1",
+    );
+    await capture(page, "host-podium");
+    await expect(
       student.getByRole("button", { name: "Share my result", exact: true }),
     ).toBeVisible();
+    await expect(
+      student.locator(".student-score-cards > div").nth(1),
+    ).toContainText("of 6 players");
     await capture(student, "student-result");
     const image = student.waitForEvent("download");
     await student

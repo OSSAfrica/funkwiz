@@ -20,7 +20,8 @@ A peek at a fictional classroom, captured from the running app.
 [Explore the full screenshot tour →](docs/SHOWCASE.md)
 
 Players earn points in correct-answer order and can download a colorful result
-card with their rank, score and quiz title after the game.
+card with their rank, score and quiz title after the game. A podium reveal,
+confetti and a gentle soundtrack celebrate the finish.
 
 ## What can I use it for?
 

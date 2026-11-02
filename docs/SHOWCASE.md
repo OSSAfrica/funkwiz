@@ -54,13 +54,21 @@ Choose a branded PDF, spreadsheet-friendly CSV or structured JSON export:
 
 [![Report download menu offering PDF, CSV and JSON formats.](screenshots/report-export.jpg)](screenshots/report-export.jpg)
 
+## Give your quiz stars a stage
+
+The host finishes with a podium, a bronze-to-gold reveal, stage lights and a short
+fanfare. Top-three players get confetti on their own results. Motion and audio
+follow each device's preferences; this capture uses reduced motion.
+
+[![Host podium with gold, silver and bronze places for fictional classroom players.](screenshots/host-podium.jpg)](screenshots/host-podium.jpg)
+
 ## A quiz moment worth sharing
 
 Players earn 1,000, 900 and 800 points for the first three correct answers;
 all later correct answers earn 700. Order resets for each question.
 
 At the end, **Share my result** downloads a branded PNG with the player's own
-nickname, quiz title, rank, score and correct-answer count.
+nickname, quiz title, rank out of the total players, score and correct-answer count.
 
 <img src="screenshots/student-result.jpg" alt="Student final screen with rank, points, correct answers and the Share my result button." width="300">
 

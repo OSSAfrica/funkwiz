@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useHydrated } from "@/lib/use-hydrated";
 import { SlidersHorizontal } from "lucide-react";
 import {
@@ -102,5 +103,33 @@ export function AudioSettings({ audio }: { audio: AudioControls }) {
         )}
       </PopoverContent>
     </Popover>
+  );
+}
+
+export function AudioNotice({
+  audio,
+}: {
+  audio: Pick<
+    AudioControls,
+    "autoplayBlocked" | "musicBusy" | "audioError" | "enableAudio" | "quiet"
+  >;
+}) {
+  if (!audio.autoplayBlocked && !audio.musicBusy && !audio.audioError)
+    return null;
+  const message = audio.autoplayBlocked
+    ? "Your browser needs a tap to start the music."
+    : audio.audioError || "Getting the music ready…";
+  return (
+    <div className="live-audio-notice" role="status">
+      <span>{message}</span>
+      {audio.autoplayBlocked && (
+        <Button size="sm" onClick={() => void audio.enableAudio()}>
+          Enable audio
+        </Button>
+      )}
+      <Button size="sm" variant="outline" onClick={audio.quiet}>
+        Keep it quiet
+      </Button>
+    </div>
   );
 }

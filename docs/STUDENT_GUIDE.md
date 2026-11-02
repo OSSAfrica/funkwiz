@@ -32,8 +32,15 @@ the game resumes. The first correct answer earns 1,000 points, the second 900, t
 and all later correct answers 700. Wrong or unanswered questions earn 0.
 The order resets for each question, and points appear only at reveal.
 
-You can choose a light/dark appearance and enable optional audio controls on your
-device. Music and effects start off. A silent device does not stop you answering.
+You can choose a light/dark appearance and control audio on your device. Music
+and effects try to start automatically, including in the lobby and results. If
+your browser blocks autoplay, choose **Enable audio** or **Keep it quiet**. Your
+mute, volume and clock-tick choices are saved for the next game in this browser.
+A silent device does not stop you answering.
+
+Finish in the top three to see a short confetti celebration, including shared
+ranks. It plays once per game in this tab. Reduced-motion settings replace the
+celebration with a still result.
 
 ## Reconnect safely
 
@@ -59,5 +66,5 @@ teacher what you see. Never send anyone the teacher's private setup code.
 ## Share your result
 
 After the game, choose **Share my result** to download a colorful PNG with your
-nickname, quiz title, rank, points and correct-answer count. Share that image
+nickname, quiz title, rank out of the total players, points and correct-answer count. Share that image
 wherever you like. It contains no room code or other players’ names.

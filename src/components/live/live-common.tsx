@@ -4,7 +4,11 @@ import {
   type ScoringRules,
 } from "@/lib/live/scoring";
 import { useHydrated } from "@/lib/use-hydrated";
-import { AudioSettings, type AudioControls } from "./audio-settings";
+import {
+  AudioNotice,
+  AudioSettings,
+  type AudioControls,
+} from "./audio-settings";
 import { Link } from "@tanstack/react-router";
 import {
   Check,
@@ -53,46 +57,49 @@ export function LiveHeader({
 } & AudioControls) {
   const hydrated = useHydrated();
   return (
-    <header className="live-header">
-      <Link
-        to={host ? "/" : "/join"}
-        search={host ? undefined : { code: undefined }}
-        aria-label={host ? "Back to your library" : "Join another game"}
-      >
-        <LiveBrand />
-      </Link>
-      <div className="live-header-right">
-        <span className="live-code-chip">
-          GAME <strong>{code}</strong>
-        </span>
-        <span
-          className={cn("connection-chip", !connected && "offline")}
-          role="status"
+    <>
+      <header className="live-header">
+        <Link
+          to={host ? "/" : "/join"}
+          search={host ? undefined : { code: undefined }}
+          aria-label={host ? "Back to your library" : "Join another game"}
         >
-          {connected ? <Wifi size={14} /> : <WifiOff size={14} />}
-          <span>{connected ? "Connected" : "Reconnecting"}</span>
-        </span>
-        <button
-          className={cn("sound-control", sound && "enabled")}
-          aria-label={sound ? "Turn sound off" : "Turn sound on"}
-          aria-pressed={sound}
-          disabled={!hydrated}
-          onClick={onSound}
-        >
-          {sound ? <Volume2 size={19} /> : <VolumeX size={19} />}
-        </button>
-        <button
-          className={cn("sound-control", music && "enabled")}
-          aria-label={music ? "Turn music off" : "Turn music on"}
-          aria-pressed={music}
-          disabled={!hydrated || audioSettings.musicBusy}
-          onClick={onMusic}
-        >
-          <Music2 size={18} />
-        </button>
-        <AudioSettings audio={{ ...audioSettings, sound, music }} />
-      </div>
-    </header>
+          <LiveBrand />
+        </Link>
+        <div className="live-header-right">
+          <span className="live-code-chip">
+            GAME <strong>{code}</strong>
+          </span>
+          <span
+            className={cn("connection-chip", !connected && "offline")}
+            role="status"
+          >
+            {connected ? <Wifi size={14} /> : <WifiOff size={14} />}
+            <span>{connected ? "Connected" : "Reconnecting"}</span>
+          </span>
+          <button
+            className={cn("sound-control", sound && "enabled")}
+            aria-label={sound ? "Turn sound off" : "Turn sound on"}
+            aria-pressed={sound}
+            disabled={!hydrated}
+            onClick={onSound}
+          >
+            {sound ? <Volume2 size={19} /> : <VolumeX size={19} />}
+          </button>
+          <button
+            className={cn("sound-control", music && "enabled")}
+            aria-label={music ? "Turn music off" : "Turn music on"}
+            aria-pressed={music}
+            disabled={!hydrated || audioSettings.musicBusy}
+            onClick={onMusic}
+          >
+            <Music2 size={18} />
+          </button>
+          <AudioSettings audio={{ ...audioSettings, sound, music }} />
+        </div>
+      </header>
+      <AudioNotice audio={audioSettings} />
+    </>
   );
 }
 export function RoomLoading() {

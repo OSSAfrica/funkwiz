@@ -36,6 +36,9 @@ test("second correct player gets 900 points and downloads their final result PNG
     const result = await state(second.context.request, code);
     expect(result.self?.rank).toBe(2);
     expect(result.self?.score).toBe(900);
+    await expect(
+      second.page.locator(".student-score-cards > div").nth(1),
+    ).toContainText("of 2 players");
     const pending = second.page.waitForEvent("download");
     await second.page
       .getByRole("button", { name: "Share my result", exact: true })

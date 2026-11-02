@@ -69,6 +69,10 @@ export function roomView(
         : [],
     leaderboard:
       revealed || room.phase === "finished" ? ranked.slice(0, 10) : [],
+    podium:
+      room.phase === "finished"
+        ? ranked.filter((player) => player.rank <= 3)
+        : [],
     question: showQuestion
       ? {
           id: q.id,

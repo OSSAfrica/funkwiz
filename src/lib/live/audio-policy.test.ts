@@ -36,7 +36,7 @@ const room: RoomView = {
   },
   reportSaved: false,
 };
-test("audio opens silently, and duplicate or reconnected snapshots do not replay results", () => {
+test("opening or reconnecting does not replay past result effects", () => {
   assert.deepEqual(audioCues(null, room), []);
   assert.deepEqual(audioCues(room, { ...room }), []);
   const reveal = {
@@ -91,8 +91,9 @@ test("audio follows connection, visibility and pause state and converts the serv
     false,
   );
 });
-test("the question bed is quieter than lobby music and music stops when finished", () => {
+test("the question bed is quieter while lobby and results keep the music playing", () => {
   assert.ok(musicSceneLevel("question") < musicSceneLevel("reveal"));
   assert.equal(musicSceneLevel("question") / musicSceneLevel("lobby"), 0.36);
-  assert.equal(musicSceneLevel("finished"), 0);
+  assert.equal(musicSceneLevel("finished"), 1);
+  assert.equal(musicSceneLevel("closed"), 0);
 });

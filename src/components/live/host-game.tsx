@@ -1,3 +1,4 @@
+import { Podium } from "./celebration";
 import { scoringFor } from "@/lib/live/scoring";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
@@ -120,7 +121,7 @@ export function HostGame({ code }: { code: string }) {
             }}
           />
         ) : ended ? (
-          <HostFinish snapshot={snapshot} />
+          <HostFinish snapshot={snapshot} onSkip={audio.stopCelebration} />
         ) : (
           <HostQuestion snapshot={snapshot} seconds={seconds} />
         )}
@@ -520,9 +521,18 @@ function LiveSettings({
     </DialogContent>
   );
 }
-function HostFinish({ snapshot }: { snapshot: RoomView }) {
+function HostFinish({
+  snapshot,
+  onSkip,
+}: {
+  snapshot: RoomView;
+  onSkip: () => void;
+}) {
   return (
     <>
+      {snapshot.phase === "finished" && (
+        <Podium snapshot={snapshot} onSkip={onSkip} />
+      )}
       <section className="host-finish">
         <span className="eyebrow">GOOD QUESTIONS. GREAT COMPANY.</span>
         <h1>

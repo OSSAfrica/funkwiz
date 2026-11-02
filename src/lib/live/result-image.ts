@@ -75,7 +75,7 @@ export async function resultImage(result: ShareableResult) {
       width: 285,
       color: "#e7e0f5",
       label: "MY RANK",
-      value: `#${result.rank}`,
+      value: `#${result.rank} of ${result.playerCount}`,
     },
     {
       x: 389,
@@ -95,7 +95,16 @@ export async function resultImage(result: ShareableResult) {
   for (const stat of stats) {
     round(stat.x, 349, stat.width, 144, 18, stat.color);
     text(stat.label, stat.x + 22, 383, 18, "#526859");
-    text(stat.value, stat.x + 22, 459, 65, "#153f35");
+    let valueSize = 65;
+    ctx.font = font(valueSize);
+    while (
+      valueSize > 24 &&
+      ctx.measureText(stat.value).width > stat.width - 44
+    ) {
+      valueSize -= 2;
+      ctx.font = font(valueSize);
+    }
+    text(stat.value, stat.x + 22, 459, valueSize, "#153f35");
   }
   ctx.font = font(30);
   ctx.fillStyle = "#faf8ef";

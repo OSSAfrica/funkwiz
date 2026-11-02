@@ -67,6 +67,8 @@ export type RoomView = {
   answeredCount: number;
   roster: { id: string; nickname: string; connected: boolean }[];
   leaderboard: RankedPlayer[];
+  /** All tied top-three finishers, independent of the leaderboard preview limit. */
+  podium?: RankedPlayer[];
   question: null | {
     id: string;
     prompt: string | null;

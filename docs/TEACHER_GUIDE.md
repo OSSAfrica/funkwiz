@@ -86,10 +86,23 @@ consume a tier. Order resets for each question. Equal scores share a rank. See [
 Use **Appearance** for Light, Dark or System. System follows the device preference;
 saved preferences apply to the current browser and synchronize across its tabs.
 
-Music and sound effects begin off and have separate controls. **Audio settings**
-lets you adjust volumes and optional clock ticks. Music softens during questions
-and feedback. Audio rests when paused, disconnected or in a hidden tab. Answer
+Music and sound effects attempt autoplay, with an **Enable audio** button when
+your browser requires a tap. **Keep it quiet** mutes both. Preferences are saved
+in this browser, and separate controls remain available. **Audio settings**
+lets you adjust volumes and optional clock ticks. Music plays in the lobby and
+final results, and softens during questions and feedback. Audio rests when paused, disconnected or in a hidden tab. Answer
 feedback plays after reveal rather than exposing correctness early.
+
+## Celebrate the finish
+
+The completed host screen presents a bronze-to-gold podium reveal with a short
+fanfare, spotlights, confetti and fireworks. All tied top-three finishers count;
+a shared rank never becomes a separate placing. Extra tied names can be
+expanded. **Skip animation** settles the stage and stops the reveal sound.
+
+The sequence ends within five seconds and does not restart on refresh in the
+same tab. Reduced-motion preferences show the podium with a brief fade and no
+confetti, fireworks or moving lights. Reports and navigation remain available.
 
 ## Review and export results
 
