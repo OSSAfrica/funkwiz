@@ -3543,3 +3543,65 @@ button.teacher-profile {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Audio controls remain separate from the server-authoritative game controls. */
+.audio-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  margin-bottom: 12px;
+}
+.audio-setting-row label {
+  font-size: 13px;
+}
+.audio-volume-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.audio-volume-label span {
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+.audio-volume {
+  width: 100%;
+  height: 28px;
+  accent-color: var(--ring);
+  cursor: pointer;
+  margin: 5px 0;
+}
+.audio-settings-panel {
+  z-index: 50;
+  max-height: calc(100dvh - 36px);
+  overflow-y: auto;
+}
+.sound-control:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+@media (max-width: 380px) {
+  .live-header {
+    flex-wrap: wrap;
+  }
+  .live-header-right {
+    margin-left: auto;
+  }
+}
+
+/* Popovers share dialog semantics without taking the full workspace-dialog layout. */
+.audio-settings-panel[role="dialog"] {
+  width: 18rem;
+  max-width: calc(100vw - 24px);
+  padding: 18px;
+  border-radius: 16px;
+  display: block;
+}
+.audio-settings-panel[role="dialog"] h2 {
+  font: 700 16px/1.4 var(--font-sans);
+  letter-spacing: 0;
+}
+.audio-settings-panel[role="dialog"] > div:first-child {
+  padding-right: 0;
+}

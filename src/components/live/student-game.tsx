@@ -17,7 +17,7 @@ import type { RoomView } from "@/lib/live/protocol";
 export function StudentGame({ code }: { code: string }) {
   const room = useLiveRoom(code, "student"),
     seconds = useRoomCountdown(room.snapshot, room.offset);
-  const audio = useGameAudio(room.snapshot);
+  const audio = useGameAudio(room.snapshot, room.offset, room.connected);
   const [pending, setPending] = useState<string | null>(null);
   const [answerError, setAnswerError] = useState<{
     id: string;

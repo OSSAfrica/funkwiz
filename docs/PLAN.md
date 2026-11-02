@@ -288,3 +288,40 @@ branch warning in the lazy PDF bundle; the production browser export exercises
 the actual web font-loading path successfully. No warnings were suppressed.
 Actual inbox delivery remains dependent on private provider/sender setup; all
 transport tests were mocked and no real account email was sent.
+
+## Calmer, adaptive classroom audio
+
+Replace the short repeating sine-wave motif with an original 48-second marimba
+arrangement. Keep music and effects independent, lower the music during timed
+questions, and duck it briefly under feedback. Add gentle alternating clock ticks
+aligned to the authoritative deadline, with independent volume/tick controls.
+
+Use distinct question-start, answer-confirmed, correct, incorrect, neutral reveal,
+and finished cues. Correctness cues wait for the server reveal; hosts and
+unanswered students receive a neutral reveal cue. Ignore initial/reconnected
+snapshots and duplicate states so old feedback does not replay. Silence audio
+while paused, disconnected or hidden, and close its context when leaving.
+
+Verify cue policy in unit tests and actual decoded music, gain ramps, timer ticks,
+pausing, muted effects, reveal behavior and cleanup in desktop/phone browsers.
+
+Implemented Curious Garden: original 16-bar, 80 BPM, 48-second stereo music,
+with a reproducible Bun/ffmpeg synthesis script and a roughly 295 KB MP3. Native
+Web Audio loops the decoded track; the music gain drops to 36% of its lobby level
+during questions, with a further short 50% duck under feedback. Clock ticks are
+soft filtered noise, alternate pitch once per second, and follow the server
+clock offset. There is no escalating urgency sound. Sound and music start only
+on a user gesture and remain independently adjustable; the shadcn popover adds
+volume controls and optional clock ticks.
+
+Validation: 38 unit tests pass. Six new desktop/phone audio checks pass, exercising
+actual AudioContext/source/gain behavior, decoded 48-second duration and loop
+boundary, question ducking, paused ticks, selection and reveal cues, automatic
+expiry, neutral host/unanswered reveals, hidden tabs, interrupted-context mute,
+asset failure/retry and context cleanup. The eight existing desktop/phone live and
+QR checks also pass. TypeScript, production build, frozen Bun install and client
+private-value checks pass. React Doctor's changed/new-file scan reports 100/100.
+The generated soundtrack peaks at -3.1 dBFS without clipping before the quieter
+in-game mix; the local preview returns the MP3 correctly. No external audio
+recordings were downloaded or added. Playback feel can be auditioned at
+`/audio/curious-garden.mp3` and adjusted in the live audio controls.

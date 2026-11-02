@@ -46,7 +46,7 @@ import { JoinQrCode } from "./join-qr-code";
 export function HostGame({ code }: { code: string }) {
   const room = useLiveRoom(code, "host"),
     seconds = useRoomCountdown(room.snapshot, room.offset);
-  const audio = useGameAudio(room.snapshot);
+  const audio = useGameAudio(room.snapshot, room.offset, room.connected);
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const [dialog, setDialog] = useState<"settings" | "end" | null>(null);

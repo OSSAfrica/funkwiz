@@ -131,3 +131,15 @@ open app tabs to discard modules cached by that tab.
 - **Appearance** offers **Light**, **Dark** and **System**, saved on the current
   device and synchronized across tabs. System follows device changes. App dark
   mode does not change the printable PDF palette or email styling.
+
+### Classroom audio
+
+Live games include **Curious Garden**, an original 48-second marimba-style loop.
+Use the music and sound buttons in the game header to enable them independently.
+Open **Audio settings** for music/effects volume and optional gentle clock ticks.
+Music lowers during questions and feedback. Audio rests while paused, offline,
+or in a hidden tab; answer correctness is heard only after the server reveals it.
+
+The soundtrack is fetched only after music is enabled. Listen directly at
+`/audio/curious-garden.mp3`, or regenerate it with `bun run audio:generate`
+(requires ffmpeg). See `public/audio/README.md` for the score and asset details.

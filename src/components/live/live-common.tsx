@@ -1,3 +1,5 @@
+import { useHydrated } from "@/lib/use-hydrated";
+import { AudioSettings, type AudioControls } from "./audio-settings";
 import { Link } from "@tanstack/react-router";
 import {
   Check,
@@ -34,6 +36,7 @@ export function LiveHeader({
   music,
   onSound,
   onMusic,
+  ...audioSettings
 }: {
   code: string;
   host: boolean;
@@ -42,7 +45,8 @@ export function LiveHeader({
   music: boolean;
   onSound: () => void;
   onMusic: () => void;
-}) {
+} & AudioControls) {
+  const hydrated = useHydrated();
   return (
     <header className="live-header">
       <Link
@@ -67,6 +71,7 @@ export function LiveHeader({
           className={cn("sound-control", sound && "enabled")}
           aria-label={sound ? "Turn sound off" : "Turn sound on"}
           aria-pressed={sound}
+          disabled={!hydrated}
           onClick={onSound}
         >
           {sound ? <Volume2 size={19} /> : <VolumeX size={19} />}
@@ -75,10 +80,12 @@ export function LiveHeader({
           className={cn("sound-control", music && "enabled")}
           aria-label={music ? "Turn music off" : "Turn music on"}
           aria-pressed={music}
+          disabled={!hydrated || audioSettings.musicBusy}
           onClick={onMusic}
         >
           <Music2 size={18} />
         </button>
+        <AudioSettings audio={{ ...audioSettings, sound, music }} />
       </div>
     </header>
   );
