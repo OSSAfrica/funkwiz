@@ -1,4 +1,5 @@
 /// <reference types="@cloudflare/vitest-plugin/types" />
+import { randomInt } from "node:crypto";
 import { afterEach, beforeAll, expect, test } from "vitest";
 import {
   applyD1Migrations,
@@ -33,9 +34,7 @@ afterEach(() => {
   for (const ws of sockets.splice(0)) ws.close(1000, "Test complete");
 });
 async function room() {
-  const code = String(
-    100000 + (crypto.getRandomValues(new Uint32Array(1))[0] % 900000),
-  );
+  const code = String(randomInt(100000, 1000000));
   const stub = env.LIVE_ROOMS.getByName(code);
   expect(
     await stub.initialize(

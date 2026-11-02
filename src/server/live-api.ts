@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash, randomInt } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { requireWorkspace } from "@/lib/workspace.server";
@@ -139,9 +139,7 @@ async function createRoom(request: Request, env: Env) {
       409,
     );
   for (let attempt = 0; attempt < 10; attempt++) {
-    const code = String(
-      100000 + (crypto.getRandomValues(new Uint32Array(1))[0] % 900000),
-    );
+    const code = String(randomInt(100000, 1000000));
     const id = crypto.randomUUID();
     const created = await env.LIVE_ROOMS.getByName(code).initialize(
       id,
