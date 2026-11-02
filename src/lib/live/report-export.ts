@@ -1,3 +1,4 @@
+import { scoringFor, scoringSummary } from "./scoring";
 import type { GameReport } from "./protocol";
 
 export type ReportFormat = "pdf" | "csv" | "json";
@@ -38,7 +39,18 @@ export function reportCsv(report: GameReport) {
     ["Players", report.playerCount],
     ["Questions played", summary.played],
     ["Answer accuracy (%)", summary.accuracy],
-    ["Points per correct answer", report.pointsPerCorrect],
+    ...((): (string | number)[][] => {
+      const scoring = scoringFor(report);
+      return scoring.type === "flat"
+        ? [["Points per correct answer", scoring.pointsPerCorrect]]
+        : [
+            ["Scoring", scoringSummary(scoring)],
+            ...scoring.points.map((points, i) => [
+              i < 3 ? `Correct answer ${i + 1}` : "Remaining correct answers",
+              points,
+            ]),
+          ];
+    })(),
     [],
     ["Leaderboard"],
     ["Rank", "Nickname", "Score"],

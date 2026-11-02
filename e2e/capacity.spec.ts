@@ -167,8 +167,18 @@ test("supports 150 simultaneous students, an answer burst, duplicates, and recon
     const revealFanoutMilliseconds = Date.now() - revealStart;
     for (let index = 0; index < bots.length; index++) {
       expect(bots[index].leaked).toBe(false);
-      expect(bots[index].last?.self?.score).toBe(index % 4 === 1 ? 1000 : 0);
+      const self = bots[index].last!.self!;
+      expect(self.score).toBe(
+        index % 4 === 1
+          ? [1000, 900, 800, 700][Math.min(self.correctOrder! - 1, 3)]
+          : 0,
+      );
     }
+    const scores = bots
+      .map((bot) => bot.last!.self!.score)
+      .filter(Boolean)
+      .sort((a, b) => b - a);
+    expect(scores).toEqual([1000, 900, 800, ...Array(35).fill(700)]);
     expect(
       (
         await post(request, `/api/live/rooms/${code}/control`, {

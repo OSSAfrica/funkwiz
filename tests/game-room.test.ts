@@ -164,3 +164,92 @@ test("a participant WebSocket cannot send host commands", async () => {
   if (!state.ok) throw new Error(state.message);
   expect(state.data.phase).toBe("lobby");
 });
+
+test("correct submission tiers survive identical timestamps, retries and eviction, then reset", async () => {
+  const { stub, token } = await room();
+  const tokens = [token];
+  for (let i = 0; i < 5; i++) {
+    const joined = await stub.join(`Learner ${i}`, "");
+    if (!joined.ok) throw new Error(joined.message);
+    tokens.push(joined.data.token);
+  }
+  const start = await stub.control(owner, { type: "start" });
+  if (!start.ok) throw new Error(start.message);
+  const question = start.data.question!.id;
+  for (const [i, identity] of tokens.entries()) {
+    const answer = await stub.answer(identity, question, i === 0 ? 0 : 1);
+    if (!answer.ok) throw new Error(answer.message);
+    expect(answer.data.self?.score).toBe(0);
+    expect(answer.data.self?.pointsEarned).toBeNull();
+    expect(answer.data.self?.correctOrder).toBeNull();
+  }
+  await stub.answer(tokens[1], question, 0);
+  await runInDurableObject(stub, (_instance, state) => {
+    state.storage.sql.exec("UPDATE answers SET answered_at = 42");
+  });
+  await evictDurableObject(stub);
+  await stub.control(owner, { type: "reveal", questionIndex: 0 });
+  const expected = [0, 1000, 900, 800, 700, 700];
+  for (const [i, identity] of tokens.entries()) {
+    const revealed = await stub.read("student", identity);
+    if (!revealed.ok) throw new Error(revealed.message);
+    expect(revealed.data.self?.score).toBe(expected[i]);
+    expect(revealed.data.self?.pointsEarned).toBe(expected[i]);
+    expect(revealed.data.self?.correctOrder).toBe(i || null);
+  }
+  await evictDurableObject(stub);
+  await stub.control(owner, { type: "reveal", questionIndex: 0 });
+  const next = await stub.control(owner, { type: "next", questionIndex: 0 });
+  if (!next.ok) throw new Error(next.message);
+  await stub.answer(
+    tokens[2],
+    next.data.question!.id,
+    sampleQuizzes[0].questions[1].correctIndex,
+  );
+  await stub.control(owner, { type: "end" });
+  const ended = await stub.read("student", tokens[2]);
+  if (!ended.ok) throw new Error(ended.message);
+  expect(ended.data.self?.score).toBe(1900);
+  expect(ended.data.self?.correctCount).toBe(2);
+  const saved = await env.DB.prepare(
+    "SELECT report FROM live_session WHERE id = ?",
+  )
+    .bind(ended.data.sessionId)
+    .first<{ report: string }>();
+  const report = JSON.parse(saved!.report);
+  expect(report.scoring).toEqual({
+    type: "answer-order",
+    points: [1000, 900, 800, 700],
+  });
+  expect(report.pointsPerCorrect).toBeUndefined();
+});
+
+test("legacy rooms migrate the answer table and retain flat points", async () => {
+  const { stub, token } = await room();
+  const second = await stub.join("Second learner", "");
+  if (!second.ok) throw new Error(second.message);
+  await runInDurableObject(stub, (_instance, state) => {
+    const meta = JSON.parse(
+      state.storage.sql.exec<{ meta: string }>("SELECT meta FROM room").one()
+        .meta,
+    );
+    delete meta.scoring;
+    state.storage.sql.exec("UPDATE room SET meta = ?", JSON.stringify(meta));
+    state.storage.sql.exec("DROP INDEX answers_question_order_idx");
+    state.storage.sql.exec("ALTER TABLE answers DROP COLUMN submission_order");
+  });
+  await evictDurableObject(stub);
+  const start = await stub.control(owner, { type: "start" });
+  if (!start.ok) throw new Error(start.message);
+  await stub.answer(token, start.data.question!.id, 1);
+  await stub.answer(second.data.token, start.data.question!.id, 1);
+  await stub.control(owner, { type: "reveal", questionIndex: 0 });
+  const restored = await stub.read("student", second.data.token);
+  if (!restored.ok) throw new Error(restored.message);
+  expect(restored.data.self?.score).toBe(1000);
+  expect(restored.data.self?.pointsEarned).toBe(1000);
+  expect(restored.data.scoring).toEqual({
+    type: "flat",
+    pointsPerCorrect: 1000,
+  });
+});

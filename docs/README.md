@@ -30,9 +30,11 @@ in both. Further collaboration/learning ideas remain [proposals](FUTURE_FEATURES
 
 ### Teachers and students
 
+- [Screenshot tour](SHOWCASE.md): real app screens and a downloadable student result card.
+
 - [Getting started](GETTING_STARTED.md): the first account, first game and choice of setup path.
 - [Teacher guide](TEACHER_GUIDE.md): authoring, practice, hosting, timing, reports and audio.
-- [Student guide](STUDENT_GUIDE.md): invitations, answering and reconnecting.
+- [Student guide](STUDENT_GUIDE.md): invitations, answering, scoring, reconnecting and sharing a result image.
 - [School workspaces](WORKSPACES.md): modes, invitations, roles, private sharing and migration.
 - [Question imports](QUIZ_IMPORTS.md): supported JSON fields, limits and validation.
 - [Live games](LIVE_GAMES.md): authoritative scoring, timing, connections and room lifecycle.

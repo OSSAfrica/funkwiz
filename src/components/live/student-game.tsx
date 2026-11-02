@@ -1,3 +1,9 @@
+import { ShareResult } from "./share-result";
+import {
+  correctAnswerPoints,
+  scoringFor,
+  scoringSummary,
+} from "@/lib/live/scoring";
 import { useState } from "react";
 import { Hourglass, Sparkles, Trophy, Users } from "lucide-react";
 import { submitAnswer } from "@/lib/live/client";
@@ -160,6 +166,7 @@ function StudentRound({
       {snapshot.phase === "reveal" && (
         <Leaderboard
           players={snapshot.leaderboard}
+          scoring={scoringFor(snapshot)}
           selfId={snapshot.self?.id}
         />
       )}
@@ -184,6 +191,9 @@ function StudentLobby({ snapshot }: { snapshot: RoomView }) {
       <p>
         You’re playing <strong>{snapshot.title}</strong>.<br />
         Your teacher will start the game when everyone’s ready.
+      </p>
+      <p className="text-sm text-muted-foreground">
+        {scoringSummary(scoringFor(snapshot))}
       </p>
       <span className="lobby-player-count">
         <Users size={19} />
@@ -222,7 +232,7 @@ function AnswerFeedback({
     mood = "";
   if (snapshot.phase === "reveal") {
     if (snapshot.self?.correct === true) {
-      text = "Nice one! +1,000 points";
+      text = `Nice one! +${(snapshot.self.pointsEarned ?? correctAnswerPoints(0, scoringFor(snapshot))).toLocaleString()} points`;
       mood = "correct-celebration";
     } else if (snapshot.self?.answer !== null) {
       text = "A good try. You’ve got the next one!";
@@ -281,8 +291,13 @@ function StudentFinish({ snapshot }: { snapshot: RoomView }) {
             <span>Correct answers</span>
           </div>
         </div>
+        <ShareResult snapshot={snapshot} />
       </section>
-      <Leaderboard players={snapshot.leaderboard} selfId={snapshot.self?.id} />
+      <Leaderboard
+        players={snapshot.leaderboard}
+        selfId={snapshot.self?.id}
+        scoring={scoringFor(snapshot)}
+      />
     </>
   );
 }

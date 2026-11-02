@@ -1,3 +1,4 @@
+import { scoringFor, scoringSummary } from "./scoring";
 import fontRegular from "@fontsource/nunito-sans/files/nunito-sans-latin-400-normal.woff?url";
 import fontBold from "@fontsource/nunito-sans/files/nunito-sans-latin-700-normal.woff?url";
 import type { GameReport } from "@/lib/live/protocol";
@@ -185,8 +186,7 @@ export async function reportPdf(report: GameReport) {
           <Text>No players joined this game.</Text>
         )}
         <Text style={{ color: "#68736e", fontSize: 9, marginTop: 8 }}>
-          {report.pointsPerCorrect.toLocaleString("en-GB")} points per correct
-          answer. Equal scores share a rank.
+          {scoringSummary(scoringFor(report))} Equal scores share a rank.
         </Text>
         <Text style={styles.section} minPresenceAhead={100}>
           A closer look at the questions.

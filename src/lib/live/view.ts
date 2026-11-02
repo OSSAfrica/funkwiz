@@ -1,3 +1,4 @@
+import { correctAnswerPoints, scoringFor } from "./scoring";
 import {
   rankPlayers,
   type Player,
@@ -28,6 +29,13 @@ export function roomView(
     (role === "host" ? room.display === "shared" : room.display === "devices");
   const q = room.quiz.questions[room.index];
   const ranked = rankPlayers(data.players);
+  const scoring = scoringFor(room);
+  const correctIds = revealed
+    ? [...data.answers]
+        .filter(([, choice]) => choice === q.correctIndex)
+        .map(([id]) => id)
+    : [];
+  const correctPosition = playerId ? correctIds.indexOf(playerId) : -1;
   const player = data.players.find((p) => p.id === playerId);
   const answer = playerId ? (data.answers.get(playerId) ?? null) : null;
   return {
@@ -41,6 +49,7 @@ export function roomView(
     questionIndex: room.index,
     questionCount: room.quiz.questions.length,
     settings: room.settings,
+    scoring,
     display: room.display,
     deadline: room.deadline,
     paused: room.paused,
@@ -78,6 +87,11 @@ export function roomView(
           rank: ranked.find((p) => p.id === player.id)?.rank ?? 0,
           correctCount: player.correctCount,
           answer,
+          pointsEarned: revealed
+            ? correctAnswerPoints(correctPosition, scoring)
+            : null,
+          correctOrder:
+            revealed && correctPosition >= 0 ? correctPosition + 1 : null,
           correct:
             revealed && answer !== null ? answer === q.correctIndex : null,
         }

@@ -28,7 +28,9 @@ reveals it or the question timer ends.
 
 The teacher decides where the question appears. If you see only answer buttons,
 look at the shared screen. When the teacher pauses, answering is disabled until
-the game resumes. A correct answer earns 1,000 points; there is no speed bonus.
+the game resumes. The first correct answer earns 1,000 points, the second 900, the third 800,
+and all later correct answers 700. Wrong or unanswered questions earn 0.
+The order resets for each question, and points appear only at reveal.
 
 You can choose a light/dark appearance and enable optional audio controls on your
 device. Music and effects start off. A silent device does not stop you answering.
@@ -53,3 +55,9 @@ assignment mode in the current app.
 If the link does not open, a code is rejected, or reconnecting does not work,
 follow [troubleshooting](TROUBLESHOOTING.md#joining-and-live-games) and tell your
 teacher what you see. Never send anyone the teacher's private setup code.
+
+## Share your result
+
+After the game, choose **Share my result** to download a colorful PNG with your
+nickname, quiz title, rank, points and correct-answer count. Share that image
+wherever you like. It contains no room code or other players’ names.

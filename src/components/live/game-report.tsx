@@ -1,3 +1,4 @@
+import { scoringFor } from "@/lib/live/scoring";
 import { ReportDownload } from "@/components/reports/report-download";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Check, Target, Trophy, Users } from "lucide-react";
@@ -70,7 +71,11 @@ export function GameReportScreen({ report }: { report: GameReport | null }) {
             <span>Questions played</span>
           </div>
         </div>
-        <Leaderboard players={report.leaderboard} full />
+        <Leaderboard
+          scoring={scoringFor(report)}
+          players={report.leaderboard}
+          full
+        />
         <section className="question-review">
           <span className="eyebrow">TURN ANSWERS INTO INSIGHTS</span>
           <h2>A closer look at the questions.</h2>

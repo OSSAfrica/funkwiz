@@ -1,3 +1,4 @@
+import { correctAnswerPoints, scoringFor } from "@/lib/live/scoring";
 import { DurableObject } from "cloudflare:workers";
 import { createHash, randomBytes } from "node:crypto";
 import { advanceRoom, createRoomMeta, transitionRoom } from "@/lib/live/engine";
@@ -6,7 +7,6 @@ import {
   nickname,
   rankPlayers,
   MAX_PLAYERS,
-  POINTS_PER_CORRECT,
   type GameReport,
   type HostAction,
   type Player,
@@ -49,8 +49,18 @@ export class GameRoom extends DurableObject<Env> {
     this.ctx.storage.sql.exec(`
       CREATE TABLE IF NOT EXISTS room (singleton INTEGER PRIMARY KEY CHECK(singleton = 1), meta TEXT NOT NULL, revision INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, token_hash TEXT NOT NULL UNIQUE, nickname TEXT NOT NULL, nickname_key TEXT NOT NULL UNIQUE, score INTEGER NOT NULL DEFAULT 0, correct_count INTEGER NOT NULL DEFAULT 0, joined_at INTEGER NOT NULL);
-      CREATE TABLE IF NOT EXISTS answers (player_id TEXT NOT NULL REFERENCES players(id) ON DELETE CASCADE, question_index INTEGER NOT NULL, choice INTEGER NOT NULL, awarded INTEGER NOT NULL DEFAULT 0, answered_at INTEGER NOT NULL, PRIMARY KEY(player_id, question_index));
+      CREATE TABLE IF NOT EXISTS answers (player_id TEXT NOT NULL REFERENCES players(id) ON DELETE CASCADE, question_index INTEGER NOT NULL, choice INTEGER NOT NULL, awarded INTEGER NOT NULL DEFAULT 0, answered_at INTEGER NOT NULL, submission_order INTEGER, PRIMARY KEY(player_id, question_index));
     `);
+    const columns = this.ctx.storage.sql
+      .exec<{ name: string }>("PRAGMA table_info(answers)")
+      .toArray();
+    if (!columns.some((column) => column.name === "submission_order"))
+      this.ctx.storage.sql.exec(
+        "ALTER TABLE answers ADD COLUMN submission_order INTEGER",
+      );
+    this.ctx.storage.sql.exec(
+      "CREATE INDEX IF NOT EXISTS answers_question_order_idx ON answers(question_index, submission_order)",
+    );
     const row = this.ctx.storage.sql
       .exec<{ meta: string; revision: number }>(
         "SELECT meta, revision FROM room WHERE singleton = 1",
@@ -198,11 +208,12 @@ export class GameRoom extends DurableObject<Env> {
       if (!Number.isInteger(choice) || Number(choice) < 0 || Number(choice) > 3)
         throw new GameFault("Choose one of the four answers.", 400);
       const inserted = this.ctx.storage.sql.exec(
-        "INSERT OR IGNORE INTO answers (player_id, question_index, choice, answered_at) VALUES (?, ?, ?, ?)",
+        "INSERT OR IGNORE INTO answers (player_id, question_index, choice, answered_at, submission_order) VALUES (?, ?, ?, ?, (SELECT COALESCE(MAX(submission_order), 0) + 1 FROM answers WHERE question_index = ?))",
         player.id,
         room.index,
         Number(choice),
         Date.now(),
+        room.index,
       );
       if (inserted.rowsWritten) {
         this.#bump();
@@ -421,12 +432,22 @@ export class GameRoom extends DurableObject<Env> {
     const previous = this.#room;
     this.ctx.storage.transactionSync(() => {
       if (previous?.phase === "question" && next.phase !== "question") {
-        this.ctx.storage.sql.exec(
-          "UPDATE players SET score = score + ?, correct_count = correct_count + 1 WHERE id IN (SELECT player_id FROM answers WHERE question_index = ? AND choice = ? AND awarded = 0)",
-          POINTS_PER_CORRECT,
-          previous.index,
-          previous.quiz.questions[previous.index].correctIndex,
-        );
+        const correct = this.ctx.storage.sql
+          .exec<{ player_id: string; awarded: number }>(
+            "SELECT player_id, awarded FROM answers WHERE question_index = ? AND choice = ? ORDER BY submission_order, answered_at, player_id",
+            previous.index,
+            previous.quiz.questions[previous.index].correctIndex,
+          )
+          .toArray();
+        const scoring = scoringFor(previous);
+        for (const [position, answer] of correct.entries()) {
+          if (answer.awarded) continue;
+          this.ctx.storage.sql.exec(
+            "UPDATE players SET score = score + ?, correct_count = correct_count + 1 WHERE id = ?",
+            correctAnswerPoints(position, scoring),
+            answer.player_id,
+          );
+        }
         this.ctx.storage.sql.exec(
           "UPDATE answers SET awarded = 1 WHERE question_index = ?",
           previous.index,
@@ -450,7 +471,7 @@ export class GameRoom extends DurableObject<Env> {
     const answers = new Map(
       this.ctx.storage.sql
         .exec<{ player_id: string; choice: number }>(
-          "SELECT player_id, choice FROM answers WHERE question_index = ?",
+          "SELECT player_id, choice FROM answers WHERE question_index = ? ORDER BY submission_order, answered_at, player_id",
           room.index,
         )
         .toArray()
@@ -598,7 +619,7 @@ export class GameRoom extends DurableObject<Env> {
       startedAt: room.startedAt,
       endedAt: room.endedAt!,
       playerCount: players.length,
-      pointsPerCorrect: POINTS_PER_CORRECT,
+      scoring: scoringFor(room),
       leaderboard: rankPlayers(players),
       questions: room.quiz.questions.map((q, index) => {
         const counts = [0, 0, 0, 0];

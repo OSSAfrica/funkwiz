@@ -77,8 +77,9 @@ Players already in the room can reconnect from the same browser.
   only questions actually reached as asked.
 
 Each player can submit one answer per question. Correctness is revealed together,
-and a correct answer is worth 1,000 points with no speed bonus. Equal scores share
-a rank. See [live game rules](LIVE_GAMES.md) for the exact lifecycle.
+with 1,000 points for the first correct answer, 900 for the second, 800 for the
+third and 700 for every remaining correct answer. Wrong answers earn 0 and do not
+consume a tier. Order resets for each question. Equal scores share a rank. See [live game rules](LIVE_GAMES.md) for the exact lifecycle.
 
 ## Appearance and audio
 

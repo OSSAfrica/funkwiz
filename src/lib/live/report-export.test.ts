@@ -50,3 +50,15 @@ test("report accuracy uses actual answers and handles an empty game", () => {
     played: 0,
   });
 });
+
+test("CSV describes ordered rules while preserving legacy report scores", () => {
+  assert.ok(reportCsv(report).includes('"Points per correct answer","1000"'));
+  const csv = reportCsv({
+    ...report,
+    pointsPerCorrect: undefined,
+    scoring: { type: "answer-order", points: [1000, 900, 800, 700] },
+  });
+  assert.ok(csv.includes('"Correct answer 2","900"'));
+  assert.ok(csv.includes('"Remaining correct answers","700"'));
+  assert.ok(!csv.includes('"Points per correct answer"'));
+});

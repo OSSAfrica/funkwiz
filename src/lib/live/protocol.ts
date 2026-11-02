@@ -1,3 +1,4 @@
+import type { ScoringRules } from "./scoring";
 import type { GameSettings, DisplayMode, Quiz } from "../quiz";
 
 export const MAX_PLAYERS = 200;
@@ -11,6 +12,7 @@ export type RoomMeta = {
   code: string;
   ownerId: string;
   workspaceId?: string | null;
+  scoring?: ScoringRules;
   quiz: Quiz;
   settings: GameSettings;
   display: DisplayMode;
@@ -80,7 +82,10 @@ export type RoomView = {
     correctCount: number;
     answer: number | null;
     correct: boolean | null;
+    pointsEarned?: number | null;
+    correctOrder?: number | null;
   };
+  scoring?: ScoringRules;
   reportSaved: boolean;
 };
 export type GameReport = {
@@ -90,7 +95,9 @@ export type GameReport = {
   startedAt: number | null;
   endedAt: number;
   playerCount: number;
-  pointsPerCorrect: number;
+  /** Legacy reports store flat points; new reports store their scoring rules. */
+  pointsPerCorrect?: number;
+  scoring?: ScoringRules;
   leaderboard: RankedPlayer[];
   questions: {
     id: string;
