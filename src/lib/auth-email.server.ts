@@ -1,3 +1,4 @@
+import { renderAccountEmail, type AccountEmail } from "@/emails/render.server";
 import { createHash } from "node:crypto";
 import { APIError } from "better-auth/api";
 import { isTeacher, type AuthSettings } from "./auth-policy";
@@ -27,61 +28,90 @@ export async function sendResetEmail(
       target.pathname !== "/reset-password"
     )
       throw new Error("Invalid reset destination");
-    const href = target.href.replace(
-      /[&<>"']/g,
-      (character) =>
-        ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;",
-        })[character]!,
-    );
-    const message = {
-      from: settings.AUTH_EMAIL_FROM!.trim(),
-      to: [email],
-      subject: "Reset your Fun Quiz password",
-      html: `<div style="font-family:Arial,sans-serif;color:#173e35;max-width:520px;margin:auto;padding:28px"><p style="font-size:22px;font-weight:bold">funquiz.</p><h1>Back to the good questions.</h1><p>Choose a fresh password and get back to your classroom.</p><p style="margin:28px 0"><a href="${href}" style="background:#f9dc80;color:#173e35;padding:14px 22px;border-radius:12px;text-decoration:none;font-weight:bold">Reset my password</a></p><p>This link expires in 30 minutes and works once. Resetting signs out existing teacher sessions.</p><p>If you didn’t request this, you can ignore this email.</p></div>`,
-      text: `Back to the good questions.\n\nReset your Fun Quiz password:\n${url}\n\nThis link expires in 30 minutes and can be used once. A password reset signs out your existing teacher sessions.\n\nIf you did not request this, you can ignore this email.`,
-    };
-    switch (selected) {
-      case "resend": {
-        const response = await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${settings.RESEND_API_KEY!.trim()}`,
-            "Content-Type": "application/json",
-            "Idempotency-Key": `fun-quiz-reset/${createHash("sha256").update(token).digest("hex")}`,
-          },
-          signal: AbortSignal.timeout(8000),
-          body: JSON.stringify(message),
-        });
-        if (!response.ok) throw new Error("Delivery rejected");
-        break;
-      }
-      case "cloudflare":
-        await settings.EMAIL!.send(message);
-        break;
-      case "smtp": {
-        const { createTransport } = await import("nodemailer");
-        const transport = createTransport(smtpOptions(settings)!);
-        try {
-          const result = await transport.sendMail(message);
-          if (!result.accepted?.length || result.rejected?.length)
-            throw new Error("Delivery rejected");
-        } finally {
-          transport.close();
-        }
-        break;
-      }
-      default:
-        throw new Error("Choose an email provider");
-    }
+    const content = await renderAccountEmail({
+      kind: "password-reset",
+      resetUrl: target.href,
+    });
+    await deliverEmail(settings, email, content, selected, token);
   } catch {
     throw new APIError("SERVICE_UNAVAILABLE", {
       message:
         "The reset email could not be sent. Try again later or use your private setup code.",
     });
+  }
+}
+
+async function deliverEmail(
+  settings: AuthSettings,
+  email: string,
+  content: Awaited<ReturnType<typeof renderAccountEmail>>,
+  selected: EmailProvider | null,
+  idempotency: string,
+) {
+  const message = {
+    from: settings.AUTH_EMAIL_FROM!.trim(),
+    to: [email],
+    ...content,
+  };
+  switch (selected) {
+    case "resend": {
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${settings.RESEND_API_KEY!.trim()}`,
+          "Content-Type": "application/json",
+          "Idempotency-Key": `fun-quiz-reset/${createHash("sha256").update(idempotency).digest("hex")}`,
+        },
+        signal: AbortSignal.timeout(8000),
+        body: JSON.stringify(message),
+      });
+      if (!response.ok) throw new Error("Delivery rejected");
+      break;
+    }
+    case "cloudflare":
+      await settings.EMAIL!.send(message);
+      break;
+    case "smtp": {
+      const { createTransport } = await import("nodemailer");
+      const transport = createTransport(smtpOptions(settings)!);
+      try {
+        const result = await transport.sendMail(message);
+        if (!result.accepted?.length || result.rejected?.length)
+          throw new Error("Delivery rejected");
+      } finally {
+        transport.close();
+      }
+      break;
+    }
+    default:
+      throw new Error("Choose an email provider");
+  }
+}
+// Account changes must succeed even if a notification provider is unavailable.
+// Never include passwords, setup codes, reset tokens, or provider errors in logs.
+export async function sendAccountNotification(
+  settings: AuthSettings,
+  recipient: { email: string; name?: string },
+  kind: "welcome" | "password-changed",
+) {
+  if (!isTeacher(recipient.email, settings)) return;
+  try {
+    const provider = await selectedEmailProvider(settings);
+    if (!emailConfigured(settings, provider)) return;
+    const origin = new URL(settings.BETTER_AUTH_URL!).origin;
+    const notification: AccountEmail =
+      kind === "welcome"
+        ? { kind, name: recipient.name || "teacher", workspaceUrl: origin }
+        : { kind, recoveryUrl: `${origin}/forgot-password` };
+    const content = await renderAccountEmail(notification);
+    await deliverEmail(
+      settings,
+      recipient.email,
+      content,
+      provider,
+      `${kind}:${crypto.randomUUID()}`,
+    );
+  } catch {
+    console.warn("Fun Quiz account notification could not be delivered.");
   }
 }

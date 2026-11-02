@@ -2,7 +2,10 @@
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from "vitest";
 import { applyD1Migrations } from "cloudflare:test";
 import { env } from "cloudflare:workers";
-import { sendResetEmail } from "../src/lib/auth-email.server";
+import {
+  sendAccountNotification,
+  sendResetEmail,
+} from "../src/lib/auth-email.server";
 import {
   emailDeliveryOptions,
   selectedEmailProvider,
@@ -181,4 +184,48 @@ test("provider metadata never returns sending credentials or an invalid sender",
     "provider",
     "sender",
   ]);
+});
+
+test("React Email escapes teacher content and renders HTML/plain text for account messages", async () => {
+  const { renderAccountEmail } = await import("../src/emails/render.server");
+  const welcome = await renderAccountEmail({
+    kind: "welcome",
+    name: '<script>alert("x")</script>',
+    workspaceUrl: "https://quiz.example.test",
+  });
+  expect(welcome.html).toContain("&lt;script&gt;");
+  expect(welcome.html).not.toContain("<script>");
+  expect(welcome.html).toContain("#153f35");
+  expect(welcome.html).toContain("#f9dc80");
+  expect(welcome.text).toContain("teacher account is ready");
+  expect(welcome.text).not.toContain("<html");
+  const changed = await renderAccountEmail({
+    kind: "password-changed",
+    recoveryUrl: "https://quiz.example.test/forgot-password",
+  });
+  expect(changed.html).toContain("Recover my account");
+  expect(changed.text).toContain("https://quiz.example.test/forgot-password");
+  expect(changed.subject).toBe("Your Fun Quiz password was updated");
+});
+test("optional account notifications skip unconfigured mail and contain provider failures", async () => {
+  await sendAccountNotification(base, { email }, "welcome");
+  expect(makeTransport).not.toHaveBeenCalled();
+  const send = vi.fn(async () => {
+    throw new Error("private provider failure");
+  });
+  const warning = vi.spyOn(console, "warn").mockImplementation(() => {});
+  await expect(
+    sendAccountNotification(
+      { ...base, AUTH_EMAIL_PROVIDER: "cloudflare", EMAIL: { send } },
+      { email },
+      "password-changed",
+    ),
+  ).resolves.toBeUndefined();
+  expect(send).toHaveBeenCalledOnce();
+  expect(warning).toHaveBeenCalledWith(
+    "Fun Quiz account notification could not be delivered.",
+  );
+  expect(JSON.stringify(warning.mock.calls)).not.toContain(
+    "private provider failure",
+  );
 });

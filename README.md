@@ -117,3 +117,17 @@ runtime entries consistently. Its cache is isolated by mode under
 servers cannot overwrite each other's optimized modules. After changing
 runtime dependencies or restarting a previously broken dev session, reload any
 open app tabs to discard modules cached by that tab.
+
+### Emails, reports and appearance
+
+- `bun run email:dev` previews React Email templates at `localhost:3002`.
+  `bun run email:export` writes static HTML previews. See `docs/AUTH.md` for
+  welcome, recovery and password-change delivery behavior.
+- Open a saved game report and choose **Download report → PDF, CSV or JSON**.
+  PDF uses the forest, gold and cream palette, embedded Nunito fonts and page
+  numbers. CSV includes the leaderboard and question/answer breakdown, with
+  spreadsheet formula protection. JSON preserves the original complete report.
+  Exports stay on the teacher's device; PDF generation is loaded on demand.
+- **Appearance** offers **Light**, **Dark** and **System**, saved on the current
+  device and synchronized across tabs. System follows device changes. App dark
+  mode does not change the printable PDF palette or email styling.

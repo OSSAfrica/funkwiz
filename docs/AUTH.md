@@ -248,3 +248,25 @@ account. Do not run the test Worker configurations as production deployments.
 - [Drizzle adapter](https://better-auth.com/docs/adapters/drizzle)
 - [Authentication rate limits](https://better-auth.com/docs/concepts/rate-limit)
 - [Cloudflare Vite plugin API](https://developers.cloudflare.com/workers/vite-plugin/reference/api/)
+
+## React Email templates
+
+Account mail is authored in `src/emails/templates/` with shared forest, gold and
+cream branding in `src/emails/components/`. The server renders HTML and a plain
+text alternative from the same template. All three configured providers use the
+same content. Personal names and links are escaped by React.
+
+- Welcome: sent after the teacher account is created, when a sender is configured.
+- Password reset: a single-use recovery link, delivered before reporting success.
+- Password changed: sent after a successful reset, password change, or password
+  creation for a Google account. It includes an account-recovery link, never a
+  password, setup code, or reset token. Reset notices are dispatched only after
+  previous sessions have been revoked.
+
+Optional welcome/security notification failures log a generic warning and do not
+roll back an account action. With no configured sender, these notifications are
+skipped. Reset email failures continue to be reported to the requester.
+
+Preview locally with `bun run email:dev` at `http://localhost:3002`, or run
+`bun run email:export` for static HTML in the ignored `.email-preview/` directory.
+Preview props use fictional teacher details and non-working example links.

@@ -10,6 +10,9 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import { Button } from "@/components/ui/button";
 
+import { ThemeToggle } from "@/components/theme-toggle";
+import { themeBootScript } from "@/lib/theme";
+
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -35,15 +38,17 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <HeadContent />
       </head>
       <body>
         {children}
+        <ThemeToggle />
         {import.meta.env.DEV && (
           <TanStackDevtools
-            config={{ position: "bottom-right" }}
+            config={{ position: "bottom-left" }}
             plugins={[
               {
                 name: "TanStack Router",

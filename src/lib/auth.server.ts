@@ -1,3 +1,4 @@
+import { sendAccountNotification } from "./auth-email.server";
 import { env } from "cloudflare:workers";
 import { betterAuth } from "better-auth";
 import { APIError, createAuthMiddleware } from "better-auth/api";
@@ -75,6 +76,32 @@ export function createAuth(useStartCookies = true) {
       },
     },
     hooks: {
+      after: createAuthMiddleware(async (ctx) => {
+        const recovered =
+          ctx.path === "/reset-password" ||
+          ctx.path === "/reset-with-setup-code";
+        if (ctx.path !== "/change-password" && !recovered) return;
+        const result = ctx.context.returned;
+        if (
+          !result ||
+          result instanceof APIError ||
+          (result instanceof Response && !result.ok)
+        )
+          return;
+        if (recovered) {
+          // Run after proof invalidation and session revocation have completed.
+          await sendAccountNotification(
+            env,
+            { email: teacherEmail(env) },
+            "password-changed",
+          );
+        } else if (ctx.context.session?.user)
+          await sendAccountNotification(
+            env,
+            ctx.context.session.user,
+            "password-changed",
+          );
+      }),
       before: createAuthMiddleware(async (ctx) => {
         if (ctx.path === "/sign-in/email" || ctx.path === "/sign-up/email") {
           if (!isTeacher(ctx.body?.email, env))
@@ -116,6 +143,9 @@ export function createAuth(useStartCookies = true) {
                 message: "Use your verified teacher Google account.",
               });
             return { data: { ...user, email: teacherEmail(env) } };
+          },
+          after: async (user) => {
+            await sendAccountNotification(env, user, "welcome");
           },
         },
         update: {

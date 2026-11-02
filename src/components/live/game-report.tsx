@@ -1,28 +1,11 @@
+import { ReportDownload } from "@/components/reports/report-download";
 import { Link } from "@tanstack/react-router";
-import {
-  ArrowLeft,
-  Check,
-  Download,
-  Target,
-  Trophy,
-  Users,
-} from "lucide-react";
+import { ArrowLeft, Check, Target, Trophy, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { GameReport } from "@/lib/live/protocol";
 import { Leaderboard, LiveBrand } from "./live-common";
 
 export function GameReportScreen({ report }: { report: GameReport | null }) {
-  function download() {
-    if (!report) return;
-    const url = URL.createObjectURL(
-      new Blob([JSON.stringify(report, null, 2)], { type: "application/json" }),
-    );
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `fun-quiz-report-${report.code}.json`;
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
   if (!report)
     return (
       <main className="live-wait-page">
@@ -66,10 +49,7 @@ export function GameReportScreen({ report }: { report: GameReport | null }) {
               })}
             </p>
           </div>
-          <Button variant="outline" onClick={download}>
-            <Download size={16} />
-            Download report
-          </Button>
+          <ReportDownload report={report} />
         </div>
         <div className="report-stat-grid">
           <div>

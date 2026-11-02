@@ -22,3 +22,7 @@ todos.json
 
 # Local browser-test sessions
 /.playwright/
+
+# Generated email previews
+.email-preview/
+.react-email/

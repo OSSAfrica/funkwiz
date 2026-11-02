@@ -243,3 +243,48 @@ email transports were mocked, and no real reset email was sent.
 After switching to shadcn/ui Select, six desktop/phone provider and React-runtime
 checks pass. The provider checks also verify the menu has an opaque themed
 background and all three options.
+
+## Branded communication, exports and appearance
+
+Keep the single TanStack Start application. Add reusable React Email layouts and
+welcome, password reset, and password changed templates with HTML/plain text
+rendering through the selected provider. Notifications must never block successful
+account changes when delivery fails; recovery links still report delivery errors.
+
+Offer PDF, CSV and JSON from the teacher report download menu. The PDF keeps the
+forest, gold and cream print palette and includes the full leaderboard and question
+breakdown with pagination. Lazy load PDF generation on demand. CSV must quote
+cells and neutralize spreadsheet formulas; JSON retains the complete report.
+
+Add Light, Dark and System appearance settings using shadcn/ui, persisted on the
+current device, with pre-paint initialization, system change tracking and tab
+synchronization. Apply readable dark surfaces to the library, dialogs, auth,
+student joining, live games and reports while preserving the colorful artwork.
+
+Validate email rendering and notification failures in Workers, report data and CSV
+escaping in unit tests, and all download formats and theme behavior on desktop
+and phone. Inspect generated PDFs and screenshots before committing.
+
+Completed: reusable React Email templates and shared styles; PDF/CSV/JSON report
+menu; persistent Light/Dark/System appearance controls and dark screen palettes.
+Email HTML and plain text share one template source. Reset notifications run only
+after session revocation; optional notice failures preserve successful actions.
+
+Validation: 33 unit tests, 19 Workers tests and all 53 browser checks pass. Final
+refinements were followed by six passing appearance checks, four passing export
+checks, and the 19 Workers checks again. TypeScript, frozen Bun installation,
+production build and client private-value checks pass. React Doctor's changed
+scope, including new files, reports 100/100 with no issues.
+
+Inspected desktop/phone dark screens and all three email previews. Static email
+exports contain fictional preview names and links. The React Email preview UI
+starts at localhost:3002. Verified all 150 learners, the final question, and page
+numbers across an eight-page PDF on both viewport configurations. PDF generation
+also succeeds from the built production app, with embedded fonts and no browser
+page errors; extracted text confirms the accented learner name and report content.
+
+Build output retains the existing CSS source-map warning and a fontkit Node-only
+branch warning in the lazy PDF bundle; the production browser export exercises
+the actual web font-loading path successfully. No warnings were suppressed.
+Actual inbox delivery remains dependent on private provider/sender setup; all
+transport tests were mocked and no real account email was sent.

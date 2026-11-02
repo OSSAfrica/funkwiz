@@ -1,3 +1,4 @@
+import { sendAccountNotification } from "./auth-email.server";
 import { selectedEmailProvider } from "./email-settings.server";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
@@ -80,11 +81,12 @@ export const addPassword = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const headers = getRequestHeaders();
-    await requireTeacher(headers);
+    const teacher = await requireTeacher(headers);
     await createAuth().api.setPassword({
       headers,
       body: { newPassword: data.password },
     });
+    await sendAccountNotification(env, teacher, "password-changed");
     return { success: true };
   });
 

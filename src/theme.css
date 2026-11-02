@@ -1,0 +1,151 @@
+/* Dark surfaces keep the classroom's forest, gold and soft color accents. */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #18241f;
+  --foreground: #eef3e8;
+  --primary: #c34420;
+  --secondary: #2a3c31;
+  --secondary-foreground: #edf4e4;
+  --muted: #26362d;
+  --muted-foreground: #b6c6b7;
+  --accent: #30493b;
+  --accent-foreground: #edf4e4;
+  --destructive: #d75a54;
+  --border: #3e5145;
+  --input: #53695a;
+  --ring: #b5d78f;
+  --ink: #eef3e8;
+  --ink-muted: #b6c6b7;
+  --ink-accent: #ffb18e;
+  --line: #3e5145;
+  --surface: #1c2b23;
+  --surface-soft: #26362d;
+  --surface-sage: #2c4433;
+  --surface-gold: #4a3e26;
+  --surface-peach: #50352b;
+  --surface-blue: #293e4d;
+  --surface-lilac: #3c344e;
+}
+html[data-theme="dark"] body {
+  background: #121c17;
+}
+html[data-theme="dark"] :is(.live-page, .report-page, .workspace-error) {
+  background: #121c17;
+}
+html[data-theme="dark"]
+  :is(.sidebar, .auth-story, .live-header, .report-header) {
+  background: #102b23;
+}
+/* These illustrated surfaces deliberately retain their cheerful light palette. */
+.welcome-banner,
+.hero-card,
+.game-code-board {
+  color: #263b34;
+}
+.quick-icon,
+.cover-badge {
+  color: #263b34;
+}
+html[data-theme="dark"] :is(.live-wait-page, .join-page) .live-brand {
+  color: #eef3e8;
+}
+html[data-theme="dark"]
+  :is(.live-wait-page, .join-page)
+  .live-brand
+  > span:last-child
+  > span {
+  color: #d6e5a7;
+}
+html[data-theme="dark"] .text-green-800 {
+  color: #bbdf9e;
+}
+html[data-theme="dark"] :is(input, textarea)::placeholder {
+  color: #9dac9d;
+}
+html[data-theme="dark"]
+  :is(button, a, label:has(input:focus-visible)):focus-visible {
+  outline-color: #c2df9b;
+}
+html[data-theme="dark"] .game-code-board :is(input, button) {
+  color: #263b34;
+}
+html[data-theme="dark"] .game-code-board button {
+  background: #fff9e6;
+}
+html[data-theme="dark"] .join-code-input {
+  color: var(--foreground);
+}
+
+.theme-dock {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 40;
+}
+.theme-trigger {
+  min-height: 42px;
+  background: var(--background);
+  color: var(--foreground);
+  border-radius: 24px;
+  box-shadow: 0 3px 14px #0002;
+}
+.theme-trigger svg {
+  transition: transform 180ms ease-out;
+}
+.theme-trigger:hover svg {
+  transform: rotate(-12deg);
+}
+.workspace-footer,
+.live-footer,
+.join-page > footer {
+  padding-bottom: 76px;
+}
+.report-main {
+  padding-bottom: 90px;
+}
+.report-download {
+  display: grid;
+  gap: 8px;
+}
+[role="menuitem"] {
+  gap: 10px;
+  min-height: 44px;
+}
+[role="menuitem"] strong {
+  display: block;
+  font-size: 13px;
+}
+[role="menuitem"] small {
+  display: block;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  margin-top: 3px;
+}
+[role="menuitemradio"] {
+  min-height: 42px;
+}
+@media (max-width: 600px) {
+  .theme-dock {
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  .theme-trigger {
+    min-height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-trigger svg {
+    transition: none;
+  }
+}
+
+/* Artwork and labels on light cover illustrations keep their original contrast. */
+.hero-card.card-front {
+  background: #fffdf2;
+}
+.hero-card.card-back {
+  background: #c3bfed;
+}
+html[data-theme="dark"] .cover-edit {
+  color: #505b4a;
+}

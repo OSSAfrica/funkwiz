@@ -9,8 +9,9 @@ const setupCode = "runtime-only-private-recovery-code-never-use-in-production";
 const oldPassword = "Previous-test-password-42!";
 const newPassword = "Fresh-test-password-2026!";
 let cookie = "";
-let emails: { to: string[]; text: string; from: string }[];
+let emails: { to: string[]; text: string; from: string; subject: string }[];
 let deliveryStatus = 200;
+let resetNoticeSessionCount: number | undefined;
 async function post(
   path: string,
   body: unknown,
@@ -48,10 +49,19 @@ beforeEach(async () => {
   vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
     if (String(input) !== "https://api.resend.com/emails")
       throw new Error("Unexpected outbound request");
-    emails.push(JSON.parse(String(init?.body)));
+    const message = JSON.parse(String(init?.body));
+    emails.push(message);
+    if (message.subject === "Your Fun Quiz password was updated") {
+      resetNoticeSessionCount = (
+        await env.DB.prepare("SELECT COUNT(*) AS count FROM session").first<{
+          count: number;
+        }>()
+      )?.count;
+    }
     return Response.json({ id: "fake-mail-id" }, { status: deliveryStatus });
   });
   emails = [];
+  resetNoticeSessionCount = undefined;
   deliveryStatus = 200;
   await env.DB.batch([
     env.DB.prepare("DELETE FROM user WHERE email = ?").bind(email),
@@ -64,6 +74,9 @@ beforeEach(async () => {
     { "x-teacher-setup-code": setupCode },
   );
   expect(signedUp.status).toBe(200);
+  expect(emails[0].subject).toBe("Welcome to your Fun Quiz classroom");
+  expect(emails[0].text).not.toContain(oldPassword);
+  emails = []; // Account creation also sends a welcome notification.
   cookie = signedUp.headers
     .getSetCookie()
     .map((value) => value.split(";")[0])
@@ -139,7 +152,11 @@ test("email reset uses the configured origin, sends only to the teacher, and inv
       })
     ).status,
   ).toBe(200);
-  expect(emails).toHaveLength(2);
+  expect(emails).toHaveLength(3);
+  expect(emails[2].subject).toBe("Your Fun Quiz password was updated");
+  expect(resetNoticeSessionCount).toBe(0);
+  expect(emails[2].text).not.toContain(first);
+  expect(emails[2].text).not.toContain(newPassword);
   expect(
     (await post("/request-teacher-password-reset", { email })).status,
   ).toBe(429);
@@ -180,6 +197,36 @@ test("setup recovery can add a password to an existing Google-only teacher accou
     (await post("/reset-with-setup-code", { email, setupCode, newPassword }))
       .status,
   ).toBe(200);
+  expect(
+    (await post("/sign-in/email", { email, password: newPassword })).status,
+  ).toBe(200);
+});
+
+test("only successful password changes send notifications and delivery failure preserves the change", async () => {
+  expect(
+    (
+      await post(
+        "/change-password",
+        { currentPassword: oldPassword },
+        { cookie },
+      )
+    ).status,
+  ).toBe(400);
+  expect(emails).toHaveLength(0);
+  deliveryStatus = 503;
+  expect(
+    (
+      await post(
+        "/change-password",
+        { currentPassword: oldPassword, newPassword },
+        { cookie },
+      )
+    ).status,
+  ).toBe(200);
+  expect(emails).toHaveLength(1);
+  expect(emails[0].subject).toBe("Your Fun Quiz password was updated");
+  expect(emails[0].text).not.toContain(newPassword);
+  expect(emails[0].text).not.toContain(setupCode);
   expect(
     (await post("/sign-in/email", { email, password: newPassword })).status,
   ).toBe(200);
