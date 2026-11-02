@@ -11,6 +11,7 @@ const privateValues = [
   "TEACHER_SETUP_TOKEN",
   "GOOGLE_CLIENT_SECRET",
   "RESEND_API_KEY",
+  "SMTP_PASSWORD",
 ]
   .map((key) => config[key])
   .filter(

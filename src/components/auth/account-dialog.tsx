@@ -1,3 +1,5 @@
+import { EmailDeliveryForm } from "./email-delivery-form";
+import type { getEmailDeliverySettings } from "@/lib/email.functions";
 import { useState, type FormEvent } from "react";
 import { Check, LoaderCircle, LogOut } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
@@ -20,11 +22,13 @@ export function AccountDialog({
   onOpenChange,
   teacher,
   hasPassword,
+  emailSettings,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   teacher: Teacher;
   hasPassword: boolean;
+  emailSettings: Awaited<ReturnType<typeof getEmailDeliverySettings>>;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -160,6 +164,7 @@ export function AccountDialog({
               </Button>
             </fieldset>
           </form>
+          <EmailDeliveryForm initial={emailSettings} />
           <div className="mt-6 border-t pt-4">
             <Button variant="outline" disabled={busy} onClick={signOut}>
               <LogOut size={16} />

@@ -57,3 +57,11 @@ The final report is copied idempotently to `live_session` in D1 and retried afte
 transient failures. Room expiry clears room/player/answer rows; D1 reports remain
 available only through owner-scoped server functions. See [live lifecycle and
 limits](LIVE_GAMES.md).
+
+## Email delivery preferences
+
+Migration `0002_fancy_microchip.sql` adds `email_delivery_settings`, keyed by the
+teacher's user ID with cascade deletion. It stores only the selected provider
+(`resend`, `cloudflare`, or `smtp`) and update time. Credentials remain in server
+configuration. Unauthenticated recovery reads the preference for the configured
+teacher email; owner-only server functions handle account settings changes.

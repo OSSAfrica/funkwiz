@@ -15,6 +15,13 @@
       "when": 1793574865006,
       "tag": "0001_live_sessions",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1793581636081,
+      "tag": "0002_fancy_microchip",
+      "breakpoints": true
     }
   ]
 }

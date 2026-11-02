@@ -12,6 +12,7 @@ import {
   type AuthSettings,
 } from "./auth-policy";
 import { sendResetEmail } from "./auth-email.server";
+import { selectedEmailProvider } from "./email-settings.server";
 import { setupCodeMatches } from "./setup-code.server";
 
 export function teacherRecovery(settings: AuthSettings) {
@@ -27,7 +28,8 @@ export function teacherRecovery(settings: AuthSettings) {
           body: z.object({ email: z.email().max(254) }),
         },
         async (ctx) => {
-          if (!resetEmailConfigured(settings))
+          const provider = await selectedEmailProvider(settings);
+          if (!resetEmailConfigured(settings, provider))
             return Response.json(
               {
                 message:
@@ -50,7 +52,13 @@ export function teacherRecovery(settings: AuthSettings) {
           const callback = `${new URL(settings.BETTER_AUTH_URL!).origin}/reset-password`;
           const url = `${callback}?token=${token}`;
           try {
-            await sendResetEmail(settings, owner.user.email, url, token);
+            await sendResetEmail(
+              settings,
+              owner.user.email,
+              url,
+              token,
+              provider,
+            );
           } catch {
             return Response.json(
               {

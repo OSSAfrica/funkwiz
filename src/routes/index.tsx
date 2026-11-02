@@ -27,6 +27,7 @@ import {
 import { QuizCard } from "@/components/quiz/quiz-card";
 import { readBrowserDrafts, useQuizLibrary } from "@/lib/quiz-store";
 import { AccountDialog } from "@/components/auth/account-dialog";
+import { getEmailDeliverySettings } from "@/lib/email.functions";
 import { getTeacher, getPasswordStatus } from "@/lib/auth.functions";
 import { listQuizzes } from "@/lib/quizzes.functions";
 import { RecentGames } from "@/components/live/recent-games";
@@ -41,12 +42,18 @@ export const Route = createFileRoute("/")({
     return { teacher };
   },
   loader: async () => {
-    const [quizzes, password, sessions] = await Promise.all([
+    const [quizzes, password, sessions, emailSettings] = await Promise.all([
       listQuizzes(),
       getPasswordStatus(),
       listLiveSessions(),
+      getEmailDeliverySettings(),
     ]);
-    return { quizzes, hasPassword: password.hasPassword, sessions };
+    return {
+      quizzes,
+      hasPassword: password.hasPassword,
+      sessions,
+      emailSettings,
+    };
   },
   component: Home,
 });
@@ -344,6 +351,7 @@ function Home() {
         onOpenChange={setAccountOpen}
         teacher={teacher}
         hasPassword={initial.hasPassword}
+        emailSettings={initial.emailSettings}
       />
     </div>
   );

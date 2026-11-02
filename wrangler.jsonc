@@ -6,6 +6,8 @@
   "main": "src/server.ts",
   "observability": { "enabled": true },
   "upload_source_maps": true,
+  // Local email is simulated. See docs/AUTH.md before enabling remote delivery.
+  "send_email": [{ "name": "EMAIL" }],
   "d1_databases": [
     {
       "binding": "DB",

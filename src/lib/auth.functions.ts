@@ -1,3 +1,4 @@
+import { selectedEmailProvider } from "./email-settings.server";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { env } from "cloudflare:workers";
@@ -92,6 +93,8 @@ export const getRecoveryOptions = createServerFn({ method: "GET" }).handler(
     configured: authConfigured(env),
     setupCodeEnabled:
       authConfigured(env) && (env.TEACHER_SETUP_TOKEN?.length ?? 0) >= 32,
-    emailEnabled: authConfigured(env) && resetEmailConfigured(env),
+    emailEnabled:
+      authConfigured(env) &&
+      resetEmailConfigured(env, await selectedEmailProvider(env)),
   }),
 );

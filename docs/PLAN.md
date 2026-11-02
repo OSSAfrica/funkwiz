@@ -213,3 +213,33 @@ the documented server-only JOSE format-marker false positive and guarded live-ro
 effect warning, plus a maintainability warning for the bounded recovery form
 controller. Route ordering and named route components were corrected; no scan
 rules were suppressed.
+
+## React development runtime and email-provider selection
+
+The development crash traced to two browser React modules, despite matching
+installed React/React DOM versions. Vite now isolates optimizer caches by mode,
+prebundles React runtime entries, and deduplicates React resolution. Desktop and
+phone regression checks open workspace and account dialogs on both localhost and
+numeric loopback addresses without invalid hook calls. This fix is committed as
+`7317f61`.
+
+Teacher account settings now offer Resend, Cloudflare Email and other SMTP
+services through shadcn/ui Select, including keyboard navigation and themed
+popover colors. Provider preference persists in D1; credentials stay server-side. Email
+recovery and sending use that same preference, with no silent provider fallback.
+Cloudflare's default local simulation stays unavailable as a real reset sender;
+SMTP uses mandatory TLS. Setup details are in `docs/AUTH.md`.
+
+Validation of the provider update: 31 unit tests, 16 Workers runtime tests and all
+43 browser checks pass, including both localhost/numeric-loopback dialog paths,
+authorized provider changes, persistence across reopening/reload, anonymous access
+rejection, password recovery, and the 150-player scenario. Production build,
+TypeScript and client-secret checks pass. The local email-settings migration has
+been applied and the native binding types regenerated. Provider screenshots were
+inspected on phone. React Doctor adds no new findings to the previously recorded
+three diagnostics. Live sender credentials and inbox delivery remain unverified;
+email transports were mocked, and no real reset email was sent.
+
+After switching to shadcn/ui Select, six desktop/phone provider and React-runtime
+checks pass. The provider checks also verify the menu has an opaque themed
+background and all three options.

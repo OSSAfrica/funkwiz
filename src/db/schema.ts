@@ -125,3 +125,13 @@ export const liveSession = sqliteTable(
     index("live_session_owner_created_idx").on(table.ownerId, table.createdAt),
   ],
 );
+
+export const emailDeliverySettings = sqliteTable("email_delivery_settings", {
+  ownerId: text("owner_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  provider: text("provider", {
+    enum: ["resend", "cloudflare", "smtp"],
+  }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+});

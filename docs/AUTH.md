@@ -35,16 +35,20 @@ The allowed teacher email is checked again on every authenticated quiz operation
 
 All configuration is server-side. Do not use `VITE_` variables for these values.
 
-| Variable               | Purpose                                                                        |
-| ---------------------- | ------------------------------------------------------------------------------ |
-| `BETTER_AUTH_URL`      | Exact app origin, such as `http://127.0.0.1:3000` locally                      |
-| `BETTER_AUTH_SECRET`   | Random secret of at least 32 characters                                        |
-| `TEACHER_EMAIL`        | The single email allowed to register and access the workspace                  |
-| `TEACHER_SETUP_TOKEN`  | Private token of at least 32 characters for registration and password recovery |
-| `GOOGLE_CLIENT_ID`     | Optional Google OAuth web client ID                                            |
-| `RESEND_API_KEY`       | Optional Resend API key for password-reset delivery                            |
-| `AUTH_EMAIL_FROM`      | Verified sender email address for password resets                              |
-| `GOOGLE_CLIENT_SECRET` | Optional matching Google OAuth client secret                                   |
+| Variable                                | Purpose                                                                        |
+| --------------------------------------- | ------------------------------------------------------------------------------ |
+| `BETTER_AUTH_URL`                       | Exact app origin, such as `http://127.0.0.1:3000` locally                      |
+| `BETTER_AUTH_SECRET`                    | Random secret of at least 32 characters                                        |
+| `TEACHER_EMAIL`                         | The single email allowed to register and access the workspace                  |
+| `TEACHER_SETUP_TOKEN`                   | Private token of at least 32 characters for registration and password recovery |
+| `GOOGLE_CLIENT_ID`                      | Optional Google OAuth web client ID                                            |
+| `AUTH_EMAIL_PROVIDER`                   | Deployment default: `resend`, `cloudflare`, or `smtp`                          |
+| `CLOUDFLARE_EMAIL_REMOTE`               | Explicit opt-in after configuring a real remote binding locally                |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE` | SMTP server and TLS connection settings                                        |
+| `SMTP_USER`, `SMTP_PASSWORD`            | Private SMTP login credentials                                                 |
+| `RESEND_API_KEY`                        | Optional Resend API key for password-reset delivery                            |
+| `AUTH_EMAIL_FROM`                       | Verified sender email address for password resets                              |
+| `GOOGLE_CLIENT_SECRET`                  | Optional matching Google OAuth client secret                                   |
 
 Without the required URL, secret, and teacher email, sign-in fails closed and the
 login page shows a setup message. Google is enabled only when **both** Google
@@ -97,7 +101,7 @@ Open `/forgot-password`. Two methods are available:
   code, and a new password twice. A student game code cannot recover the account.
   To read your local private code in your own terminal, use `bun run setup:code`.
 - **Email link:** request a reset link at your teacher email. This option is enabled
-  only when the email API key and sender address are configured. Responses do not
+  only when the selected sending provider is configured. Responses do not
   disclose whether the submitted email has an account.
 
 Both methods require a 12–128 character password and revoke every existing teacher
@@ -114,30 +118,87 @@ server configuration. It is never included in an email, URL, or browser bundle.
 If you believe the code has been exposed, replace `TEACHER_SETUP_TOKEN` and restart
 or redeploy. Keep a separate recovery method available before removing it.
 
-### Configure reset email delivery
+### Choose an email provider
 
-The app sends through the [Resend Email API](https://resend.com/docs/api-reference/emails/send-email).
-Create a sending key and verify a sender/domain, then add these server-only values
-to `.dev.vars` locally and restart the dev server:
+Open **Teacher account → Password reset email**. Choose **Resend**, **Cloudflare
+Email**, or **Other SMTP service**, then save. The choice persists in D1 and takes
+precedence over the deployment default `AUTH_EMAIL_PROVIDER` (`resend` when unset).
+Only the allowed teacher can inspect or change it. Selecting a service that still
+needs setup keeps email recovery disabled; it does not send through another
+provider automatically.
+
+Provider credentials stay in private server configuration. The account dialog
+shows only provider names, configuration status, and the validated sender address.
+Use a plain email address for `AUTH_EMAIL_FROM`, such as
+`quiz@your-verified-domain.example`. Apply `bun run db:migrate:local` after updating
+for the `email_delivery_settings` table.
+
+#### Resend
+
+Use the [Resend Email API](https://resend.com/docs/api-reference/emails/send-email).
+Create a sending key and verify your sender/domain, then add locally:
 
 ```dotenv
-RESEND_API_KEY=your-private-sending-key
+AUTH_EMAIL_PROVIDER=resend
 AUTH_EMAIL_FROM=quiz@your-verified-domain.example
+RESEND_API_KEY=your-private-sending-key
 ```
 
-`AUTH_EMAIL_FROM` must be a plain email address. For production, configure these on
-the deployed Worker, using `bunx wrangler secret put RESEND_API_KEY` for the key.
-`BETTER_AUTH_URL` must be the reachable HTTPS app origin. Never use a `VITE_` prefix
-or commit real keys. Reset links always use the configured app origin.
+#### Cloudflare Email
 
-Email delivery waits for the provider response and reports a failure if the
-provider rejects the send. The standard Better Auth request-email endpoint is
-replaced by `/api/auth/request-teacher-password-reset` so the UI can report those
-failures instead of claiming an email was sent. Better Auth still validates and
-consumes the reset token, stores password hashes, and revokes sessions.
+The app uses the native [`EMAIL` sending binding](https://developers.cloudflare.com/email-service/api/send-emails/workers-api/).
+`wrangler.jsonc` includes `send_email: [{ "name": "EMAIL" }]`. Configure a sender
+from a domain onboarded to Cloudflare Email Service, select Cloudflare Email in
+the account dialog, and set `AUTH_EMAIL_FROM` on the Worker. No Resend key is used.
 
-Automated email tests use a mock sender and disposable accounts. Live Resend
-credentials and inbox delivery have not been configured or verified locally.
+Local email bindings simulate delivery by default. To send real email during
+local development, explicitly configure the binding with `remote: true` and set
+`CLOUDFLARE_EMAIL_REMOTE=true`, using the Cloudflare account that owns the onboarded
+domain. These settings send real mail when a reset is requested. Without that
+explicit local opt-in, the app keeps Cloudflare email recovery unavailable rather
+than reporting simulated delivery as a real send. In a deployed HTTPS app, the
+native binding sends through its deployment account.
+
+See [Cloudflare local email development](https://developers.cloudflare.com/email-service/observability/local-development/sending/).
+No Cloudflare domain, sender identity, or remote email configuration was changed
+by this implementation.
+
+#### Other SMTP services
+
+The app uses Nodemailer's ES module transport, with TLS required:
+
+```dotenv
+AUTH_EMAIL_PROVIDER=smtp
+AUTH_EMAIL_FROM=quiz@your-domain.example
+SMTP_HOST=smtp.your-provider.example
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-smtp-username
+SMTP_PASSWORD=your-private-smtp-password
+```
+
+Port 587 (and other non-465 ports) requires STARTTLS. For implicit TLS, use port
+465 with `SMTP_SECURE=true`; the app also defaults to implicit TLS when the port
+is 465 and `SMTP_SECURE` is unset. Use your provider's SMTP credentials or an app
+password where required. Certificate validation stays enabled, and plaintext
+fallback is not allowed. Port 25 is rejected because [Workers blocks it](https://developers.cloudflare.com/workers/runtime-apis/tcp-sockets/).
+Connections are closed after each send and have timeouts. See [Nodemailer SMTP
+configuration](https://nodemailer.com/smtp/).
+
+Restart development after editing `.dev.vars`. In production, configure the
+selected service on the Worker; store API keys and SMTP passwords with Wrangler
+secrets. `BETTER_AUTH_URL` must be the reachable HTTPS app origin. Never use a
+`VITE_` prefix or commit real credentials. Reset links always use the configured
+app origin.
+
+The app waits for the selected provider to accept the message and reports errors
+without silently trying another service. It uses
+`/api/auth/request-teacher-password-reset`; Better Auth still validates and
+consumes reset proofs, stores password hashes, and revokes sessions.
+
+Tests use mocked email providers and disposable accounts. Live inbox delivery
+still requires selecting and configuring a real sender/provider, then verifying
+it with an explicit reset request.
 
 ## Existing browser drafts
 

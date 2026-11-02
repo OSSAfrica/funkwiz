@@ -1,5 +1,7 @@
+import { emailConfigured, type EmailProviderSettings } from "./email-provider";
 /** Server configuration only. Never return this object to a browser. */
-export type AuthSettings = {
+export type AuthSettings = EmailProviderSettings & {
+  DB?: D1Database;
   BETTER_AUTH_URL?: string;
   BETTER_AUTH_SECRET?: string;
   TEACHER_EMAIL?: string;
@@ -51,11 +53,4 @@ export function trustedOrigins(settings: AuthSettings) {
   return origins;
 }
 
-export function resetEmailConfigured(settings: AuthSettings) {
-  return Boolean(
-    settings.RESEND_API_KEY?.trim() &&
-    /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(
-      settings.AUTH_EMAIL_FROM?.trim() ?? "",
-    ),
-  );
-}
+export const resetEmailConfigured = emailConfigured;
