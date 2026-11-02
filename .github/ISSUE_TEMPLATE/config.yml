@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability privately
+    url: https://github.com/OSSAfrica/funkwiz/security/advisories/new
+    about: Do not publish exploit details, credentials or learner data in an issue.
+  - name: Read the setup and teaching guides
+    url: https://github.com/OSSAfrica/funkwiz/blob/main/docs/README.md
+    about: Start with the documentation index and glossary.

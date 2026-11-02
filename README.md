@@ -152,6 +152,9 @@ reports out of public issues.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow and
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for bundled asset notices.
+Contributions use pull requests to `main`, with DCO sign-offs and verified commit
+signatures. Follow our [Code of Conduct](CODE_OF_CONDUCT.md); the guide explains
+signing setup, local checks and review requirements.
 
 ## License
 

@@ -50,6 +50,8 @@ in both. Further collaboration/learning ideas remain [proposals](FUTURE_FEATURES
 ### Contributors
 
 - [Contributing](../CONTRIBUTING.md): choosing, preparing and submitting a change.
+- [Contribution requirements](CONTRIBUTION_REQUIREMENTS.md): signing, merge gates, security automation and live-setting verification.
+- [Code of Conduct](../CODE_OF_CONDUCT.md): participation standards and reporting conduct concerns.
 - [Development](DEVELOPMENT.md): prerequisites, commands, tests and generated files.
 - [Architecture](ARCHITECTURE.md): code map, request flow and ownership boundaries.
 - [Database schema](DATABASE_SCHEMA.md): D1 tables, migrations and Durable Object storage.
@@ -72,12 +74,12 @@ in both. Further collaboration/learning ideas remain [proposals](FUTURE_FEATURES
 | Game / session / room      | One hosted run of a quiz, with its own code, participants, timing and results.                                                        | [Live games](LIVE_GAMES.md)                           |
 | Lobby                      | The waiting area before the teacher starts a game.                                                                                    | [Joining](STUDENT_GUIDE.md#join-a-game)               |
 | Game code                  | A six-digit invitation code shared with players. It is not a teacher credential.                                                      | [Joining](STUDENT_GUIDE.md#join-a-game)               |
-| Private setup code / token | A secret for creating and recovering the bootstrap teacher account. Never share it with invitees or players.                                                 | [Authentication](AUTH.md)                             |
+| Private setup code / token | A secret for creating and recovering the bootstrap teacher account. Never share it with invitees or players.                          | [Authentication](AUTH.md)                             |
 | Display mode               | Where question content appears: shared screen, student devices, or both.                                                              | [Display](TEACHER_GUIDE.md#choose-display-and-timing) |
 | Reveal                     | The point when the correct answer becomes visible and answers are scored.                                                             | [Timing](LIVE_GAMES.md#timing-and-controls)           |
 | Cooldown                   | The pause between reveal and the next question in automatic progression. Manual mode has no cooldown countdown.                       | [Timing](LIVE_GAMES.md#timing-and-controls)           |
 | Practice / rehearsal       | A local preview with simulated host/student views; it does not open a room for a class.                                               | [Practice](TEACHER_GUIDE.md#practice-before-hosting)  |
-| Report                     | Saved results accessible to the host and, in School mode, workspace Owners/Admins.                                                                          | [Reports](TEACHER_GUIDE.md#review-and-export-results) |
+| Report                     | Saved results accessible to the host and, in School mode, workspace Owners/Admins.                                                    | [Reports](TEACHER_GUIDE.md#review-and-export-results) |
 | App origin                 | The exact scheme and hostname of the app, such as `https://quiz.example.com`, without a page path.                                    | [Authentication](AUTH.md#configuration)               |
 | Secret                     | A private runtime setting, such as a signing key or SMTP password.                                                                    | [Private deployment](PRIVATE_DEPLOY.md)               |
 | Migration                  | A versioned SQL change applied to a database's structure.                                                                             | [Schema](DATABASE_SCHEMA.md)                          |
