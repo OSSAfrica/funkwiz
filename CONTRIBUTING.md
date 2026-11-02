@@ -160,6 +160,7 @@ The common checks are:
 
 ```sh
 bun install --frozen-lockfile
+bun run format:check
 bun run typecheck
 bun run test
 bun run test:workers
@@ -178,6 +179,10 @@ local database. Do not run production deployment commands to validate a docs/UI 
 For docs-only work, verify examples, relative links/anchors and the behavior being
 described rather than rerunning unrelated application tests. State any checks you
 could not complete; do not label the full browser suite green based on focused tests.
+
+Use `bun run format` to apply Oxfmt formatting before submitting. Formatting is
+checked in CI. See [formatting and editor setup](docs/DEVELOPMENT.md#formatting)
+for the configuration and excluded generated files.
 
 ## Submit a pull request
 

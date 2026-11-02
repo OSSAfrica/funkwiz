@@ -19,36 +19,38 @@ install dependencies and browser binaries.
 
 Run these from the repository root. `package.json` is the command source of truth.
 
-| Command | Purpose / target |
-| --- | --- |
-| `bun install --frozen-lockfile` | Install the locked dependencies without updating resolution |
-| `bun run setup:local you@example.com` | Create local configuration only if absent |
-| `bun run setup:code` | Print the local private setup code in your own terminal |
-| `bun run setup:code --production` | Print the ignored private-production setup code; never put it in logs/issues |
-| `bun run dev` | Development server on port 3000 |
-| `bun run generate-routes` | Regenerate the file-route tree |
-| `bun run typecheck` | Generate routes and check TypeScript |
-| `bun run test` | Pure library and deployment-policy tests |
-| `bun run test:workers` | Isolated Worker/DO/auth-email integration tests |
-| `bun run test:e2e` | Playwright desktop/phone, account and capacity scenarios |
-| `bun run build` | Public-template build in `dist/` |
-| `bun run preview` | Build and preview locally |
-| `bun run cf-typegen` | Generate types from the public Wrangler configuration |
-| `bun run db:generate` | Generate a Drizzle migration after schema changes |
-| `bun run db:migrate:local` | Apply migrations to local D1 using the public source config |
-| `bun run db:migrate:remote` | Apply migrations to the **remote** database in the public source config |
-| `bun run deploy` | Public build, remote migrations and upload |
-| `bun run deploy:worker` | Validate and deploy the existing public build |
-| `bun run build:private` | Build from ignored personal configuration into `.deploy/dist/` |
-| `bun run deploy:private:dry-run` | Private build and local packaging checks; no remote migrations/upload |
-| `bun run deploy:private` | Private build, remote migrations and code/secrets upload |
-| `bun run check:public` | Check tracked source for private/local content |
-| `bun run check:client-secrets` | Check public client output against configured private values |
-| `bun run check:client-secrets --private` | Check private client output and production identifiers/values |
-| `bun run email:dev` | Preview React Email templates on port 3002 |
-| `bun run email:export` | Export static email previews to ignored `.email-preview/` |
-| `bun run og:generate` | Generate the three committed social cards |
-| `bun run audio:generate` | Generate the original MP3 soundtrack and a temporary WAV preview |
+| Command                                  | Purpose / target                                                             |
+| ---------------------------------------- | ---------------------------------------------------------------------------- |
+| `bun install --frozen-lockfile`          | Install the locked dependencies without updating resolution                  |
+| `bun run setup:local you@example.com`    | Create local configuration only if absent                                    |
+| `bun run setup:code`                     | Print the local private setup code in your own terminal                      |
+| `bun run setup:code --production`        | Print the ignored private-production setup code; never put it in logs/issues |
+| `bun run dev`                            | Development server on port 3000                                              |
+| `bun run format`                         | Format supported project files with Oxfmt                                    |
+| `bun run format:check`                   | Check formatting without changing files; also runs in CI                     |
+| `bun run generate-routes`                | Regenerate the file-route tree                                               |
+| `bun run typecheck`                      | Generate routes and check TypeScript                                         |
+| `bun run test`                           | Pure library and deployment-policy tests                                     |
+| `bun run test:workers`                   | Isolated Worker/DO/auth-email integration tests                              |
+| `bun run test:e2e`                       | Playwright desktop/phone, account and capacity scenarios                     |
+| `bun run build`                          | Public-template build in `dist/`                                             |
+| `bun run preview`                        | Build and preview locally                                                    |
+| `bun run cf-typegen`                     | Generate types from the public Wrangler configuration                        |
+| `bun run db:generate`                    | Generate a Drizzle migration after schema changes                            |
+| `bun run db:migrate:local`               | Apply migrations to local D1 using the public source config                  |
+| `bun run db:migrate:remote`              | Apply migrations to the **remote** database in the public source config      |
+| `bun run deploy`                         | Public build, remote migrations and upload                                   |
+| `bun run deploy:worker`                  | Validate and deploy the existing public build                                |
+| `bun run build:private`                  | Build from ignored personal configuration into `.deploy/dist/`               |
+| `bun run deploy:private:dry-run`         | Private build and local packaging checks; no remote migrations/upload        |
+| `bun run deploy:private`                 | Private build, remote migrations and code/secrets upload                     |
+| `bun run check:public`                   | Check tracked source for private/local content                               |
+| `bun run check:client-secrets`           | Check public client output against configured private values                 |
+| `bun run check:client-secrets --private` | Check private client output and production identifiers/values                |
+| `bun run email:dev`                      | Preview React Email templates on port 3002                                   |
+| `bun run email:export`                   | Export static email previews to ignored `.email-preview/`                    |
+| `bun run og:generate`                    | Generate the three committed social cards                                    |
+| `bun run audio:generate`                 | Generate the original MP3 soundtrack and a temporary WAV preview             |
 
 `db:migrate:e2e`, `db:migrate:e2e-google` and `db:migrate:e2e-school` are fixture commands used by the browser
 runner. Do not point those test configurations at a real installation. Deployment
@@ -56,15 +58,15 @@ commands are not part of the ordinary contribution checks.
 
 ## Choose the right checks
 
-| Change | Useful verification |
-| --- | --- |
-| Validation, game state or permissions | Library tests plus relevant Worker integration tests |
-| Routes, dialogs, forms or appearance | Typecheck, build and affected desktop/phone browser specs |
-| Persistence, alarms or sockets | Worker tests plus live/reconnect browser specs |
-| Email templates/delivery | Worker email tests and local template preview; no real email required |
-| Report export | Library export tests and report-download browser specs |
-| Deployment | Policy tests, typecheck, build/dry run, hygiene/client-value checks |
-| Documentation | Check examples, relative links/anchors and current code behavior; avoid unnecessary app tests |
+| Change                                | Useful verification                                                                           |
+| ------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Validation, game state or permissions | Library tests plus relevant Worker integration tests                                          |
+| Routes, dialogs, forms or appearance  | Typecheck, build and affected desktop/phone browser specs                                     |
+| Persistence, alarms or sockets        | Worker tests plus live/reconnect browser specs                                                |
+| Email templates/delivery              | Worker email tests and local template preview; no real email required                         |
+| Report export                         | Library export tests and report-download browser specs                                        |
+| Deployment                            | Policy tests, typecheck, build/dry run, hygiene/client-value checks                           |
+| Documentation                         | Check examples, relative links/anchors and current code behavior; avoid unnecessary app tests |
 
 For browser tests, install the browser once:
 
@@ -82,14 +84,14 @@ timing failures are tracked in the [roadmap](PLAN.md).
 
 ## Test data and isolation
 
-| Runtime | Data location / purpose |
-| --- | --- |
-| Normal development | `.wrangler/state`; your local teacher account and quizzes |
-| Desktop/phone browser fixture | `.wrangler/e2e-state`, port 3100 |
-| School fixture | `.wrangler/e2e-school-state`, port 3102; fictional invited teachers |
-| Google-provider fixture | `.wrangler/e2e-google-state`, port 3101 |
-| Worker integration suite | Isolated local Worker test environments using `tests/worker/wrangler.jsonc` |
-| Private production configuration/build | `.deploy/`; remote data lives in its configured Cloudflare resources |
+| Runtime                                | Data location / purpose                                                     |
+| -------------------------------------- | --------------------------------------------------------------------------- |
+| Normal development                     | `.wrangler/state`; your local teacher account and quizzes                   |
+| Desktop/phone browser fixture          | `.wrangler/e2e-state`, port 3100                                            |
+| School fixture                         | `.wrangler/e2e-school-state`, port 3102; fictional invited teachers         |
+| Google-provider fixture                | `.wrangler/e2e-google-state`, port 3101                                     |
+| Worker integration suite               | Isolated local Worker test environments using `tests/worker/wrangler.jsonc` |
+| Private production configuration/build | `.deploy/`; remote data lives in its configured Cloudflare resources        |
 
 The browser runner resets its three test-state directories using
 `scripts/prepare-e2e.ts`. It does not reset `.wrangler/state`. Test identities are
@@ -107,7 +109,26 @@ fixture configuration with production secrets.
   its [asset/license notes](../public/audio/README.md).
 - `dist/`, `.deploy/`, email previews and browser artifacts: ignored output.
 
-There is no linter configured. Follow nearby formatting and keep edits focused.
+## Formatting
+
+Oxfmt is the project formatter. The committed `.oxfmtrc.json` uses two spaces,
+double quotes, semicolons and an 80-column print width. Import, Tailwind-class
+and package-field sorting are disabled so formatting preserves their ordering.
+
+```sh
+bun run format
+bun run format:check
+```
+
+Oxfmt respects `.gitignore`; the config also excludes generated route/runtime
+declarations, the Bun lockfile, migration SQL/snapshots, private deployment files
+and local agent settings. Regenerate those files with their owning tools.
+
+VS Code and compatible editors recommend the official **Oxc** extension
+(`oxc.oxc-vscode`). Install it to use the committed format-on-save settings for
+supported project languages. CLI and CI use the locally installed Oxfmt version.
+
+There is no linter configured. Keep edits focused and run the applicable checks.
 Use existing shadcn/ui primitives and Tailwind tokens. Add a needed primitive with
 `bunx --bun shadcn@latest add <component>` only after reviewing what it changes.
 
@@ -120,5 +141,5 @@ regenerating routes while browser checks are running; hot reload can interrupt t
 If runtime dependencies change, restart the dev server and reload open tabs.
 
 Keep `.dev.vars`, `.deploy/`, databases and browser sessions out of commits. The
-read-only GitHub Actions workflow checks types, library/Worker tests, builds,
+read-only GitHub Actions workflow checks formatting, types, library/Worker tests, builds,
 tracked-file hygiene and Git history for secrets; it does not deploy.

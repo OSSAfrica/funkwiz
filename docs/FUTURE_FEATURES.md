@@ -20,15 +20,15 @@ experiences. It does not need a monorepo or separate frontend for these modes.
 
 ## Personal and School modes
 
-| | Personal | School foundation |
-| --- | --- | --- |
-| Status | Implemented default | Implemented opt-in |
-| Teacher access | One configured teacher | Bootstrap owner plus invited accounts |
-| Organization UI | No team administration | Workspace selector, memberships, invitations and roles |
-| Quizzes | Teacher-owned | Private drafts and explicitly shared source entries |
-| Collaboration | Import/export | Share-and-copy into a colleague’s own editable draft |
-| Reports | Host only | Hosts plus workspace Owners/Admins; unasked content is omitted for non-host managers |
-| Students | Join without accounts | Same joining flow |
+|                 | Personal               | School foundation                                                                    |
+| --------------- | ---------------------- | ------------------------------------------------------------------------------------ |
+| Status          | Implemented default    | Implemented opt-in                                                                   |
+| Teacher access  | One configured teacher | Bootstrap owner plus invited accounts                                                |
+| Organization UI | No team administration | Workspace selector, memberships, invitations and roles                               |
+| Quizzes         | Teacher-owned          | Private drafts and explicitly shared source entries                                  |
+| Collaboration   | Import/export          | Share-and-copy into a colleague’s own editable draft                                 |
+| Reports         | Host only              | Hosts plus workspace Owners/Admins; unasked content is omitted for non-host managers |
+| Students        | Join without accounts  | Same joining flow                                                                    |
 
 Workspace creation is currently limited to existing Owners and the configured
 bootstrap/operator account. A workspace can represent a department, tutoring team
@@ -80,19 +80,19 @@ features must preserve those boundaries.
 
 ## Other useful features
 
-| Candidate | Why it helps | Main work/tradeoff | Suggested order |
-| --- | --- | --- | --- |
-| Quiz duplication, folders and tags | Reuse and organize lesson material | Library organization and clear copy behavior | Early teacher workflow improvement |
-| Answer explanations | Turn reveal into a teaching moment | Authoring, validation, reveal views and export updates | Early learning improvement |
-| Report deletion and retention settings | Control saved learner data | Authorization, confirmations, lifecycle and backup implications | Before broader school adoption |
-| CSV question import | Adopt spreadsheet question banks | Format mapping, validation and review | Early adoption improvement |
-| Low-pressure game options | Support groups that do not want public ranking | Configurable leaderboard/score presentation while preserving answer secrecy | After settings are specified |
-| More question types | Support true/false, multi-select and other tasks | Model, grading, protocol, UI, reports and accessibility | One type at a time |
-| Question images/media | Support diagrams and visual learning | Storage, upload limits, content handling, alt text and rendering | After the content model is settled |
-| Co-hosting | Let a colleague help manage a game | Explicit control permissions, command conflicts and revocation | After School pilots |
-| Self-paced assignments | Practice outside live sessions | New attempt/deadline model, returning identity and reporting | Separate product phase |
-| AI-assisted drafts | Reduce writing time | Provider/key setup, source/privacy policy, costs and human review | After imports and authoring are solid |
-| LMS integration and school SSO | Fit existing school workflows | Provider setup, identity mapping and ongoing maintenance | Driven by pilot demand |
+| Candidate                              | Why it helps                                     | Main work/tradeoff                                                          | Suggested order                       |
+| -------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------- | ------------------------------------- |
+| Quiz duplication, folders and tags     | Reuse and organize lesson material               | Library organization and clear copy behavior                                | Early teacher workflow improvement    |
+| Answer explanations                    | Turn reveal into a teaching moment               | Authoring, validation, reveal views and export updates                      | Early learning improvement            |
+| Report deletion and retention settings | Control saved learner data                       | Authorization, confirmations, lifecycle and backup implications             | Before broader school adoption        |
+| CSV question import                    | Adopt spreadsheet question banks                 | Format mapping, validation and review                                       | Early adoption improvement            |
+| Low-pressure game options              | Support groups that do not want public ranking   | Configurable leaderboard/score presentation while preserving answer secrecy | After settings are specified          |
+| More question types                    | Support true/false, multi-select and other tasks | Model, grading, protocol, UI, reports and accessibility                     | One type at a time                    |
+| Question images/media                  | Support diagrams and visual learning             | Storage, upload limits, content handling, alt text and rendering            | After the content model is settled    |
+| Co-hosting                             | Let a colleague help manage a game               | Explicit control permissions, command conflicts and revocation              | After School pilots                   |
+| Self-paced assignments                 | Practice outside live sessions                   | New attempt/deadline model, returning identity and reporting                | Separate product phase                |
+| AI-assisted drafts                     | Reduce writing time                              | Provider/key setup, source/privacy policy, costs and human review           | After imports and authoring are solid |
+| LMS integration and school SSO         | Fit existing school workflows                    | Provider setup, identity mapping and ongoing maintenance                    | Driven by pilot demand                |
 
 Themes, reports, per-question timing, question visibility and audio controls are
 already available. A stable integration API, public signup, co-editing and homework

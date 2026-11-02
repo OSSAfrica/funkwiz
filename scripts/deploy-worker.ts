@@ -8,7 +8,16 @@ const configPath = "dist/server/wrangler.json";
 assertDeploymentTarget(template, JSON.parse(readFileSync(configPath, "utf8")));
 // Explicit paths prevent Wrangler's last-build redirect from choosing a private build.
 for (const args of [
-  ["wrangler", "d1", "migrations", "apply", "DB", "--remote", "--config", configPath],
+  [
+    "wrangler",
+    "d1",
+    "migrations",
+    "apply",
+    "DB",
+    "--remote",
+    "--config",
+    configPath,
+  ],
   ["wrangler", "deploy", "--config", configPath],
 ]) {
   const result = spawnSync("bunx", args, { stdio: "inherit" });

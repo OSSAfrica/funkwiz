@@ -21,12 +21,12 @@ Cloudflare's account limits and charges apply.
 Supply these four values in the setup form. Never reuse test fixtures or another
 installation's secrets:
 
-| Setting | Value |
-| --- | --- |
-| `BETTER_AUTH_URL` | Exact HTTPS app origin, such as `https://funkwiz.YOUR-SUBDOMAIN.workers.dev` |
-| `TEACHER_EMAIL` | Your own teacher email; this installation allows only this address |
-| `BETTER_AUTH_SECRET` | Unique random secret, at least 32 characters |
-| `TEACHER_SETUP_TOKEN` | A second unique random secret, at least 32 characters |
+| Setting               | Value                                                                        |
+| --------------------- | ---------------------------------------------------------------------------- |
+| `BETTER_AUTH_URL`     | Exact HTTPS app origin, such as `https://funkwiz.YOUR-SUBDOMAIN.workers.dev` |
+| `TEACHER_EMAIL`       | Your own teacher email; this installation allows only this address           |
+| `BETTER_AUTH_SECRET`  | Unique random secret, at least 32 characters                                 |
+| `TEACHER_SETUP_TOKEN` | A second unique random secret, at least 32 characters                        |
 
 Generate each secret separately using a password manager or
 `openssl rand -hex 32`. Store the setup token in your password manager; it is
@@ -42,9 +42,9 @@ Do not leave the local development URL in production configuration.
 Use these Workers Builds commands (Bun is selected by the lockfile and pinned
 `packageManager` field):
 
-| Field | Command |
-| --- | --- |
-| Build command | `bun run build` |
+| Field          | Command                 |
+| -------------- | ----------------------- |
+| Build command  | `bun run build`         |
 | Deploy command | `bun run deploy:worker` |
 
 The deploy command applies pending migrations to the `DB` **binding** before

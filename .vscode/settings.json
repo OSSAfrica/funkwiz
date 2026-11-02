@@ -1,4 +1,8 @@
 {
+  "[javascript][javascriptreact][typescript][typescriptreact][json][jsonc][css][markdown][yaml]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true
+  },
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true
   },

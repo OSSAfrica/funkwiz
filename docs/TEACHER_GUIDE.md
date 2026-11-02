@@ -38,14 +38,14 @@ completed classroom report.
 
 Choose **Host live** to configure a game and open its lobby.
 
-| Setting | What it does |
-| --- | --- |
-| Shared screen | Show question content on the host screen. Players still answer from their own devices. |
-| Student devices | Show question content on player devices. |
-| Both screens | Show question content on both. |
-| Manual progression | Each timer expires and reveals the answer; you choose when to advance. No cooldown countdown runs. |
-| Automatic progression | Reveal the answer at expiry, wait the configured cooldown, then advance. |
-| Per-question duration | Use the durations saved in your quiz; there is no single forced game-wide duration. |
+| Setting               | What it does                                                                                       |
+| --------------------- | -------------------------------------------------------------------------------------------------- |
+| Shared screen         | Show question content on the host screen. Players still answer from their own devices.             |
+| Student devices       | Show question content on player devices.                                                           |
+| Both screens          | Show question content on both.                                                                     |
+| Manual progression    | Each timer expires and reveals the answer; you choose when to advance. No cooldown countdown runs. |
+| Automatic progression | Reveal the answer at expiry, wait the configured cooldown, then advance.                           |
+| Per-question duration | Use the durations saved in your quiz; there is no single forced game-wide duration.                |
 
 The room uses a snapshot of the quiz made when the lobby opens. Subsequent
 library edits do not alter that game. Close it and open a new room if the question
@@ -100,11 +100,11 @@ use the authorized view. See [workspace report permissions](WORKSPACES.md#report
 
 Choose **Download report**:
 
-| Format | Use it for |
-| --- | --- |
-| PDF | A readable, branded report for printing or sharing with intended recipients. |
-| CSV | Spreadsheet analysis of results and question/answer breakdowns. |
-| JSON | The full structured report for your own tools. It is not a quiz-import file. |
+| Format | Use it for                                                                   |
+| ------ | ---------------------------------------------------------------------------- |
+| PDF    | A readable, branded report for printing or sharing with intended recipients. |
+| CSV    | Spreadsheet analysis of results and question/answer breakdowns.              |
+| JSON   | The full structured report for your own tools. It is not a quiz-import file. |
 
 Downloads are generated on your device. They can contain participant nicknames
 and results, so choose appropriate names and recipients. There is no report-deletion

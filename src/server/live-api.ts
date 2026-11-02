@@ -27,7 +27,8 @@ class HttpFault extends Error {
 }
 function unwrap<T>(
   result:
-    { ok: true; data: T } | { ok: false; status: number; message: string },
+    | { ok: true; data: T }
+    | { ok: false; status: number; message: string },
 ): T {
   if (!result.ok) throw new HttpFault(result.message, result.status);
   return result.data;
