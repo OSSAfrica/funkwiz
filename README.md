@@ -14,7 +14,10 @@ keep control of your quizzes and reports. Funkwiz is available under the MIT lic
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2FOSSAfrica%2Ffunkwiz)
 
-![Funkwiz: A little curiosity. A lot of fun. Colorful quiz cards on a forest-green background.](public/og/funkwiz-v1.png)
+[![Funkwiz’s teacher library with colorful quiz cards, private drafts and shared workspace quizzes.](docs/screenshots/library.jpg)](docs/SHOWCASE.md)
+
+A peek at a fictional classroom, captured from the running app.
+[Explore the full screenshot tour →](docs/SHOWCASE.md)
 
 ## What can I use it for?
 
@@ -44,6 +47,17 @@ and _student_, but the same host-and-player flow works for trainers and groups.
 
 A projector is optional: show questions on a shared screen, on student devices,
 or on both. Players always have answer buttons on their devices.
+
+## Take a look inside
+
+| Write and time your questions                                                                                                                                       | Invite the room                                                                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [![Quiz editor with four answer choices, a correct-answer selector and per-question timing.](docs/screenshots/quiz-editor.jpg)](docs/screenshots/quiz-editor.jpg)   | [![Live lobby with a six-digit game code, QR option and six connected fictional players.](docs/screenshots/live-lobby.jpg)](docs/screenshots/live-lobby.jpg) |
+| **Run the live quiz**                                                                                                                                               | **Review the results**                                                                                                                                       |
+| [![Host view showing a live question, colorful answer choices, timer and reveal controls.](docs/screenshots/live-question.jpg)](docs/screenshots/live-question.jpg) | [![Game report with answer accuracy, questions played and a student leaderboard.](docs/screenshots/report.jpg)](docs/screenshots/report.jpg)                 |
+
+Click a screenshot to enlarge it. The [full tour](docs/SHOWCASE.md) also shows QR
+joining, the student phone view, dark mode and PDF/CSV/JSON report exports.
 
 ## What is available today?
 

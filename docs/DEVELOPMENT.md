@@ -27,6 +27,7 @@ Run these from the repository root. `package.json` is the command source of trut
 | `bun run setup:code --production`        | Print the ignored private-production setup code; never put it in logs/issues |
 | `bun run dev`                            | Development server on port 3000                                              |
 | `bun run format`                         | Format supported project files with Oxfmt                                    |
+| `bun run screenshots`                    | Capture the documented feature gallery with fictional local data             |
 | `bun run format:check`                   | Check formatting without changing files; also runs in CI                     |
 | `bun run generate-routes`                | Regenerate the file-route tree                                               |
 | `bun run typecheck`                      | Generate routes and check TypeScript                                         |
@@ -97,6 +98,13 @@ The browser runner resets its three test-state directories using
 `scripts/prepare-e2e.ts`. It does not reset `.wrangler/state`. Test identities are
 fictional, and email providers are mocked in integration tests. Do not replace
 fixture configuration with production secrets.
+
+## Feature screenshots
+
+`bun run screenshots` refreshes the committed feature gallery using an isolated
+School-mode browser fixture and fictional accounts/participants. See the
+[screenshot tour](SHOWCASE.md#refresh-the-screenshots) for setup, privacy and capture
+notes. Keep port 3102 free and run it separately from other browser tests.
 
 ## Generated files and assets
 

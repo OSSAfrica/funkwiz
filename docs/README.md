@@ -61,6 +61,8 @@ in both. Further collaboration/learning ideas remain [proposals](FUTURE_FEATURES
 - [Feature proposals](FUTURE_FEATURES.md): Next collaboration improvements and other ideas for discussion.
 - [Third-party notices](../THIRD_PARTY_NOTICES.md) and [license](../LICENSE).
 
+- [Screenshot tour](SHOWCASE.md): real screens for authoring, hosting, mobile play and reports.
+
 ## Glossary
 
 | Term                       | Meaning                                                                                                                               | More detail                                           |

@@ -35,7 +35,8 @@
     "deploy:private": "bun scripts/private-deploy.ts deploy",
     "db:migrate:e2e-school": "wrangler d1 migrations apply DB --local --config e2e/worker/school.jsonc --persist-to .wrangler/e2e-school-state",
     "format": "oxfmt --write .",
-    "format:check": "oxfmt --check ."
+    "format:check": "oxfmt --check .",
+    "screenshots": "playwright test --config playwright.showcase.config.ts"
   },
   "dependencies": {
     "@fontsource-variable/fredoka": "^5.3.0",
