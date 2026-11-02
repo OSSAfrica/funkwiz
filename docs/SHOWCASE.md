@@ -21,6 +21,14 @@ question. The common-time control can apply the same duration across the quiz.
 
 [![Quiz editor showing four choices and both common and per-question time controls.](screenshots/quiz-editor.jpg)](screenshots/quiz-editor.jpg)
 
+## Bring your topic or document to your AI tool
+
+**Import → AI prompt** gives you a copyable prompt with the sample JSON and import
+rules. Add your topic or source document in your preferred AI tool, then return
+to Funkwiz to [import and review the generated quiz](QUIZ_IMPORTS.md#ask-an-ai-tool-to-prepare-your-quiz).
+
+[![AI prompt tab with a copy button and sample JSON instructions.](screenshots/ai-import.jpg)](screenshots/ai-import.jpg)
+
 ## Get everyone into the room
 
 Share a six-digit code, a join link or a QR code. Students choose a nickname and
@@ -95,6 +103,9 @@ bun install --frozen-lockfile
 bunx playwright install chromium
 bun run screenshots
 ```
+
+To refresh only the AI import panel, use
+`FUNKWIZ_CAPTURE_ONLY=ai-import bun run screenshots`.
 
 The command starts a local Worker on `127.0.0.1:3102`, resets only the disposable
 `.wrangler/e2e-school-state` database, creates the fictional classroom, and captures

@@ -36,7 +36,7 @@ in both. Further collaboration/learning ideas remain [proposals](FUTURE_FEATURES
 - [Teacher guide](TEACHER_GUIDE.md): authoring, practice, hosting, timing, podium celebrations, reports and audio.
 - [Student guide](STUDENT_GUIDE.md): invitations, answering, scoring, reconnecting and sharing a result image.
 - [School workspaces](WORKSPACES.md): modes, invitations, roles, private sharing and migration.
-- [Question imports](QUIZ_IMPORTS.md): supported JSON fields, limits and validation.
+- [Question imports](QUIZ_IMPORTS.md): AI generation prompt, supported JSON fields, limits and validation.
 - [Live games](LIVE_GAMES.md): authoritative scoring, timing, connections and room lifecycle.
 - [Troubleshooting](TROUBLESHOOTING.md): common setup, joining and development problems.
 

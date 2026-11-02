@@ -106,6 +106,7 @@ test("creates a quiz, applies common timing, overrides one question, and survive
 test("validates imports and requires review before saving", async ({
   page,
 }, testInfo) => {
+  test.setTimeout(60_000);
   const title = `${testInfo.project.name} Space adventure`;
   await page
     .getByRole("button", { name: "Import questions", exact: true })
@@ -120,6 +121,10 @@ test("validates imports and requires review before saving", async ({
   );
   await page.getByLabel("Quiz title", { exact: true }).fill(title);
   await page.getByRole("button", { name: "Save quiz", exact: true }).click();
+  // Cold Workers compilation can outlast the default five-second assertion.
+  await expect(
+    page.getByRole("dialog", { name: "Make this quiz your own" }),
+  ).toBeHidden({ timeout: 20_000 });
   await expect(
     page.getByRole("heading", { name: title, exact: true }),
   ).toBeVisible();

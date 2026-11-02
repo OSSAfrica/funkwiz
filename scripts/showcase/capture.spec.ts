@@ -169,6 +169,19 @@ test("capture a fictional classroom through the real application", async ({
     ).toBeVisible();
     await capture(page, "library");
     await page
+      .getByRole("button", { name: "Import questions", exact: true })
+      .click();
+    await page.getByRole("tab", { name: "AI prompt", exact: true }).click();
+    await expect(
+      page.getByLabel("AI prompt with example JSON", { exact: true }),
+    ).toHaveValue(/correctIndex/);
+    await capture(page, "ai-import");
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Close", exact: true })
+      .click();
+    if (process.env.FUNKWIZ_CAPTURE_ONLY === "ai-import") return;
+    await page
       .getByRole("button", { name: "Edit Space explorers", exact: true })
       .click();
     await expect(page.getByLabel("Question", { exact: true })).toHaveValue(

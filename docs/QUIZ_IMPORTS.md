@@ -47,6 +47,30 @@ Download or copy the [two-question example](quiz-import-example.json) as a start
 point. IDs and timestamps are not required: importing creates fresh quiz/question
 IDs and a new account draft rather than overwriting an existing quiz.
 
+## Ask an AI tool to prepare your quiz
+
+Open **Import → AI prompt** and choose **Copy AI prompt**. The prompt includes the
+same sample JSON as the import form and the validation rules above. Replace its
+bracketed instructions with your topic, learner level, question count (1–100),
+language and timing (5–300 seconds per question).
+
+Paste it into your preferred AI tool. For a document-based quiz, attach the
+PDF/Word file in that tool or paste readable source text alongside the prompt.
+Ask it to use that material; if it cannot access the attachment, provide text.
+For a topic-based quiz, a topic such as “photosynthesis for ages 11–13” is enough.
+
+The prompt requests a single JSON object without code fences and reminds the AI
+that answer indexes start at zero. Bring its response back to **Import JSON**,
+then review every question and correct answer before saving. The prompt is
+separate from the JSON: do not paste the prompt into the quiz JSON field or add
+it as a JSON property.
+
+Funkwiz does not call an AI service or send the document anywhere. You choose
+what to provide to your external AI tool. If automatic clipboard access is
+unavailable, the app selects the prompt so you can copy it manually.
+
+[![Import dialog with an AI prompt tab, copy button and the ready-to-use prompt with example JSON.](screenshots/ai-import.jpg)](screenshots/ai-import.jpg)
+
 ## Import and review
 
 1. Sign in and open **Import** from the teacher library.
