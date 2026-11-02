@@ -3605,3 +3605,9 @@ button.teacher-profile {
 .audio-settings-panel[role="dialog"] > div:first-child {
   padding-right: 0;
 }
+
+/* School controls remain usable when the header wraps on smaller screens. */
+.school-topbar { height: auto; min-height: 72px; flex-wrap: wrap; gap: 1rem; padding-block: 1rem; }
+.school-topbar > div:first-child { flex: 1; min-width: min(100%, 18rem); }
+
+.school-shell .library-toolbar > div { min-width: 0; max-width: 100%; overflow-x: auto; }

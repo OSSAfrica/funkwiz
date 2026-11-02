@@ -10,6 +10,7 @@ import {
   googleProvider,
   resetEmailConfigured,
   teacherEmail,
+  schoolMode,
 } from "./auth-policy";
 import {
   createAuth,
@@ -37,6 +38,7 @@ export const getLoginOptions = createServerFn({ method: "GET" }).handler(
         configured: false,
         googleEnabled: false,
         registrationOpen: false,
+        school: schoolMode(env),
       };
     const existing = await database()
       .select({ id: user.id })
@@ -45,6 +47,7 @@ export const getLoginOptions = createServerFn({ method: "GET" }).handler(
       .get();
     return {
       configured: true,
+      school: schoolMode(env),
       googleEnabled: Boolean(googleProvider(env)),
       registrationOpen:
         !existing && (env.TEACHER_SETUP_TOKEN?.length ?? 0) >= 32,
@@ -93,6 +96,7 @@ export const addPassword = createServerFn({ method: "POST" })
 export const getRecoveryOptions = createServerFn({ method: "GET" }).handler(
   async () => ({
     configured: authConfigured(env),
+    school: schoolMode(env),
     setupCodeEnabled:
       authConfigured(env) && (env.TEACHER_SETUP_TOKEN?.length ?? 0) >= 32,
     emailEnabled:

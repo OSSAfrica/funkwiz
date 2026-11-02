@@ -4,6 +4,9 @@ BETTER_AUTH_URL=
 BETTER_AUTH_SECRET=
 TEACHER_EMAIL=
 TEACHER_SETUP_TOKEN=
+# Optional: set school to enable invite-only multi-teacher workspaces.
+# FUNKWIZ_MODE=personal
+
 # Optional integrations: uncomment only the settings you need after first deploy.
 # GOOGLE_CLIENT_ID=
 # GOOGLE_CLIENT_SECRET=

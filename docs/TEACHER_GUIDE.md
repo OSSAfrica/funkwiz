@@ -2,8 +2,12 @@
 
 [Documentation index](README.md) · [Student guide](STUDENT_GUIDE.md) · [Live game rules](LIVE_GAMES.md)
 
-You need the teacher account for the installation you are using. Students do not
+You need a teacher account for the installation you are using. Students do not
 need accounts. If you have not signed in yet, follow [getting started](GETTING_STARTED.md).
+
+In [School mode](WORKSPACES.md), select the workspace before authoring or hosting.
+Your drafts are private until you explicitly share them. Shared workspace quizzes
+can be copied into your own drafts; their original author keeps editing rights.
 
 ## Create or import a quiz
 
@@ -89,8 +93,10 @@ feedback plays after reveal rather than exposing correctness early.
 ## Review and export results
 
 Open the saved report after the game or return through recent games in the library.
-Reports include a leaderboard and question response breakdown. Only the signed-in
-teacher can access them in the current single-teacher installation.
+Reports include a leaderboard and question response breakdown. The host can access their reports. In School mode, workspace Owners/Admins can
+also review all reports in that workspace; their view of another host’s report
+includes questions actually asked, preserving unasked question content. Downloads
+use the authorized view. See [workspace report permissions](WORKSPACES.md#reports-and-offboarding).
 
 Choose **Download report**:
 

@@ -1,6 +1,7 @@
 import { emailConfigured, type EmailProviderSettings } from "./email-provider";
 /** Server configuration only. Never return this object to a browser. */
 export type AuthSettings = EmailProviderSettings & {
+  FUNKWIZ_MODE?: string;
   DB?: D1Database;
   BETTER_AUTH_URL?: string;
   BETTER_AUTH_SECRET?: string;
@@ -11,6 +12,9 @@ export type AuthSettings = EmailProviderSettings & {
   RESEND_API_KEY?: string;
   AUTH_EMAIL_FROM?: string;
 };
+export function schoolMode(settings: AuthSettings) {
+  return settings.FUNKWIZ_MODE === "school";
+}
 export function teacherEmail(settings: AuthSettings) {
   return settings.TEACHER_EMAIL?.trim().toLowerCase() ?? "";
 }

@@ -51,7 +51,11 @@ when the host disconnects; manual games wait after reveal. Students see connecti
 status and reconnect feedback. Sound effects and background music have separate
 controls and begin disabled.
 
-Finished reports are available only to the signed-in teacher. They include the
+In Personal mode, finished reports are available only to the signed-in teacher.
+School hosts see their own reports, and workspace Owners/Admins can see all reports
+in their active workspace; other hosts’ unasked questions are omitted. Report
+access does not grant host controls. Removing a host’s workspace membership blocks
+new protected commands/reads and closes their host sockets. They include the
 full leaderboard, question response counts, accuracy, and PDF/CSV/JSON downloads.
 See the [teacher report guide](TEACHER_GUIDE.md#review-and-export-results).
 

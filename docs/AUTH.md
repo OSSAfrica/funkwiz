@@ -2,6 +2,10 @@
 
 [Documentation index](README.md) · [Project overview](../README.md)
 
+Personal mode is the default. In School mode, the configured teacher bootstraps
+the installation and other teachers join by private invitation. See
+[School mode](WORKSPACES.md) for setup, memberships and migration.
+
 ## Local setup
 
 Use Bun. Run these commands from the repository root:
@@ -27,30 +31,36 @@ bun run setup:code
 ```
 
 Do not paste the code, your password, or OAuth secrets into chat or commit them.
-Registration is limited to the configured teacher email and requires the setup
-code. After that account exists, registration closes. The private code also
+Personal/bootstrap registration is limited to the configured teacher email and
+requires the setup code for email/password setup. After that account exists,
+bootstrap registration closes. In School mode, invited teachers register through
+a private invitation proof tied to their email, not through this setup code. The private code also
 serves as a password recovery key, so keep it private. Removing
 `TEACHER_SETUP_TOKEN` and restarting/redeploying disables that recovery option.
-The allowed teacher email is checked again on every authenticated quiz operation.
+Personal mode checks the configured teacher email on protected operations. School
+mode checks the signed-in identity, workspace membership and resource permissions.
+The setup-code recovery endpoint always applies only to the configured bootstrap
+account; it is not a master reset key for other teachers.
 
 ## Configuration
 
 All configuration is server-side. Do not use `VITE_` variables for these values.
 
-| Variable                                | Purpose                                                                        |
-| --------------------------------------- | ------------------------------------------------------------------------------ |
-| `BETTER_AUTH_URL`                       | Exact app origin, such as `http://127.0.0.1:3000` locally                      |
-| `BETTER_AUTH_SECRET`                    | Random secret of at least 32 characters                                        |
-| `TEACHER_EMAIL`                         | The single email allowed to register and access the workspace                  |
-| `TEACHER_SETUP_TOKEN`                   | Private token of at least 32 characters for registration and password recovery |
-| `GOOGLE_CLIENT_ID`                      | Optional Google OAuth web client ID                                            |
-| `AUTH_EMAIL_PROVIDER`                   | Deployment default: `resend`, `cloudflare`, or `smtp`                          |
-| `CLOUDFLARE_EMAIL_REMOTE`               | Explicit opt-in after configuring a real remote binding locally                |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE` | SMTP server and TLS connection settings                                        |
-| `SMTP_USER`, `SMTP_PASSWORD`            | Private SMTP login credentials                                                 |
-| `RESEND_API_KEY`                        | Optional Resend API key for password-reset delivery                            |
-| `AUTH_EMAIL_FROM`                       | Verified sender email address for password resets                              |
-| `GOOGLE_CLIENT_SECRET`                  | Optional matching Google OAuth client secret                                   |
+| Variable                                | Purpose                                                                          |
+| --------------------------------------- | -------------------------------------------------------------------------------- |
+| `FUNKWIZ_MODE`                          | Optional `personal` (default) or `school`; School enables invite-only workspaces |
+| `BETTER_AUTH_URL`                       | Exact app origin, such as `http://127.0.0.1:3000` locally                        |
+| `BETTER_AUTH_SECRET`                    | Random secret of at least 32 characters                                          |
+| `TEACHER_EMAIL`                         | Personal teacher address; bootstrap/operator address in School mode              |
+| `TEACHER_SETUP_TOKEN`                   | Private token of at least 32 characters for registration and password recovery   |
+| `GOOGLE_CLIENT_ID`                      | Optional Google OAuth web client ID                                              |
+| `AUTH_EMAIL_PROVIDER`                   | Deployment default: `resend`, `cloudflare`, or `smtp`                            |
+| `CLOUDFLARE_EMAIL_REMOTE`               | Explicit opt-in after configuring a real remote binding locally                  |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE` | SMTP server and TLS connection settings                                          |
+| `SMTP_USER`, `SMTP_PASSWORD`            | Private SMTP login credentials                                                   |
+| `RESEND_API_KEY`                        | Optional Resend API key for password-reset delivery                              |
+| `AUTH_EMAIL_FROM`                       | Verified sender email address for password resets                                |
+| `GOOGLE_CLIENT_SECRET`                  | Optional matching Google OAuth client secret                                     |
 
 Without the required URL, secret, and teacher email, sign-in fails closed and the
 login page shows a setup message. Google is enabled only when **both** Google
@@ -73,9 +83,10 @@ secret in `.dev.vars`, then restart the development server. For production, use
 Worker secrets. Restrict the Google consent application's audience as appropriate
 for your Google project.
 
-Use the configured teacher email with Google. Newly created Google users must
-have a verified email. Better Auth can link that trusted Google identity to the
-existing teacher account. If you start with Google, open **Teacher account** in
+Use the configured bootstrap teacher email with Google for the first account.
+Invited School teachers use their invited email address. Newly created Google
+users must have a verified email. Better Auth can link that trusted Google
+identity to the existing account. If you start with Google, open **Teacher account** in
 the workspace and add a password to enable email/password sign-in as well.
 
 Google's real consent/callback flow requires real credentials and has not been
@@ -122,7 +133,9 @@ or redeploy. Keep a separate recovery method available before removing it.
 
 ### Choose an email provider
 
-Open **Teacher account → Password reset email**. Choose **Resend**, **Cloudflare
+In Personal mode, or when signed in as the School installation's bootstrap
+operator, open **Teacher account → Password reset email**. Other School teachers
+cannot change the installation's email-provider selection or credentials. Choose **Resend**, **Cloudflare
 Email**, or **Other SMTP service**, then save. The choice persists in D1 and takes
 precedence over the deployment default `AUTH_EMAIL_PROVIDER` (`resend` when unset).
 Only the allowed teacher can inspect or change it. Selecting a service that still
@@ -240,7 +253,7 @@ bun run check:client-secrets
 ```
 
 Browser tests use separate disposable D1 databases and fake teacher identities on
-ports 3100/3101. They never modify the normal local database or your teacher
+ports 3100/3101/3102. They never modify the normal local database or your teacher
 account. Do not run the test Worker configurations as production deployments.
 
 ## References

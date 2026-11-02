@@ -13,6 +13,7 @@ import { HeroArt } from "./quiz-art";
 
 type SidebarProps = {
   count: number;
+  workspaceName?: string;
   teacher: { name: string };
   onAccount: () => void;
   onCreate: () => void;
@@ -23,6 +24,7 @@ type SidebarProps = {
 export function WorkspaceSidebar({
   count,
   teacher,
+  workspaceName,
   onAccount,
   onCreate,
   onImport,
@@ -89,7 +91,7 @@ export function WorkspaceSidebar({
           </span>
           <div>
             <strong>{teacher.name}</strong>
-            <span>Your private teacher space</span>
+            <span>{workspaceName ?? "Your private teacher space"}</span>
           </div>
         </button>
       </div>

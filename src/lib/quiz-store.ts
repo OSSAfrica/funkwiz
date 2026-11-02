@@ -5,6 +5,8 @@ import {
   listQuizzes,
   persistQuiz,
   removeQuiz,
+  copyWorkspaceQuiz,
+  shareWorkspaceQuiz,
 } from "./quizzes.functions";
 
 export function useQuizLibrary(initial: Quiz[]) {
@@ -59,6 +61,48 @@ export function useQuizLibrary(initial: Quiz[]) {
       setBusy(false);
     }
   }
+  async function share(quiz: Quiz) {
+    setBusy(true);
+    setError("");
+    try {
+      const shared = quiz.visibility !== "workspace";
+      await shareWorkspaceQuiz({ data: { id: quiz.id, shared } });
+      setSaved((items) =>
+        items.map((item) =>
+          item.id === quiz.id
+            ? { ...item, visibility: shared ? "workspace" : "private" }
+            : item,
+        ),
+      );
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "Sharing did not complete. Try again.",
+      );
+      throw cause;
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function copy(quiz: Quiz) {
+    setBusy(true);
+    setError("");
+    try {
+      const copied = await copyWorkspaceQuiz({ data: quiz.id });
+      setSaved((items) => [copied, ...items]);
+      return copied;
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "The quiz could not be copied.",
+      );
+      throw cause;
+    } finally {
+      setBusy(false);
+    }
+  }
   return {
     quizzes: saved,
     error,
@@ -66,6 +110,8 @@ export function useQuizLibrary(initial: Quiz[]) {
     save,
     remove,
     migrate,
+    share,
+    copy,
   };
 }
 export function readBrowserDrafts(): { drafts: Quiz[]; error: string } {

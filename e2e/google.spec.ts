@@ -44,9 +44,10 @@ test("teacher setup validates its private setup code before creating an account"
   await page
     .getByRole("button", { name: "Create teacher account", exact: true })
     .click();
+  // The optional welcome notification has an 8-second provider timeout.
   await expect(
     page.getByRole("heading", { name: /Your quiz collection/ }),
-  ).toBeVisible();
+  ).toBeVisible({ timeout: 15_000 });
 });
 
 test("enables email recovery when sending credentials and a sender are configured", async ({

@@ -42,8 +42,8 @@ exploit details or sensitive data.
 
 Use Bun 1.3.14, the committed lockfile and a supported Node.js version. Local
 configuration stays in `.dev.vars`; production settings stay in ignored `.deploy/`.
-Each current installation has one teacher, so do not use a real school's data as
-shared contributor fixtures.
+Use fictional accounts and workspaces rather than a real school’s data as shared
+contributor fixtures. Personal mode is the default; see [School setup](docs/WORKSPACES.md).
 
 ## Implementation expectations
 
@@ -78,7 +78,7 @@ bun run check:public
 Use the [change-to-checks guide](docs/DEVELOPMENT.md#choose-the-right-checks) to add
 relevant browser or integration scenarios. Install Chromium once with
 `bunx playwright install chromium` before browser tests. Test fixtures reset only
-their designated databases on ports 3100/3101; they do not replace your normal
+their designated databases on ports 3100/3101/3102; they do not replace your normal
 local database. Do not run production deployment commands to validate a docs/UI fix.
 
 For docs-only work, verify examples, relative links/anchors and the behavior being

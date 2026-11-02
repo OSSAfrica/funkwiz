@@ -164,7 +164,13 @@ export function AccountDialog({
               </Button>
             </fieldset>
           </form>
-          <EmailDeliveryForm initial={emailSettings} />
+          {emailSettings.canManage ? (
+            <EmailDeliveryForm initial={emailSettings} />
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Email delivery is managed by your installation owner.
+            </p>
+          )}
           <div className="mt-6 border-t pt-4">
             <Button variant="outline" disabled={busy} onClick={signOut}>
               <LogOut size={16} />

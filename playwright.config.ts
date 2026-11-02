@@ -15,9 +15,19 @@ export default defineConfig({
   },
   projects: [
     {
+      name: "school",
+      testMatch: "**/school.spec.ts",
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: "http://127.0.0.1:3102",
+        storageState: { cookies: [], origins: [] },
+      },
+    },
+    {
       name: "desktop",
       testIgnore: [
         "**/google.spec.ts",
+        "**/school.spec.ts",
         "**/account-settings.spec.ts",
         "**/password-recovery.spec.ts",
         "**/capacity.spec.ts",
@@ -31,6 +41,7 @@ export default defineConfig({
       name: "phone",
       testIgnore: [
         "**/google.spec.ts",
+        "**/school.spec.ts",
         "**/account-settings.spec.ts",
         "**/password-recovery.spec.ts",
         "**/capacity.spec.ts",
@@ -74,8 +85,19 @@ export default defineConfig({
   webServer: [
     {
       command:
+        "bun scripts/prepare-e2e.ts school && bun run db:migrate:e2e-school && bun run dev --mode e2e-school --port 3102 --host 127.0.0.1",
+      url: "http://127.0.0.1:3102",
+      // Cold Workers/SSR compilation can exceed a minute on contributor laptops.
+      timeout: 120_000,
+      reuseExistingServer: false,
+      env: { WRANGLER_LOG_PATH: "/tmp/funkwiz-school-playwright.log" },
+    },
+    {
+      command:
         "bun scripts/prepare-e2e.ts && bun run db:migrate:e2e && bun run dev --mode e2e --port 3100 --host 127.0.0.1",
       url: "http://127.0.0.1:3100",
+      // Cold Workers/SSR compilation can exceed a minute on contributor laptops.
+      timeout: 120_000,
       reuseExistingServer: false,
       env: { WRANGLER_LOG_PATH: "/tmp/fun-quiz-playwright-wrangler.log" },
     },
@@ -83,6 +105,8 @@ export default defineConfig({
       command:
         "bun scripts/prepare-e2e.ts google && bun run db:migrate:e2e-google && bun run dev --mode e2e-google --port 3101 --host 127.0.0.1",
       url: "http://127.0.0.1:3101",
+      // Cold Workers/SSR compilation can exceed a minute on contributor laptops.
+      timeout: 120_000,
       reuseExistingServer: false,
       env: { WRANGLER_LOG_PATH: "/tmp/fun-quiz-google-playwright.log" },
     },

@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
+import { requireWorkspace } from "@/lib/workspace.server";
 import { getTeacherSession } from "@/lib/auth.server";
 import {
   gameSettings,
@@ -108,6 +109,7 @@ async function createRoom(request: Request, env: Env) {
     body = await readBody(request);
   if (typeof body.quizId !== "string")
     throw new HttpFault("Choose a quiz to host.", 400);
+  const scope = await requireWorkspace(request.headers);
   const settings = validate(gameSettings, body.settings);
   const db = drizzle(env.DB);
   const stored = await db
@@ -115,7 +117,11 @@ async function createRoom(request: Request, env: Env) {
     .from(quizTable)
     .where(eq(quizTable.id, body.quizId))
     .get();
-  if (stored && stored.ownerId !== session.user.id)
+  if (
+    stored &&
+    (stored.ownerId !== session.user.id ||
+      (stored.workspaceId ?? null) !== scope.workspaceId)
+  )
     throw new HttpFault("That quiz is not in your account.", 403);
   const sample = sampleQuizzes.find((q) => q.id === body.quizId);
   const quiz = stored
@@ -143,20 +149,20 @@ async function createRoom(request: Request, env: Env) {
       session.user.id,
       quiz,
       settings,
+      scope.workspaceId,
     );
     if (!created) continue;
     const now = new Date();
-    await db
-      .insert(liveSession)
-      .values({
-        id,
-        ownerId: session.user.id,
-        code,
-        title: quiz.title,
-        status: "lobby",
-        createdAt: now,
-        expiresAt: new Date(now.getTime() + 8 * 60 * 60 * 1000),
-      });
+    await db.insert(liveSession).values({
+      id,
+      ownerId: session.user.id,
+      workspaceId: scope.workspaceId,
+      code,
+      title: quiz.title,
+      status: "lobby",
+      createdAt: now,
+      expiresAt: new Date(now.getTime() + 8 * 60 * 60 * 1000),
+    });
     return json({ code, sessionId: id }, 201);
   }
   throw new HttpFault("A room could not be opened. Please try again.", 503);

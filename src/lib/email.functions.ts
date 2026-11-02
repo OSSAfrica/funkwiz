@@ -4,13 +4,17 @@ import { env } from "cloudflare:workers";
 import { database, requireTeacher } from "./auth.server";
 import { emailDeliverySettings } from "@/db/schema";
 import { emailDeliveryOptions } from "./email-settings.server";
+import { isTeacher } from "./auth-policy";
 import { isEmailProvider } from "./email-provider";
 
 export const getEmailDeliverySettings = createServerFn({
   method: "GET",
 }).handler(async () => {
-  await requireTeacher(getRequestHeaders());
-  return emailDeliveryOptions(env);
+  const teacher = await requireTeacher(getRequestHeaders());
+  return {
+    ...(await emailDeliveryOptions(env)),
+    canManage: isTeacher(teacher.email, env),
+  };
 });
 export const saveEmailProvider = createServerFn({ method: "POST" })
   .validator((value: unknown) => {
@@ -20,6 +24,8 @@ export const saveEmailProvider = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const teacher = await requireTeacher(getRequestHeaders());
+    if (!isTeacher(teacher.email, env))
+      throw new Error("Email delivery is managed by the installation owner.");
     await database()
       .insert(emailDeliverySettings)
       .values({ ownerId: teacher.id, provider: data, updatedAt: new Date() })
@@ -27,5 +33,5 @@ export const saveEmailProvider = createServerFn({ method: "POST" })
         target: emailDeliverySettings.ownerId,
         set: { provider: data, updatedAt: new Date() },
       });
-    return emailDeliveryOptions(env);
+    return { ...(await emailDeliveryOptions(env)), canManage: true };
   });

@@ -50,7 +50,7 @@ Run these from the repository root. `package.json` is the command source of trut
 | `bun run og:generate` | Generate the three committed social cards |
 | `bun run audio:generate` | Generate the original MP3 soundtrack and a temporary WAV preview |
 
-`db:migrate:e2e` and `db:migrate:e2e-google` are fixture commands used by the browser
+`db:migrate:e2e`, `db:migrate:e2e-google` and `db:migrate:e2e-school` are fixture commands used by the browser
 runner. Do not point those test configurations at a real installation. Deployment
 commands are not part of the ordinary contribution checks.
 
@@ -72,6 +72,7 @@ For browser tests, install the browser once:
 bunx playwright install chromium
 bun run test:e2e e2e/authoring.spec.ts --project desktop
 bun run test:e2e e2e/social.spec.ts --project phone
+bun run test:e2e --project school
 ```
 
 The full suite is `bun run test:e2e`. Capacity and account projects have dependency
@@ -85,11 +86,12 @@ timing failures are tracked in the [roadmap](PLAN.md).
 | --- | --- |
 | Normal development | `.wrangler/state`; your local teacher account and quizzes |
 | Desktop/phone browser fixture | `.wrangler/e2e-state`, port 3100 |
+| School fixture | `.wrangler/e2e-school-state`, port 3102; fictional invited teachers |
 | Google-provider fixture | `.wrangler/e2e-google-state`, port 3101 |
 | Worker integration suite | Isolated local Worker test environments using `tests/worker/wrangler.jsonc` |
 | Private production configuration/build | `.deploy/`; remote data lives in its configured Cloudflare resources |
 
-The browser runner resets its two test-state directories using
+The browser runner resets its three test-state directories using
 `scripts/prepare-e2e.ts`. It does not reset `.wrangler/state`. Test identities are
 fictional, and email providers are mocked in integration tests. Do not replace
 fixture configuration with production secrets.

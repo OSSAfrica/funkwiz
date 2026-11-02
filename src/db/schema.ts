@@ -31,6 +31,7 @@ export const session = sqliteTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    activeOrganizationId: text("active_organization_id"),
   },
   (table) => [index("session_user_idx").on(table.userId)],
 );
@@ -87,6 +88,10 @@ export const quiz = sqliteTable(
     ownerId: text("owner_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    workspaceId: text("workspace_id").references(() => organization.id),
+    visibility: text("visibility", { enum: ["private", "workspace"] })
+      .notNull()
+      .default("private"),
     title: text("title").notNull(),
     description: text("description").notNull(),
     cover: text("cover").$type<Cover>().notNull(),
@@ -98,6 +103,10 @@ export const quiz = sqliteTable(
   },
   (table) => [
     index("quiz_owner_updated_idx").on(table.ownerId, table.updatedAt),
+    index("quiz_workspace_visibility_idx").on(
+      table.workspaceId,
+      table.visibility,
+    ),
   ],
 );
 
@@ -108,6 +117,7 @@ export const liveSession = sqliteTable(
     ownerId: text("owner_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    workspaceId: text("workspace_id").references(() => organization.id),
     code: text("code").notNull(),
     title: text("title").notNull(),
     status: text("status", {
@@ -123,6 +133,10 @@ export const liveSession = sqliteTable(
   },
   (table) => [
     index("live_session_owner_created_idx").on(table.ownerId, table.createdAt),
+    index("live_session_workspace_created_idx").on(
+      table.workspaceId,
+      table.createdAt,
+    ),
   ],
 );
 
@@ -134,4 +148,66 @@ export const emailDeliverySettings = sqliteTable("email_delivery_settings", {
     enum: ["resend", "cloudflare", "smtp"],
   }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+});
+
+export const organization = sqliteTable("organization", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  logo: text("logo"),
+  metadata: text("metadata"),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+});
+export const member = sqliteTable(
+  "member",
+  {
+    id: text("id").primaryKey(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    role: text("role").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [
+    uniqueIndex("member_workspace_user_idx").on(
+      table.organizationId,
+      table.userId,
+    ),
+    index("member_user_idx").on(table.userId),
+  ],
+);
+export const invitation = sqliteTable("invitation", {
+  id: text("id").primaryKey(),
+  organizationId: text("organization_id")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  email: text("email").notNull(),
+  role: text("role").notNull(),
+  status: text("status").notNull().default("pending"),
+  expiresAt: integer("expires_at", { mode: "timestamp_ms" }).notNull(),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  inviterId: text("inviter_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+});
+export const workspaceInviteProof = sqliteTable("workspace_invite_proof", {
+  invitationId: text("invitation_id")
+    .primaryKey()
+    .references(() => invitation.id, { onDelete: "cascade" }),
+  tokenHash: text("token_hash").notNull().unique(),
+});
+export const workspaceAudit = sqliteTable("workspace_audit", {
+  id: text("id").primaryKey(),
+  workspaceId: text("workspace_id")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  actorId: text("actor_id")
+    .notNull()
+    .references(() => user.id),
+  action: text("action").notNull(),
+  subjectId: text("subject_id"),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
 });

@@ -16,6 +16,7 @@ import { useHydrated } from "@/lib/use-hydrated";
 import { authClient } from "@/lib/auth-client";
 
 type LoginOptions = {
+  school?: boolean;
   configured: boolean;
   googleEnabled: boolean;
   registrationOpen: boolean;
@@ -162,8 +163,10 @@ export function SignInScreen({
             )}
             {!setup && (
               <p className="auth-private-note">
-                <LockKeyhole size={13} />A private workspace for your teacher
-                account.
+                <LockKeyhole size={13} />
+                {options.school
+                  ? "Invited teachers can sign in here. New members should open their private invitation link."
+                  : "A private workspace for your teacher account."}
               </p>
             )}
           </>

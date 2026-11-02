@@ -8,7 +8,9 @@ if (existsSync(".dev.vars")) {
 } else {
   const email = process.argv[2]?.trim().toLowerCase();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    console.error("Usage: bun run setup:local your-teacher-email@example.com");
+    console.error(
+      "Usage: bun run setup:local your-teacher-email@example.com [--school]",
+    );
     process.exitCode = 1;
   } else {
     const content = [
@@ -16,6 +18,7 @@ if (existsSync(".dev.vars")) {
       `BETTER_AUTH_SECRET=${randomBytes(32).toString("base64url")}`,
       `TEACHER_EMAIL=${email}`,
       `TEACHER_SETUP_TOKEN=${randomBytes(32).toString("base64url")}`,
+      `FUNKWIZ_MODE=${process.argv.includes("--school") ? "school" : "personal"}`,
       "GOOGLE_CLIENT_ID=",
       "GOOGLE_CLIENT_SECRET=",
       "",

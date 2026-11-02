@@ -52,14 +52,16 @@ or on both. Players always have answer buttons on their devices.
 | Quiz authoring | Manual editing, examples, JSON imports, per-question or common time limits |
 | Live games | QR/code joining, reconnects, locked answers, server-controlled timers and leaderboards |
 | Host controls | Pause/resume, early reveal, manual/automatic progression and adjustable question visibility |
-| Reports | Teacher-only results, question breakdowns, themed PDF, CSV and JSON downloads |
+| Reports | Private results, workspace-scoped Admin visibility in School mode, themed PDF/CSV/JSON downloads |
 | Teacher access | Email/password, private-code recovery, optional Google sign-in and reset emails |
 | Appearance and sound | Light/dark/system themes, reduced-motion support, optional marimba music and sound effects |
 | Self-hosting | Cloudflare deployment, separate private configuration and local development with Bun |
 
-**Today, each installation has one teacher account.** Students join individual
-games without signing up. Multiple-teacher workspaces are a
-[proposal for discussion](docs/FUTURE_FEATURES.md), not an available setting.
+**Choose Personal or School mode.** Personal is the default single-teacher
+experience. Opt-in [School mode](docs/WORKSPACES.md) adds invited teachers,
+workspace switching and Owner/Admin/Teacher roles. Drafts stay private until
+explicitly shared; workspace Admins can view reports in their workspace.
+Students join games without accounts in either mode.
 
 The implementation caps a room at 200 players; local testing exercises 150
 simultaneous students. Pilot on your own deployment and network before using it
@@ -73,6 +75,7 @@ with a large class. See [current limits](docs/LIVE_GAMES.md#local-development-an
 | Try Funkwiz on my computer | [Local quick start](#run-locally) |
 | Deploy my own installation | [Deployment guide](docs/DEPLOY.md) |
 | Deploy this public repository without publishing my account IDs | [Private deployment](docs/PRIVATE_DEPLOY.md) |
+| Manage an invited teaching team | [School workspaces](docs/WORKSPACES.md) |
 | Create and host my first quiz | [Teacher guide](docs/TEACHER_GUIDE.md) |
 | Import my questions | [Import format and example](docs/QUIZ_IMPORTS.md) |
 | Help build Funkwiz | [Contributing](CONTRIBUTING.md) and [development guide](docs/DEVELOPMENT.md) |
@@ -129,10 +132,11 @@ workflows and tests are welcome alongside code changes.
 
 ## Where the project is heading
 
-The current focus is a dependable single-teacher app and straightforward
-self-hosting. We are discussing an invite-only School mode for teams running
-their own installation, while keeping Personal mode simple. Quiz sharing,
-report privacy, roles and migration need clear decisions before implementation.
+Personal mode keeps individual setup simple; School mode provides the first
+invite-only collaboration foundation for teams running their own installation.
+Next possibilities include answer explanations, quiz organization, spreadsheet
+imports and report-retention controls. Co-hosting, simultaneous editing,
+self-paced assignments and public registration are not included today.
 
 Read the [feature discussion](docs/FUTURE_FEATURES.md) and
 [roadmap](docs/PLAN.md), or open a [GitHub issue](https://github.com/OSSAfrica/funkwiz/issues)

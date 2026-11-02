@@ -69,17 +69,21 @@ export class GameRoom extends DurableObject<Env> {
     ownerId: string,
     quiz: unknown,
     settings: unknown,
+    workspaceId: string | null = null,
   ) {
     if (this.#room && this.#room.expiresAt > Date.now()) return false;
     if (this.#room) this.#expire();
-    const room = createRoomMeta(
-      id,
-      code,
-      ownerId,
-      parseQuiz(quiz),
-      gameSettings(settings),
-      Date.now(),
-    );
+    const room = {
+      ...createRoomMeta(
+        id,
+        code,
+        ownerId,
+        parseQuiz(quiz),
+        gameSettings(settings),
+        Date.now(),
+      ),
+      workspaceId,
+    };
     this.ctx.storage.sql.exec(
       "INSERT INTO room (singleton, meta, revision) VALUES (1, ?, 1)",
       JSON.stringify(room),
@@ -135,6 +139,7 @@ export class GameRoom extends DurableObject<Env> {
   async read(role: RoomRole, identity: string) {
     return this.#run(async () => {
       this.#authorize(role, identity);
+      if (role === "host") await this.#assertHostMembership();
       if (this.#advance()) await this.#settle();
       const player =
         role === "student" ? this.#playerForToken(identity) : undefined;
@@ -144,6 +149,7 @@ export class GameRoom extends DurableObject<Env> {
   async control(ownerId: string, action: HostAction) {
     return this.#run(async () => {
       this.#authorize("host", ownerId);
+      await this.#assertHostMembership();
       if (this.#advance()) await this.#settle();
       const room = this.#requireRoom();
       let next: RoomMeta;
@@ -214,6 +220,7 @@ export class GameRoom extends DurableObject<Env> {
         request.headers.get("x-live-role") === "host" ? "host" : "student";
       const identity = request.headers.get("x-live-identity") ?? "";
       const player = this.#authorize(role, identity);
+      if (role === "host") await this.#assertHostMembership();
       if (this.#advance()) await this.#settle();
       const sessionId = request.headers.get("x-live-session-id") ?? undefined;
       const expiresAt = Number(request.headers.get("x-live-session-expiry"));
@@ -280,7 +287,11 @@ export class GameRoom extends DurableObject<Env> {
       )
         .bind(connection.sessionId ?? "", this.#room?.ownerId ?? "", now)
         .first();
-      if (!session || (connection.expiresAt ?? 0) <= now) {
+      if (
+        !session ||
+        (connection.expiresAt ?? 0) <= now ||
+        !(await this.#hostIsMember())
+      ) {
         ws.close(4003, "Teacher session ended");
         return;
       }
@@ -365,6 +376,27 @@ export class GameRoom extends DurableObject<Env> {
     const player = this.#playerForToken(identity);
     if (!player) throw new GameFault("Join this game to continue.", 401);
     return player;
+  }
+  async #hostIsMember() {
+    const room = this.#room;
+    if (!room?.workspaceId) return true;
+    return Boolean(
+      await this.env.DB.prepare(
+        "SELECT id FROM member WHERE organization_id = ? AND user_id = ? AND role IN ('owner','admin','teacher') LIMIT 1",
+      )
+        .bind(room.workspaceId, room.ownerId)
+        .first(),
+    );
+  }
+  async #assertHostMembership() {
+    if (!(await this.#hostIsMember()))
+      throw new GameFault("Workspace access has been removed.", 403);
+  }
+  async refreshHostAccess() {
+    if (!(await this.#hostIsMember())) {
+      for (const ws of this.ctx.getWebSockets("host"))
+        ws.close(4003, "Workspace access removed");
+    }
   }
   #playerCount() {
     return this.ctx.storage.sql
@@ -457,11 +489,12 @@ export class GameRoom extends DurableObject<Env> {
     this.#broadcastPending = true;
     this.ctx.waitUntil(
       new Promise<void>((resolve) =>
-        setTimeout(() => {
+        setTimeout(async () => {
           const all = this.#broadcastEveryone;
           this.#broadcastPending = false;
           this.#broadcastEveryone = false;
           try {
+            const hostAllowed = await this.#hostIsMember();
             if (!this.#room) return;
             const data = this.#data();
             for (const ws of this.ctx.getWebSockets()) {
@@ -469,7 +502,7 @@ export class GameRoom extends DurableObject<Env> {
               if (!all && connection.role !== "host") continue;
               if (
                 connection.role === "host" &&
-                (connection.expiresAt ?? 0) <= Date.now()
+                ((connection.expiresAt ?? 0) <= Date.now() || !hostAllowed)
               ) {
                 ws.close(4003, "Teacher session ended");
                 continue;
@@ -588,11 +621,12 @@ export class GameRoom extends DurableObject<Env> {
       report = this.#makeReport();
     try {
       await this.env.DB.prepare(
-        `INSERT INTO live_session (id, owner_id, code, title, status, created_at, started_at, ended_at, expires_at, report) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET status = excluded.status, started_at = excluded.started_at, ended_at = excluded.ended_at, expires_at = excluded.expires_at, report = excluded.report`,
+        `INSERT INTO live_session (id, owner_id, workspace_id, code, title, status, created_at, started_at, ended_at, expires_at, report) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET status = excluded.status, started_at = excluded.started_at, ended_at = excluded.ended_at, expires_at = excluded.expires_at, report = excluded.report`,
       )
         .bind(
           room.id,
           room.ownerId,
+          room.workspaceId ?? null,
           room.code,
           room.quiz.title,
           room.phase,

@@ -4,9 +4,11 @@ import { emailButtonStyle } from "../components/email-styles";
 export default function WelcomeEmail({
   name = "Curious Teacher",
   workspaceUrl = "https://quiz.example.com",
+  setupCodeRecovery = true,
 }: {
   name?: string;
   workspaceUrl?: string;
+  setupCodeRecovery?: boolean;
 } = {}) {
   return (
     <EmailLayout
@@ -25,8 +27,9 @@ export default function WelcomeEmail({
         </Button>
       </Section>
       <Text>
-        Keep your private teacher setup code somewhere safe. It can help you
-        recover your account, and should never be shared with students.
+        {setupCodeRecovery
+          ? "Keep your private teacher setup code somewhere safe. It can help you recover your account, and should never be shared with students."
+          : "Use your teacher email to request password recovery if you need it. Contact your installation owner if recovery email is unavailable."}
       </Text>
     </EmailLayout>
   );

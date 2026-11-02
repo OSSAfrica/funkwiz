@@ -15,6 +15,8 @@ export type Quiz = {
   questions: Question[];
   updatedAt: string;
   isExample?: boolean;
+  visibility?: "private" | "workspace";
+  canEdit?: boolean;
 };
 export type DisplayMode = "shared" | "devices" | "both";
 export type GameSettings = {

@@ -2,6 +2,7 @@ import { renderAccountEmail, type AccountEmail } from "@/emails/render.server";
 import { createHash } from "node:crypto";
 import { APIError } from "better-auth/api";
 import { isTeacher, type AuthSettings } from "./auth-policy";
+import { schoolEmailAllowed } from "./school-access.server";
 import {
   emailConfigured,
   smtpOptions,
@@ -16,7 +17,7 @@ export async function sendResetEmail(
   token: string,
   provider?: EmailProvider | null,
 ) {
-  if (!isTeacher(email, settings)) return;
+  if (!(await schoolEmailAllowed(email, settings))) return;
   const selected =
     provider === undefined ? await selectedEmailProvider(settings) : provider;
   try {
@@ -35,8 +36,9 @@ export async function sendResetEmail(
     await deliverEmail(settings, email, content, selected, token);
   } catch {
     throw new APIError("SERVICE_UNAVAILABLE", {
-      message:
-        "The reset email could not be sent. Try again later or use your private setup code.",
+      message: isTeacher(email, settings)
+        ? "The reset email could not be sent. Try again later or use your private setup code."
+        : "The reset email could not be sent. Try again later or ask your installation owner to check email delivery.",
     });
   }
 }
@@ -87,6 +89,37 @@ async function deliverEmail(
       throw new Error("Choose an email provider");
   }
 }
+
+export async function sendWorkspaceInvitation(
+  settings: AuthSettings,
+  email: string,
+  invitationUrl: string,
+  workspace: string,
+  inviter: string,
+) {
+  const url = new URL(invitationUrl);
+  if (
+    url.origin !== new URL(settings.BETTER_AUTH_URL!).origin ||
+    url.pathname !== "/accept-invite"
+  )
+    throw new Error("Invalid invitation destination.");
+  const provider = await selectedEmailProvider(settings);
+  if (!emailConfigured(settings, provider))
+    throw new Error("Email delivery is unavailable.");
+  const content = await renderAccountEmail({
+    kind: "workspace-invitation",
+    invitationUrl: url.href,
+    workspace,
+    inviter,
+  });
+  await deliverEmail(
+    settings,
+    email,
+    content,
+    provider,
+    `invite:${crypto.randomUUID()}`,
+  );
+}
 // Account changes must succeed even if a notification provider is unavailable.
 // Never include passwords, setup codes, reset tokens, or provider errors in logs.
 export async function sendAccountNotification(
@@ -94,14 +127,19 @@ export async function sendAccountNotification(
   recipient: { email: string; name?: string },
   kind: "welcome" | "password-changed",
 ) {
-  if (!isTeacher(recipient.email, settings)) return;
+  if (!(await schoolEmailAllowed(recipient.email, settings))) return;
   try {
     const provider = await selectedEmailProvider(settings);
     if (!emailConfigured(settings, provider)) return;
     const origin = new URL(settings.BETTER_AUTH_URL!).origin;
     const notification: AccountEmail =
       kind === "welcome"
-        ? { kind, name: recipient.name || "teacher", workspaceUrl: origin }
+        ? {
+            kind,
+            name: recipient.name || "teacher",
+            workspaceUrl: origin,
+            setupCodeRecovery: isTeacher(recipient.email, settings),
+          }
         : { kind, recoveryUrl: `${origin}/forgot-password` };
     const content = await renderAccountEmail(notification);
     await deliverEmail(

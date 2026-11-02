@@ -1,0 +1,2 @@
+CREATE INDEX `live_session_workspace_created_idx` ON `live_session` (`workspace_id`,`created_at`);--> statement-breakpoint
+CREATE INDEX `quiz_workspace_visibility_idx` ON `quiz` (`workspace_id`,`visibility`);

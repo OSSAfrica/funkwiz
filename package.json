@@ -32,7 +32,8 @@
     "check:public": "bun scripts/check-public-repo.ts",
     "build:private": "bun scripts/private-deploy.ts build",
     "deploy:private:dry-run": "bun scripts/private-deploy.ts dry-run",
-    "deploy:private": "bun scripts/private-deploy.ts deploy"
+    "deploy:private": "bun scripts/private-deploy.ts deploy",
+    "db:migrate:e2e-school": "wrangler d1 migrations apply DB --local --config e2e/worker/school.jsonc --persist-to .wrangler/e2e-school-state"
   },
   "dependencies": {
     "@fontsource-variable/fredoka": "^5.3.0",
@@ -119,7 +120,7 @@
         "description": "Your final HTTPS app origin, e.g. https://funkwiz.YOUR-SUBDOMAIN.workers.dev (no trailing path). Update this when changing domains."
       },
       "TEACHER_EMAIL": {
-        "description": "The one email address allowed to create and access the teacher workspace. Each installation has its own teacher."
+        "description": "The bootstrap teacher email for this installation. Personal mode uses this one teacher; opt-in School mode adds invited teachers."
       },
       "BETTER_AUTH_SECRET": {
         "description": "Generate a unique random secret of at least 32 characters, e.g. with `openssl rand -hex 32`. Do not reuse a sample value."

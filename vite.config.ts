@@ -41,14 +41,18 @@ const config = defineConfig(({ mode }) => ({
       ...(mode.startsWith("e2e")
         ? {
             configPath:
-              mode === "e2e-google"
-                ? "./e2e/worker/google.jsonc"
-                : "./e2e/worker/wrangler.jsonc",
+              mode === "e2e-school"
+                ? "./e2e/worker/school.jsonc"
+                : mode === "e2e-google"
+                  ? "./e2e/worker/google.jsonc"
+                  : "./e2e/worker/wrangler.jsonc",
             persistState: {
               path:
-                mode === "e2e-google"
-                  ? ".wrangler/e2e-google-state"
-                  : ".wrangler/e2e-state",
+                mode === "e2e-school"
+                  ? ".wrangler/e2e-school-state"
+                  : mode === "e2e-google"
+                    ? ".wrangler/e2e-google-state"
+                    : ".wrangler/e2e-state",
             },
             inspectorPort: false as const,
           }

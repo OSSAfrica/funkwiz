@@ -3,15 +3,21 @@ import { ArrowRight, Radio, Trophy } from "lucide-react";
 import type { listLiveSessions } from "@/lib/live/reports.functions";
 export function RecentGames({
   sessions,
+  workspaceReports,
 }: {
   sessions: Awaited<ReturnType<typeof listLiveSessions>>;
+  workspaceReports?: boolean;
 }) {
   if (!sessions.length) return null;
   return (
     <section className="recent-games">
       <div className="live-section-heading">
         <span className="eyebrow">KEEP THE GOOD QUESTIONS GOING</span>
-        <h2>Your recent games</h2>
+        <h2>
+          {workspaceReports
+            ? "Workspace reports & your games"
+            : "Your recent games"}
+        </h2>
       </div>
       <div className="recent-game-list">
         {sessions.map((session) => {

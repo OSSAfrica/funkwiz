@@ -34,6 +34,12 @@ import { listQuizzes } from "@/lib/quizzes.functions";
 import { RecentGames } from "@/components/live/recent-games";
 import { listLiveSessions } from "@/lib/live/reports.functions";
 import { openLiveRoom } from "@/lib/live/client";
+import { getWorkspaceState } from "@/lib/workspaces.functions";
+import {
+  SchoolWelcome,
+  WorkspaceControls,
+} from "@/components/workspaces/workspace-controls";
+import { canManageMembers } from "@/lib/workspace-policy";
 import { newQuiz } from "@/lib/quiz";
 
 export const Route = createFileRoute("/")({
@@ -43,17 +49,20 @@ export const Route = createFileRoute("/")({
     return { teacher };
   },
   loader: async () => {
-    const [quizzes, password, sessions, emailSettings] = await Promise.all([
-      listQuizzes(),
-      getPasswordStatus(),
-      listLiveSessions(),
-      getEmailDeliverySettings(),
-    ]);
+    const [quizzes, password, sessions, emailSettings, workspace] =
+      await Promise.all([
+        listQuizzes(),
+        getPasswordStatus(),
+        listLiveSessions(),
+        getEmailDeliverySettings(),
+        getWorkspaceState(),
+      ]);
     return {
       quizzes,
       hasPassword: password.hasPassword,
       sessions,
       emailSettings,
+      workspace,
     };
   },
   head: ({ match }) => socialHead("app", match.context.siteOrigin),
@@ -66,12 +75,22 @@ const serverReady = () => false;
 
 function Home() {
   const initial = Route.useLoaderData();
+  const { teacher } = Route.useRouteContext();
+  if (initial.workspace.school && !initial.workspace.active)
+    return <SchoolWelcome state={initial.workspace} name={teacher.name} />;
+  return (
+    <Library
+      key={`${initial.workspace.active?.id ?? "personal"}:${initial.workspace.active?.role ?? "teacher"}:${initial.quizzes.map((quiz) => quiz.id).join(",")}`}
+    />
+  );
+}
+function Library() {
+  const initial = Route.useLoaderData();
   const navigate = useNavigate();
   const [hosting, setHosting] = useState(false);
   const { teacher } = Route.useRouteContext();
-  const { quizzes, error, busy, save, remove, migrate } = useQuizLibrary(
-    initial.quizzes,
-  );
+  const { quizzes, error, busy, save, remove, migrate, share, copy } =
+    useQuizLibrary(initial.quizzes);
   const [accountOpen, setAccountOpen] = useState(false);
   const [migrationError, setMigrationError] = useState("");
   const [modal, setModal] = useState<WorkspaceModal>(null);
@@ -85,12 +104,19 @@ function Home() {
   const [notice, setNotice] = useState("");
   const filtered = quizzes.filter(
     (q) =>
-      (filter === "all" || (filter === "mine" ? !q.isExample : q.isExample)) &&
+      (filter === "all" ||
+        (filter === "mine"
+          ? !q.isExample && q.canEdit !== false
+          : filter === "shared"
+            ? q.visibility === "workspace"
+            : q.isExample)) &&
       `${q.title} ${q.description}`
         .toLowerCase()
         .includes(search.toLowerCase()),
   );
-  const mine = quizzes.filter((q) => !q.isExample).length;
+  const mine = quizzes.filter(
+    (q) => !q.isExample && q.canEdit !== false,
+  ).length;
   function openEditor() {
     setModal({ type: "editor", quiz: newQuiz() });
   }
@@ -106,13 +132,19 @@ function Home() {
     });
   }
   return (
-    <div className="app-shell" inert={!hydrated}>
+    <div
+      className={
+        initial.workspace.school ? "app-shell school-shell" : "app-shell"
+      }
+      inert={!hydrated}
+    >
       <a className="skip-link" href="#main">
         Skip to quiz library
       </a>
       <WorkspaceSidebar
         count={quizzes.length}
         teacher={teacher}
+        workspaceName={initial.workspace.active?.name}
         onAccount={() => setAccountOpen(true)}
         onCreate={openEditor}
         onImport={() => setModal({ type: "import" })}
@@ -126,12 +158,20 @@ function Home() {
         }}
       />
       <div className="main-shell">
-        <header className="topbar">
-          <div className="breadcrumb">
-            Workspace
-            <ChevronRight size={14} />
-            <span>My library</span>
-          </div>
+        <header
+          className={
+            initial.workspace.school ? "topbar school-topbar" : "topbar"
+          }
+        >
+          {initial.workspace.school ? (
+            <WorkspaceControls state={initial.workspace} />
+          ) : (
+            <div className="breadcrumb">
+              Workspace
+              <ChevronRight size={14} />
+              <span>My library</span>
+            </div>
+          )}
           <div className="workspace-header-actions">
             <button
               className="help-link"
@@ -227,12 +267,17 @@ function Home() {
                   <TabsTrigger value="mine">
                     My drafts <span className="tab-count">{mine}</span>
                   </TabsTrigger>
+                  {initial.workspace.school && (
+                    <TabsTrigger value="shared">Shared library</TabsTrigger>
+                  )}
                   <TabsTrigger value="examples">Try an example</TabsTrigger>
                 </TabsList>
               </Tabs>
               <span className="storage-label">
                 <ShieldCheck size={14} />
-                Saved to your account
+                {initial.workspace.school
+                  ? "Private drafts · Share when ready"
+                  : "Saved to your account"}
               </span>
             </div>
             {(error || notice) && (
@@ -253,7 +298,30 @@ function Home() {
                 <QuizCard
                   key={quiz.id}
                   quiz={quiz}
-                  onAction={(type, quiz) => setModal({ type, quiz })}
+                  school={initial.workspace.school}
+                  busy={busy}
+                  onAction={async (type, quiz) => {
+                    if (type === "share") {
+                      try {
+                        await share(quiz);
+                        setNotice(
+                          quiz.visibility === "workspace"
+                            ? "Quiz is private again. Existing copies and game snapshots are unchanged."
+                            : "Quiz shared with this workspace. Colleagues can copy it into their own drafts.",
+                        );
+                      } catch {
+                        /* Sharing errors stay visible. */
+                      }
+                    } else if (type === "copy") {
+                      try {
+                        const copied = await copy(quiz);
+                        setModal({ type: "editor", quiz: copied });
+                        setFilter("mine");
+                      } catch {
+                        /* Copy errors stay visible. */
+                      }
+                    } else setModal({ type, quiz });
+                  }}
                 />
               ))}
             </div>
@@ -279,7 +347,13 @@ function Home() {
               </div>
             )}
           </section>
-          <RecentGames sessions={initial.sessions} />
+          <RecentGames
+            sessions={initial.sessions}
+            workspaceReports={
+              initial.workspace.school &&
+              canManageMembers(initial.workspace.active?.role)
+            }
+          />
           <section className="bottom-note">
             <div className="flex items-center gap-3">
               <span className="bottom-note-icon">

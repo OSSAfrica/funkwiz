@@ -229,3 +229,34 @@ test("optional account notifications skip unconfigured mail and contain provider
     "private provider failure",
   );
 });
+
+test("workspace invitation email escapes names and explains privacy and expiry", async () => {
+  const { renderAccountEmail } = await import("../src/emails/render.server");
+  const content = await renderAccountEmail({
+    kind: "workspace-invitation",
+    invitationUrl: "https://quiz.example.test/accept-invite?token=fake-proof",
+    workspace: "<script>team</script>",
+    inviter: "<img src=x>",
+  });
+  expect(content.html).toContain("&lt;script&gt;");
+  expect(content.html).not.toContain("<script>");
+  expect(content.html).not.toContain("<img src=x>");
+  expect(content.text).toContain(
+    "https://quiz.example.test/accept-invite?token=fake-proof",
+  );
+  expect(content.text).toContain("48 hours");
+  expect(content.text).toContain("drafts stay private");
+  expect(content.text).toContain("view all reports");
+});
+
+test("invited teachers receive email recovery guidance without the bootstrap setup code", async () => {
+  const { renderAccountEmail } = await import("../src/emails/render.server");
+  const content = await renderAccountEmail({
+    kind: "welcome",
+    name: "Invited Teacher",
+    workspaceUrl: "https://quiz.example.test",
+    setupCodeRecovery: false,
+  });
+  expect(content.text).toContain("request password recovery");
+  expect(content.text).not.toContain("private teacher setup code");
+});

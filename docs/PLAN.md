@@ -6,16 +6,15 @@
 
 One teacher hosts classroom quizzes for students who join using a code and
 nickname. Each installation owns its teacher configuration and database.
-Multi-teacher workspaces are not implemented. The first audience agreed for that
-future work is a school/team operating its own installation. See
-[the discussion draft](FUTURE_FEATURES.md) for proposed Personal/School modes,
-permissions and migration questions. An open-registration public service is not
-part of that proposed first School release.
+Opt-in School mode supports invited teachers and scoped workspaces for a
+school/team operating its own installation. Personal mode remains the default. See
+[future features](FUTURE_FEATURES.md) for the next collaboration improvements.
+An open-registration public service is outside the current scope.
 
-The agreed future library default is private teacher drafts with explicit
-workspace sharing. Workspace Admins will be able to view all reports in their own
-workspace. Sharing/editing mechanics and additional report permissions remain open
-in the discussion draft; no School-mode implementation has begun.
+School quizzes start as private drafts and are shared explicitly. Workspace
+Owners/Admins can view all reports in their workspace, with unasked question
+content omitted from other hosts’ reports. Shared quizzes are copied into a
+colleague’s own draft for editing. See [the workspace guide](WORKSPACES.md).
 
 ## Implemented
 
@@ -28,6 +27,8 @@ in the discussion draft; no School-mode implementation has begun.
 - Original calming music, timer ticks, reveal cues and independent audio controls.
 - Server-rendered social metadata and branded cards that exclude private content.
 - MIT licensing, public repository documentation and guided Cloudflare deployment.
+- Opt-in School membership, expiring invitations, scoped roles, private sharing,
+  Admin reports, explicit Personal-library migration and host-access revocation.
 - Private deployment configuration, isolated build output and target guards that
   keep operator account/resource details out of the public template.
 - Adoption/contribution guides, documentation index and glossary, teacher/student
@@ -35,9 +36,9 @@ in the discussion draft; no School-mode implementation has begun.
 
 ## Next work
 
-- Stabilize intermittent browser-test timing failures in account setup and report
-  downloads, then obtain a clean complete regression run. Focused social-preview
-  checks and production-preview checks pass; the last complete run did not.
+- Add browser regression automation to CI, including School and capacity fixtures.
+  Current CI covers library/Worker checks, typecheck, build and publishing hygiene;
+  local browser verification is recorded in [implementation notes](SCHOOL_MODE_IMPLEMENTATION.md).
 - Verify the full deploy-button flow after the public repository is available.
   Local dry runs cannot exercise account provisioning, real inbox delivery or
   external social crawlers.

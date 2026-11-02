@@ -17,6 +17,7 @@ import { useHydrated } from "@/lib/use-hydrated";
 import { AuthLayout } from "./auth-layout";
 
 type Options = {
+  school?: boolean;
   configured: boolean;
   setupCodeEnabled: boolean;
   emailEnabled: boolean;
@@ -187,7 +188,11 @@ export function PasswordRecovery({ options }: { options: Options }) {
   return (
     <RecoveryCard
       title="Let’s get you back in."
-      description="Use your private setup code, or ask for a password reset link by email."
+      description={
+        options.school
+          ? "Teachers recover by email. The private setup code is only for the installation owner."
+          : "Use your private setup code, or ask for a password reset link by email."
+      }
     >
       {!options.configured ||
       (!options.setupCodeEnabled && !options.emailEnabled) ? (

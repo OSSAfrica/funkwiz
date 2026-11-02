@@ -2,8 +2,9 @@
 
 [Documentation index](README.md) · [Development](DEVELOPMENT.md) · [Database schema](DATABASE_SCHEMA.md)
 
-This describes the current single-teacher implementation. Proposed multi-teacher
-changes are in [future features](FUTURE_FEATURES.md).
+This describes Personal mode and the opt-in School workspace foundation. See
+[workspaces](WORKSPACES.md) for permissions and [future features](FUTURE_FEATURES.md)
+for ideas beyond the current implementation.
 
 ## System overview
 
@@ -31,13 +32,22 @@ teacher owner, control authoritative timers or award its own points.
 
 ### Teacher access and authoring
 
-Better Auth stores accounts and sessions in D1 through Drizzle. The server checks
-the configured teacher email as well as the session. Registration also requires
-the private setup code and closes after the account exists. Google is configured
-only when both credentials are present.
+Better Auth stores accounts and sessions in D1 through Drizzle. Personal mode and
+School bootstrap access use the configured teacher email. Bootstrap email/password
+registration requires the private setup code and closes after that account exists.
+Invited School accounts instead require invitation-bound registration proof.
+Google is configured only when both credentials are present.
+
+In Personal mode the configured teacher gate remains in place. School mode uses
+Better Auth organizations and membership records, with a server-validated active
+workspace. Organization HTTP endpoints are disabled; scoped server functions
+handle creation, invitations, selection and administration. New-account invitations
+require a separate hashed registration proof, and member changes atomically protect
+the last Owner.
 
 Quiz server functions validate data and scope queries/mutations to the signed-in
-owner. Example quizzes are static server-side content; saving an edited example
+author and workspace. Shared entries are readable/copyable by members, while only
+authors edit or change sharing. Example quizzes are static server-side content; saving an edited example
 creates account-backed content. Browser-only drafts are copied only through an
 explicit, validated migration action.
 
@@ -58,10 +68,16 @@ role and display setting, so a student does not receive future questions or the
 correct answer before reveal. WebSockets carry updates and host commands after
 the authorized upgrade. Session checks also protect a returning host.
 
+School rooms persist their workspace ID. Host reads, commands, socket upgrades
+and broadcasts check the host’s current membership; removing access closes active
+host connections. Report access does not grant host controls.
+
 ### Reports and exports
 
 At game end, the final report is saved idempotently to D1 and retried after a
-transient failure. The teacher reads reports through owner-scoped server functions.
+transient failure. The host reads their reports through scoped server functions. School Owners/Admins
+also read reports within their active workspace, with unasked questions filtered
+from other hosts’ reports.
 The browser generates downloads. PDF rendering is loaded on demand; report exports
 are not sent to an external PDF service.
 
@@ -84,6 +100,8 @@ Preview copy excludes quiz/report content and reset tokens. See
 | Live persistence and sockets | [`src/server/game-room.ts`](../src/server/game-room.ts) |
 | Quiz validation/model | [`src/lib/quiz.ts`](../src/lib/quiz.ts), [`src/lib/quiz-storage.ts`](../src/lib/quiz-storage.ts) |
 | Account-backed quiz operations | [`src/lib/quizzes.functions.ts`](../src/lib/quizzes.functions.ts) |
+| Workspace scope and operations | [`src/lib/workspace.server.ts`](../src/lib/workspace.server.ts), [`src/lib/workspaces.functions.ts`](../src/lib/workspaces.functions.ts) |
+| Workspace administration UI | [`src/components/workspaces`](../src/components/workspaces) |
 | Authentication and recovery | [`src/lib/auth.server.ts`](../src/lib/auth.server.ts), [`src/lib/recovery.server.ts`](../src/lib/recovery.server.ts) |
 | Pure game transitions | [`src/lib/live/engine.ts`](../src/lib/live/engine.ts) |
 | Shared game messages and views | [`src/lib/live/protocol.ts`](../src/lib/live/protocol.ts), [`src/lib/live/view.ts`](../src/lib/live/view.ts) |

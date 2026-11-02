@@ -12,7 +12,7 @@ passwords, reset URLs, `.dev.vars`, `.deploy/` files or learner reports in an is
 | Login says configuration is incomplete | Set the required app origin, teacher email and authentication secret. See [authentication](AUTH.md). Restart local development after changing `.dev.vars`. |
 | Local setup still uses an old email | `setup:local` preserves an existing `.dev.vars`. Review that file privately; rerunning the command does not overwrite it. |
 | No **Set up teacher account** button | The allowed teacher may already exist, or the setup token may be missing/short. Sign in or use recovery rather than trying to create another teacher. |
-| Registration rejects an email | It must match the installation's configured teacher email. Today one installation supports one teacher. |
+| Registration rejects an email | Personal mode requires the configured teacher email. School teachers need a valid private invitation; the configured email bootstraps the installation owner. |
 | Setup code is rejected | Use the private code for the correct environment. `setup:code` is local; `setup:code --production` reads private-production settings. A game code is never valid here. |
 | Google button is absent | It appears only with both Google credentials configured. This is expected for a basic installation. |
 | Google callback fails | Check the exact deployed origin and `/api/auth/callback/google` registration. See [Google setup](AUTH.md). |
@@ -36,6 +36,11 @@ behavior. Local and production databases/accounts are separate.
 | Another-tab message appears | The same player session was opened elsewhere. Continue in the intended tab. |
 | Automatic game advanced while the host was offline | Server timers continue. Reconnect to the same room rather than opening a new game. |
 | Some students hit a temporary join limit | Shared school internet can place many requests behind one IP. Check [limits](LIVE_GAMES.md#local-development-and-production) and pilot the deployment. |
+
+For School access, verify the active workspace and current membership. A Teacher
+cannot open someone else’s unshared draft or report; an Admin can view reports
+only within their workspace. Expired/revoked/used invitations need a new link.
+See [workspace guidance](WORKSPACES.md).
 
 ## Reports, imports and audio
 
@@ -62,7 +67,7 @@ behavior. Local and production databases/accounts are separate.
   server and reload open tabs. Preserve the existing React deduplication and
   per-mode Vite cache configuration. Do not delete `.wrangler/state` to fix React.
 - **Port already in use:** stop the process you started on that port or choose a
-  free development port. Browser tests expect their fixture ports 3100/3101 to be free.
+  free development port. Browser tests expect their fixture ports 3100/3101/3102 to be free.
 - **Browser check fails intermittently:** inspect its trace and expected state,
   then run the relevant spec without source edits/hot reload. See [known work](PLAN.md).
 - **D1 says a table is missing:** apply migrations to the intended environment.

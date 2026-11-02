@@ -12,6 +12,7 @@ import {
   type AuthSettings,
 } from "./auth-policy";
 import { sendResetEmail } from "./auth-email.server";
+import { schoolEmailAllowed } from "./school-access.server";
 import { selectedEmailProvider } from "./email-settings.server";
 import { setupCodeMatches } from "./setup-code.server";
 
@@ -38,9 +39,10 @@ export function teacherRecovery(settings: AuthSettings) {
               { status: 503 },
             );
           const accepted = () => ctx.json({ status: true });
-          if (!isTeacher(ctx.body.email, settings)) return accepted();
+          if (!(await schoolEmailAllowed(ctx.body.email, settings)))
+            return accepted();
           const owner = await ctx.context.internalAdapter.findUserByEmail(
-            teacherEmail(settings),
+            ctx.body.email.trim().toLowerCase(),
           );
           if (!owner) return accepted();
           const token = randomBytes(32).toString("base64url");

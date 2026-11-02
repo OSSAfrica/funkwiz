@@ -7,10 +7,14 @@
 **Joining a teacher's game?** You do not need to install anything or create an
 account. Open the teacher's invitation and follow the [student guide](STUDENT_GUIDE.md).
 
-**Using an existing installation as its teacher?** The operator must configure
-your email as the allowed teacher address and provide your private setup code.
-Open `/login` and create that account. Public multi-teacher registration is not
-supported today. If a teacher account already exists, sign in or use recovery.
+**Setting up the first teacher account?** The operator configures your email as
+the bootstrap teacher address and provides the private setup code. Open `/login`
+and create that account. This applies to Personal mode and the first School owner.
+If the account already exists, sign in or use recovery.
+
+**Invited to a School workspace?** Open your private invitation link and use the
+invited email address to create an account or sign in. You do not need the
+installation’s private setup code. See [School invitations](WORKSPACES.md).
 
 **Trying Funkwiz yourself?** Use local development below. For a classroom where
 students use separate devices, deploy a reachable instance with the
@@ -39,6 +43,9 @@ change the teacher email or replace secrets. Never commit this file.
 
 The migration command prepares your local database. It does not create or migrate
 a production database. Keep the development terminal running while you use the app.
+
+For a fresh invite-only School setup, use `bun run setup:local you@example.com --school`
+instead. Existing configuration is preserved; see [workspace mode selection](WORKSPACES.md#enable-school-mode).
 
 ## Create the first teacher account
 

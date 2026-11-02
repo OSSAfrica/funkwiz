@@ -62,6 +62,14 @@ The button becomes usable once this repository and its files are public on
 GitHub. Its complete account-provisioning flow must be checked on a real
 Cloudflare account; a local dry run verifies packaging but does not provision.
 
+## Optional School mode
+
+Personal mode remains the default. To host an invited teaching team, follow
+[School mode setup](WORKSPACES.md). The runtime setting `FUNKWIZ_MODE=school`
+enables workspaces after the release's migrations have been applied; it does not
+open public teacher registration. The configured teacher email remains the
+bootstrap/operator identity.
+
 ## Optional Google and email
 
 The first deployment does not require OAuth credentials, email-provider keys,

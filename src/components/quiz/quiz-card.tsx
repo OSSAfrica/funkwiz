@@ -2,6 +2,9 @@ import {
   ArrowDownToLine,
   BookOpen,
   Clock3,
+  Copy,
+  Share2,
+  LockKeyhole,
   Pencil,
   Play,
   Radio,
@@ -15,21 +18,37 @@ import { quizMinutes, type Quiz } from "@/lib/quiz";
 export function QuizCard({
   quiz,
   onAction,
+  school,
+  busy,
 }: {
   quiz: Quiz;
-  onAction: (type: "editor" | "setup" | "delete" | "host", quiz: Quiz) => void;
+  school?: boolean;
+  busy?: boolean;
+  onAction: (
+    type: "editor" | "setup" | "delete" | "host" | "copy" | "share",
+    quiz: Quiz,
+  ) => void;
 }) {
   return (
     <article className="quiz-card" key={quiz.id}>
       <div className="quiz-cover">
         <QuizArt cover={quiz.cover} />
         <span className="cover-badge">
-          {quiz.isExample ? "EXAMPLE QUIZ" : "YOUR CREATION"}
+          {quiz.isExample
+            ? "EXAMPLE QUIZ"
+            : quiz.visibility === "workspace"
+              ? "SHARED WITH WORKSPACE"
+              : school
+                ? "PRIVATE DRAFT"
+                : "YOUR CREATION"}
         </span>
         <button
           className="cover-edit"
-          aria-label={`Edit ${quiz.title}`}
-          onClick={() => onAction("editor", quiz)}
+          aria-label={`${quiz.canEdit === false ? "Copy" : "Edit"} ${quiz.title}`}
+          disabled={busy}
+          onClick={() =>
+            onAction(quiz.canEdit === false ? "copy" : "editor", quiz)
+          }
         >
           <Pencil size={16} />
         </button>
@@ -54,10 +73,17 @@ export function QuizCard({
             <Button
               size="sm"
               className="host-button"
-              onClick={() => onAction("host", quiz)}
+              disabled={busy}
+              onClick={() =>
+                onAction(quiz.canEdit === false ? "copy" : "host", quiz)
+              }
             >
-              <Radio size={14} />
-              Host live
+              {quiz.canEdit === false ? (
+                <Copy size={14} />
+              ) : (
+                <Radio size={14} />
+              )}
+              {quiz.canEdit === false ? "Copy to my drafts" : "Host live"}
             </Button>{" "}
             <Button
               className="practice-button"
@@ -78,7 +104,26 @@ export function QuizCard({
             >
               <ArrowDownToLine size={16} />
             </Button>
-            {!quiz.isExample && (
+            {school && !quiz.isExample && quiz.canEdit !== false && (
+              <Button
+                variant="ghost"
+                size="icon"
+                disabled={busy}
+                aria-label={
+                  quiz.visibility === "workspace"
+                    ? `Make ${quiz.title} private`
+                    : `Share ${quiz.title} to workspace`
+                }
+                onClick={() => onAction("share", quiz)}
+              >
+                {quiz.visibility === "workspace" ? (
+                  <LockKeyhole size={16} />
+                ) : (
+                  <Share2 size={16} />
+                )}
+              </Button>
+            )}
+            {!quiz.isExample && quiz.canEdit !== false && (
               <Button
                 variant="ghost"
                 size="icon"

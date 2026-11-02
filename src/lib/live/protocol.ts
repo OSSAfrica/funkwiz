@@ -10,6 +10,7 @@ export type RoomMeta = {
   id: string;
   code: string;
   ownerId: string;
+  workspaceId?: string | null;
   quiz: Quiz;
   settings: GameSettings;
   display: DisplayMode;

@@ -4,7 +4,9 @@
 
 An installation operator controls the Cloudflare account, production configuration,
 backups and access to the teacher account. Students join games without accounts.
-The current app has no school administrator or multi-teacher management interface.
+Personal mode has one teacher. Opt-in [School mode](WORKSPACES.md) adds invited
+teachers and workspace administration; cloud operations remain the installation
+operator's responsibility.
 
 ## Configuration and secrets
 
@@ -14,7 +16,7 @@ instance from the open-source repository. Keep the account/database target in
 of both outside Git. The reusable public Wrangler template should remain generic.
 
 For a new copy created through the deploy button, use [the template guide](DEPLOY.md).
-Whichever path you choose, configure the exact HTTPS origin and your own teacher
+Whichever path you choose, configure the exact HTTPS origin and your own Personal/bootstrap teacher
 email. Google requires both OAuth credentials and a matching callback. Email reset
 requires the selected provider and a sender; private-code recovery can work without it.
 
@@ -48,7 +50,8 @@ provider's supported tools and a tested backup plan.
 | Data | Where it lives | Current lifecycle |
 | --- | --- | --- |
 | Teacher account, session and recovery records | D1 | Authentication/session expiry rules apply; account management is not an organization directory. |
-| Saved quizzes | D1 | Kept until the teacher deletes them. |
+| Saved quizzes | D1 | Kept until the author deletes them. Removing workspace membership retains their work and existing sharing state. |
+| Workspaces, memberships, invitations and activity | D1 | School access records; invitation proofs expire/revoke and are consumed on acceptance. Workspace deletion is not available. |
 | Live room, player identity and answers | Durable Object SQLite | A room starts with an eight-hour lifetime; finishing sets a 24-hour results lifetime. Expiry clears the room's rows. |
 | Completed report | D1 `live_session` | Persists after room expiry. There is no report-deletion interface or automatic report-retention policy yet. |
 | Browser preferences and old local drafts | Player/teacher device | Remain until browser storage is changed/cleared or the browser handles it. |

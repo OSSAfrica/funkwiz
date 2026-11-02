@@ -54,6 +54,11 @@ any remote migration or upload. Public deployment commands explicitly use the
 public build and refuse a mismatched/private build, so Wrangler's last-build
 redirect cannot silently choose your personal installation.
 
+For opt-in School mode, add `"FUNKWIZ_MODE": "school"` to the ignored secrets file
+and use the same private deployment command. It applies migrations before uploading
+the new code/settings. Follow [workspace setup and migration](WORKSPACES.md);
+existing libraries are not moved or shared automatically.
+
 ## First teacher account
 
 Open your deployed `/login`, choose **Set up teacher account**, and use the email

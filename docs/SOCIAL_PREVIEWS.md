@@ -18,6 +18,7 @@ an extra metadata request or exposing server configuration.
 | Teacher `/login`                 | Teacher         | `/login`                                     |
 | Teacher `/host/:code`            | Teacher         | `/login`                                     |
 | Reports `/reports/:id`           | Teacher         | `/login`                                     |
+| Teacher invitation `/accept-invite` | Teacher | `/login`, without the invitation proof |
 | Recovery `/forgot-password`      | Teacher         | `/forgot-password`                           |
 | Password reset `/reset-password` | Teacher         | `/forgot-password`, without the token        |
 
@@ -31,7 +32,7 @@ publicly fetchable so social previews can render.
 Preview copy never uses quiz titles, questions, learner names, scores or account
 details. Room codes are deliberately shareable destinations but are not printed
 in the artwork or preview text. Tracking parameters and authentication errors are
-not included. Reset tokens are never passed into the metadata builder; recovery
+not included. Reset and invitation tokens are never passed into the metadata builder; recovery
 no-store and no-referrer protections remain in place.
 
 The root provides fallback metadata; each leaf owns its canonical link and
