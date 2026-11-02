@@ -68,6 +68,6 @@ export const musicSceneLevel = (phase: RoomPhase | null) =>
     ? 0.36
     : phase === "reveal"
       ? 0.7
-      : phase === "lobby"
+      : phase === "lobby" || phase === "finished"
         ? 1
         : 0;

@@ -146,3 +146,27 @@ test("settings and nicknames reject malformed inputs without changing the room",
   for (const cooldown of [0, 61, 1.5, "3"])
     assert.throws(() => gameSettings({ ...defaultSettings, cooldown }));
 });
+
+test("the final podium includes tied finishers beyond the ten-player preview", () => {
+  const room = make();
+  const data: ViewData = {
+    players: Array.from({ length: 12 }, (_, i) => ({
+      id: `p${i}`,
+      nickname: `Player ${i}`,
+      score: 1000,
+      correctCount: 1,
+      joinedAt: i,
+    })),
+    answers: new Map(),
+    connected: new Set(),
+    hostOnline: true,
+    counts: [0, 0, 0, 0],
+    revision: 1,
+    now: 0,
+  };
+  assert.deepEqual(roomView(room, data, "host").podium, []);
+  const view = roomView({ ...room, phase: "finished" }, data, "host");
+  assert.equal(view.leaderboard.length, 10);
+  assert.equal(view.podium?.length, 12);
+  assert.ok(view.podium?.every((player) => player.rank === 1));
+});

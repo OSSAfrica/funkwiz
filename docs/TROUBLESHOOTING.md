@@ -52,8 +52,9 @@ See [workspace guidance](WORKSPACES.md).
   teacher installation. A local practice rehearsal does not create a saved live report.
 - **PDF download seems slow:** the first PDF use loads its renderer and fonts.
   Keep the tab open; try CSV/JSON if you need immediate structured output.
-- **No music/effects:** they start off and require a user action. Check their
-  separate controls and device volume. Audio rests while paused, disconnected or
+- **No music/effects:** browsers can block autoplay. Choose **Enable audio**
+  when prompted, or use the separate controls. Check device volume and saved
+  mute preferences. Audio rests while paused, disconnected or
   hidden; correctness feedback waits until reveal.
 - **Lost local quizzes after deploying:** deployment does not copy your local
   database. Use quiz JSON exports/imports or the explicit Browser drafts migration

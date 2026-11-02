@@ -7,7 +7,7 @@ import {
 export const musicTrack = "/audio/curious-garden.mp3";
 export const musicLoopSeconds = 48;
 
-/** One locally controlled mix per game page; constructed only by a user gesture. */
+/** One locally controlled mix per game page; autoplay is attempted, with a user-gesture fallback. */
 export class GameAudio {
   readonly context: AudioContext;
   readonly #master: GainNode;
@@ -63,7 +63,22 @@ export class GameAudio {
     }
   }
   async resume() {
-    if (this.context.state !== "running") await this.context.resume();
+    if (this.context.state !== "running") {
+      let timeout: ReturnType<typeof setTimeout> | undefined;
+      try {
+        await Promise.race([
+          this.context.resume(),
+          new Promise<never>((_, reject) => {
+            timeout = setTimeout(
+              () => reject(new Error("Audio needs a tap to start.")),
+              700,
+            );
+          }),
+        ]);
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
     if (this.context.state !== "running")
       throw new Error("Audio needs another tap to start.");
   }
@@ -280,6 +295,9 @@ export class GameAudio {
     source.start(when);
     source.stop(when + 0.05);
   }
+  stopEffects() {
+    this.#cancelEffects();
+  }
   cue(cue: AudioCue) {
     if (
       this.#closed ||
@@ -302,9 +320,18 @@ export class GameAudio {
     this.#duck.gain.setTargetAtTime(0.5, now, 0.025);
     this.#duck.gain.setTargetAtTime(
       1,
-      now + (cue === "selected" ? 0.18 : 0.7),
+      now + (cue === "finished" ? 2.5 : cue === "selected" ? 0.18 : 0.7),
       0.12,
     );
+    if (cue === "finished") {
+      [392, 523.25, 783.99].forEach((hz, index) =>
+        this.#mallet(hz, now + 0.2 + index * 0.6, 0.12, 0.7),
+      );
+      [523.25, 659.25, 783.99].forEach((hz) =>
+        this.#mallet(hz, now + 1.4, 0.07, 0.9),
+      );
+      return;
+    }
     notes.forEach((hz, index) =>
       this.#mallet(
         hz,

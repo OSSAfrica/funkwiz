@@ -54,6 +54,14 @@ Choose a branded PDF, spreadsheet-friendly CSV or structured JSON export:
 
 [![Report download menu offering PDF, CSV and JSON formats.](screenshots/report-export.jpg)](screenshots/report-export.jpg)
 
+## Give your quiz stars a stage
+
+The host finishes with a podium, a bronze-to-gold reveal, stage lights and a short
+fanfare. Top-three players get confetti on their own results. Motion and audio
+follow each device's preferences; this capture uses reduced motion.
+
+[![Host podium with gold, silver and bronze places for fictional classroom players.](screenshots/host-podium.jpg)](screenshots/host-podium.jpg)
+
 ## A quiz moment worth sharing
 
 Players earn 1,000, 900 and 800 points for the first three correct answers;

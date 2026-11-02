@@ -10,7 +10,24 @@ type Probe = {
   seam: number;
   contexts: { audio: AudioContext; gains: GainNode[] }[];
 };
+test.beforeEach(async ({ page }) => {
+  // These manual-control scenarios opt out; autoplay is covered separately.
+  await page.addInitScript(() =>
+    localStorage.setItem(
+      "funkwiz:audio:v1",
+      JSON.stringify({ sound: false, music: false }),
+    ),
+  );
+});
 async function instrument(page: Page) {
+  await page.evaluate(() =>
+    localStorage.setItem(
+      "funkwiz:audio:v1",
+      JSON.stringify({ sound: false, music: false }),
+    ),
+  );
+  await page.reload();
+  await page.waitForLoadState("networkidle");
   await page.evaluate(async () => {
     const probe: Probe = {
       cues: [],

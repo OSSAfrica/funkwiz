@@ -1,3 +1,4 @@
+import { PlayerCelebration } from "./celebration";
 import { ShareResult } from "./share-result";
 import {
   correctAnswerPoints,
@@ -263,6 +264,12 @@ function StudentFinish({ snapshot }: { snapshot: RoomView }) {
   return (
     <>
       <section className="student-finish">
+        {snapshot.phase === "finished" && snapshot.self && (
+          <PlayerCelebration
+            sessionId={snapshot.sessionId}
+            rank={snapshot.self.rank}
+          />
+        )}
         <span className="finish-trophy">
           <Trophy size={55} />
         </span>
