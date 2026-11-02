@@ -147,7 +147,8 @@ RESEND_API_KEY=your-private-sending-key
 #### Cloudflare Email
 
 The app uses the native [`EMAIL` sending binding](https://developers.cloudflare.com/email-service/api/send-emails/workers-api/).
-`wrangler.jsonc` includes `send_email: [{ "name": "EMAIL" }]`. Configure a sender
+Cloudflare Email is opt-in. Add `"send_email": [{ "name": "EMAIL" }]` to
+`wrangler.jsonc`, run `bun run cf-typegen`, and redeploy. Configure a sender
 from a domain onboarded to Cloudflare Email Service, select Cloudflare Email in
 the account dialog, and set `AUTH_EMAIL_FROM` on the Worker. No Resend key is used.
 
@@ -213,16 +214,15 @@ database and is not automatically copied to production.
 
 ## Production preparation
 
-No remote resources have been created or deployed. `wrangler.jsonc` contains a
-clearly marked local placeholder database ID. Before deployment:
+Use the [Deploy to Cloudflare button or CLI deployment guide](DEPLOY.md).
+The button provisions an installation-specific D1 database and prompts for the
+four required authentication settings. CLI deployment requires creating D1 and
+replacing the template's database ID first. Production migrations run as part of
+`bun run deploy` or `bun run deploy:worker`.
 
-1. Provision a D1 database and replace the placeholder with its real ID.
-2. Configure the production authentication URL, secret, allowed teacher email,
-   and initial setup token through Worker environment configuration/secrets.
-3. Apply migrations with `bun run db:migrate:remote` against the intended database.
-4. If enabling Google, configure the matching production callback URL and both
-   Google credentials.
-5. Build/deploy, create the teacher account, and copy or import your quizzes.
+Each installation chooses its own teacher email and independent secrets. Optional
+Google and email configuration can be added afterward. Create the teacher account
+on the deployed instance, then copy or import quiz JSON as needed.
 
 Local `.dev.vars` values are not automatically deployed as production secrets.
 Preserve `.wrangler/state` if you want to retain local accounts and quizzes.

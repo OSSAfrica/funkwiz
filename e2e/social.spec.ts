@@ -41,7 +41,7 @@ test("crawler HTML provides complete social cards without JavaScript or authenti
       );
       await expect(
         page.locator('head meta[property="og:image"]'),
-      ).toHaveAttribute("content", `${liveOrigin}/og/${image}-v1.png`);
+      ).toHaveAttribute("content", `${liveOrigin}/og/${image === "join" ? "join-v2" : "teacher-v2"}.png`);
       await expect(
         page.locator('head meta[property="og:url"]'),
       ).toHaveAttribute("content", `${liveOrigin}${canonical}`);
@@ -53,7 +53,7 @@ test("crawler HTML provides complete social cards without JavaScript or authenti
       ).toHaveAttribute("content", "630");
       await expect(
         page.locator('head meta[property="og:image:alt"]'),
-      ).toHaveAttribute("content", /Fun Quiz/);
+      ).toHaveAttribute("content", /Funkwiz/);
       await expect(
         page.locator('head meta[name="twitter:card"]'),
       ).toHaveAttribute("content", "summary_large_image");
@@ -80,8 +80,8 @@ test("crawler HTML provides complete social cards without JavaScript or authenti
         );
       }
     }
-    for (const name of ["fun-quiz", "join", "teacher"]) {
-      const response = await crawler.request.get(`/og/${name}-v1.png`);
+    for (const name of ["funkwiz-v1", "join-v2", "teacher-v2"]) {
+      const response = await crawler.request.get(`/og/${name}.png`);
       expect(response.ok()).toBe(true);
       expect(response.headers()["content-type"]).toContain("image/png");
       const bytes = await response.body();
@@ -110,13 +110,13 @@ test("social metadata updates after client navigation and is independent of appe
     await page.waitForLoadState("networkidle");
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",
-      `${liveOrigin}/og/teacher-v1.png`,
+      `${liveOrigin}/og/teacher-v2.png`,
     );
     await page.getByRole("link", { name: /Joining a classroom game/ }).click();
     await expect(page).toHaveURL(/\/join$/);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",
-      `${liveOrigin}/og/join-v1.png`,
+      `${liveOrigin}/og/join-v2.png`,
     );
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
     await page.getByRole("button", { name: "Appearance settings" }).click();
@@ -125,12 +125,12 @@ test("social metadata updates after client navigation and is independent of appe
       .click();
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",
-      `${liveOrigin}/og/join-v1.png`,
+      `${liveOrigin}/og/join-v2.png`,
     );
     await page.getByRole("link", { name: /Teacher sign-in/ }).click();
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",
-      `${liveOrigin}/og/teacher-v1.png`,
+      `${liveOrigin}/og/teacher-v2.png`,
     );
     await page.getByRole("link", { name: /Forgot your password/ }).click();
     await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
@@ -162,7 +162,7 @@ test("private game titles, learner names and report data never become social met
     await page.goto(`/reports/${sessionId}`);
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
       "content",
-      "Classroom insights | Fun Quiz",
+      "Classroom insights | Funkwiz",
     );
     const head = await page.locator("head").innerHTML();
     expect(head).not.toContain("Private classroom title never for previews");
@@ -177,11 +177,11 @@ test("private game titles, learner names and report data never become social met
     await expect(student.page).toHaveURL(/\/login/);
     await expect(
       student.page.locator('meta[property="og:image"]'),
-    ).toHaveAttribute("content", `${liveOrigin}/og/teacher-v1.png`);
+    ).toHaveAttribute("content", `${liveOrigin}/og/teacher-v2.png`);
     await page.goto("/");
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",
-      `${liveOrigin}/og/fun-quiz-v1.png`,
+      `${liveOrigin}/og/funkwiz-v1.png`,
     );
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
   } finally {

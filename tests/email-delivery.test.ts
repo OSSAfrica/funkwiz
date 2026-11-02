@@ -48,7 +48,7 @@ test("Cloudflare uses the native structured email binding with text and HTML", a
     expect.objectContaining({
       from: base.AUTH_EMAIL_FROM,
       to: [email],
-      subject: "Reset your Fun Quiz password",
+      subject: "Reset your Funkwiz password",
       text: expect.stringContaining(url),
       html: expect.stringContaining("Reset my password"),
     }),
@@ -205,7 +205,7 @@ test("React Email escapes teacher content and renders HTML/plain text for accoun
   });
   expect(changed.html).toContain("Recover my account");
   expect(changed.text).toContain("https://quiz.example.test/forgot-password");
-  expect(changed.subject).toBe("Your Fun Quiz password was updated");
+  expect(changed.subject).toBe("Your Funkwiz password was updated");
 });
 test("optional account notifications skip unconfigured mail and contain provider failures", async () => {
   await sendAccountNotification(base, { email }, "welcome");
@@ -223,7 +223,7 @@ test("optional account notifications skip unconfigured mail and contain provider
   ).resolves.toBeUndefined();
   expect(send).toHaveBeenCalledOnce();
   expect(warning).toHaveBeenCalledWith(
-    "Fun Quiz account notification could not be delivered.",
+    "Funkwiz account notification could not be delivered.",
   );
   expect(JSON.stringify(warning.mock.calls)).not.toContain(
     "private provider failure",

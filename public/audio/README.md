@@ -1,8 +1,8 @@
 # Curious Garden
 
-Original synthesized composition created for Fun Quiz. No external recordings,
+Original synthesized composition created for Funkwiz. No external recordings,
 melodies, music-library downloads or attribution-dependent samples are used.
-Use and distribute it with this project under the project's applicable terms.
+Use and distribute it under the project's [MIT license](../../LICENSE).
 
 - 80 BPM, 16 bars, 48 seconds, stereo.
 - Soft marimba-style melody, quiet bass and pad, circular room reflections.

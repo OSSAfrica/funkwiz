@@ -31,12 +31,12 @@ export function WorkspaceSidebar({
 }: SidebarProps) {
   return (
     <aside className="sidebar">
-      <Link className="brand" to="/" aria-label="Fun Quiz home">
+      <Link className="brand" to="/" aria-label="Funkwiz home">
         <span className="brand-mark">
           <Zap size={26} fill="currentColor" />
         </span>
         <span>
-          fun<span className="brand-second">quiz</span>
+          fun<span className="brand-second">kwiz</span>
           <span className="brand-dot">.</span>
         </span>
       </Link>

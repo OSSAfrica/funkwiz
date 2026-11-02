@@ -6,7 +6,7 @@ export default function PasswordResetEmail({
 }: { resetUrl?: string } = {}) {
   return (
     <EmailLayout
-      preview="Your link to a fresh Fun Quiz password. Expires in 30 minutes."
+      preview="Your link to a fresh Funkwiz password. Expires in 30 minutes."
       eyebrow="A FRESH START"
       title="Back to the good questions."
     >

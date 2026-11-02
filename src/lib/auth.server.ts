@@ -26,7 +26,7 @@ export function createAuth(useStartCookies = true) {
   const db = database();
   const google = googleProvider(env);
   return betterAuth({
-    appName: "Fun Quiz",
+    appName: "Funkwiz",
     baseURL: env.BETTER_AUTH_URL,
     secret: env.BETTER_AUTH_SECRET,
     database: drizzleAdapter(db, {

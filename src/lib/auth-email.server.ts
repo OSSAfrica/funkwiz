@@ -112,6 +112,6 @@ export async function sendAccountNotification(
       `${kind}:${crypto.randomUUID()}`,
     );
   } catch {
-    console.warn("Fun Quiz account notification could not be delivered.");
+    console.warn("Funkwiz account notification could not be delivered.");
   }
 }

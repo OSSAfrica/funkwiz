@@ -31,7 +31,7 @@ test("downloads the complete report as JSON, spreadsheet CSV and branded PDF", a
         .click();
       const download = await pending;
       expect(download.suggestedFilename()).toBe(
-        `fun-quiz-report-${code}.${format.toLowerCase()}`,
+        `funkwiz-report-${code}.${format.toLowerCase()}`,
       );
       const target = `/tmp/fun-quiz-export-${info.project.name}.${format.toLowerCase()}`;
       await download.saveAs(target);

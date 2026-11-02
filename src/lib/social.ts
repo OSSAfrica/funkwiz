@@ -1,15 +1,15 @@
 export const socialImages = {
   app: {
-    path: "/og/fun-quiz-v1.png",
-    alt: "Fun Quiz: A little curiosity. A lot of fun. Colorful quiz cards on a forest green background.",
+    path: "/og/funkwiz-v1.png",
+    alt: "Funkwiz: A little curiosity. A lot of fun. Colorful quiz cards on a forest green background.",
   },
   join: {
-    path: "/og/join-v1.png",
-    alt: "Fun Quiz: Your next aha is waiting. A playful phone with four colorful answer shapes.",
+    path: "/og/join-v2.png",
+    alt: "Funkwiz: Your next aha is waiting. A playful phone with four colorful answer shapes.",
   },
   teacher: {
-    path: "/og/teacher-v1.png",
-    alt: "Fun Quiz: Great questions start with you. Playful space, nature and world quiz illustrations.",
+    path: "/og/teacher-v2.png",
+    alt: "Funkwiz: Great questions start with you. Playful space, nature and world quiz illustrations.",
   },
 } as const;
 export type SocialImage = keyof typeof socialImages;
@@ -33,7 +33,7 @@ const pages: Record<
   }
 > = {
   app: {
-    title: "Fun Quiz — A little curiosity. A lot of fun.",
+    title: "Funkwiz — A little curiosity. A lot of fun.",
     description:
       "Create colorful classroom quizzes, set your pace, and turn learning into play.",
     image: "app",
@@ -41,7 +41,7 @@ const pages: Record<
     robots: "noindex, follow",
   },
   join: {
-    title: "Join a classroom game | Fun Quiz",
+    title: "Join a classroom game | Funkwiz",
     description:
       "Your next aha is waiting. Enter your game code, choose a nickname, and join the fun. No account needed.",
     image: "join",
@@ -49,7 +49,7 @@ const pages: Record<
     robots: "index, follow",
   },
   teacher: {
-    title: "Teacher sign-in | Fun Quiz",
+    title: "Teacher sign-in | Funkwiz",
     description:
       "Great questions start with you. Create colorful quizzes, find your classroom rhythm, and make learning play.",
     image: "teacher",
@@ -57,7 +57,7 @@ const pages: Record<
     robots: "noindex, follow",
   },
   recovery: {
-    title: "Recover your teacher account | Fun Quiz",
+    title: "Recover your teacher account | Funkwiz",
     description:
       "A fresh start for your teacher workspace. Recover your account and get back to the good questions.",
     image: "teacher",
@@ -65,15 +65,15 @@ const pages: Record<
     robots: "noindex, nofollow, noarchive",
   },
   reset: {
-    title: "Reset your password | Fun Quiz",
+    title: "Reset your password | Funkwiz",
     description:
-      "Choose a fresh password and get back to your Fun Quiz classroom.",
+      "Choose a fresh password and get back to your Funkwiz classroom.",
     image: "teacher",
     path: "/forgot-password",
     robots: "noindex, nofollow, noarchive",
   },
   host: {
-    title: "Your live classroom | Fun Quiz",
+    title: "Your live classroom | Funkwiz",
     description:
       "Good questions. Great company. A live classroom quiz, at your teacher’s pace.",
     image: "teacher",
@@ -81,7 +81,7 @@ const pages: Record<
     robots: "noindex, nofollow",
   },
   play: {
-    title: "Join the classroom fun | Fun Quiz",
+    title: "Join the classroom fun | Funkwiz",
     description:
       "A little friendly competition. A lot of aha moments. Join your teacher’s live classroom game.",
     image: "join",
@@ -89,9 +89,9 @@ const pages: Record<
     robots: "noindex, follow",
   },
   report: {
-    title: "Classroom insights | Fun Quiz",
+    title: "Classroom insights | Funkwiz",
     description:
-      "Turn answers into insights. Fun Quiz classroom reports are available in the private teacher workspace.",
+      "Turn answers into insights. Funkwiz classroom reports are available in the private teacher workspace.",
     image: "teacher",
     path: "/login",
     robots: "noindex, nofollow",
@@ -136,7 +136,7 @@ export function socialHead(
       { name: "description", content: config.description },
       { name: "robots", content: hasCode ? "noindex, follow" : config.robots },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "Fun Quiz" },
+      { property: "og:site_name", content: "Funkwiz" },
       { property: "og:locale", content: "en_GB" },
       { property: "og:title", content: config.title },
       { property: "og:description", content: config.description },

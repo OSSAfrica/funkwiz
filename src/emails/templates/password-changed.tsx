@@ -8,11 +8,11 @@ export default function PasswordChangedEmail({
 } = {}) {
   return (
     <EmailLayout
-      preview="Your Fun Quiz password was updated."
+      preview="Your Funkwiz password was updated."
       eyebrow="A QUICK ACCOUNT CHECK-IN"
       title="Fresh password. Same curious you."
     >
-      <Text>Your Fun Quiz teacher password was just updated.</Text>
+      <Text>Your Funkwiz teacher password was just updated.</Text>
       <Text>
         If this was you, you’re all set. Your quizzes and classroom reports are
         still waiting for you.

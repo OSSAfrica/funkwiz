@@ -1,4 +1,4 @@
-/** Original Fun Quiz composition. Run with Bun; ffmpeg encodes the gapless MP3. */
+/** Original Funkwiz composition. Run with Bun; ffmpeg encodes the gapless MP3. */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -143,7 +143,7 @@ const result = spawnSync(
     "-metadata",
     "title=Curious Garden",
     "-metadata",
-    "artist=Fun Quiz",
+    "artist=Funkwiz",
     "public/audio/curious-garden.mp3",
   ],
   { stdio: "inherit" },

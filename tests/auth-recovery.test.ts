@@ -51,7 +51,7 @@ beforeEach(async () => {
       throw new Error("Unexpected outbound request");
     const message = JSON.parse(String(init?.body));
     emails.push(message);
-    if (message.subject === "Your Fun Quiz password was updated") {
+    if (message.subject === "Your Funkwiz password was updated") {
       resetNoticeSessionCount = (
         await env.DB.prepare("SELECT COUNT(*) AS count FROM session").first<{
           count: number;
@@ -74,7 +74,7 @@ beforeEach(async () => {
     { "x-teacher-setup-code": setupCode },
   );
   expect(signedUp.status).toBe(200);
-  expect(emails[0].subject).toBe("Welcome to your Fun Quiz classroom");
+  expect(emails[0].subject).toBe("Welcome to your Funkwiz classroom");
   expect(emails[0].text).not.toContain(oldPassword);
   emails = []; // Account creation also sends a welcome notification.
   cookie = signedUp.headers
@@ -153,7 +153,7 @@ test("email reset uses the configured origin, sends only to the teacher, and inv
     ).status,
   ).toBe(200);
   expect(emails).toHaveLength(3);
-  expect(emails[2].subject).toBe("Your Fun Quiz password was updated");
+  expect(emails[2].subject).toBe("Your Funkwiz password was updated");
   expect(resetNoticeSessionCount).toBe(0);
   expect(emails[2].text).not.toContain(first);
   expect(emails[2].text).not.toContain(newPassword);
@@ -224,7 +224,7 @@ test("only successful password changes send notifications and delivery failure p
     ).status,
   ).toBe(200);
   expect(emails).toHaveLength(1);
-  expect(emails[0].subject).toBe("Your Fun Quiz password was updated");
+  expect(emails[0].subject).toBe("Your Funkwiz password was updated");
   expect(emails[0].text).not.toContain(newPassword);
   expect(emails[0].text).not.toContain(setupCode);
   expect(

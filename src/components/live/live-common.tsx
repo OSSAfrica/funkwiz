@@ -23,7 +23,7 @@ export function LiveBrand() {
         <Zap size={23} fill="currentColor" />
       </span>
       <span>
-        fun<span>quiz</span>.
+        fun<span>kwiz</span>.
       </span>
     </span>
   );

@@ -1,155 +1,106 @@
-# Fun Quiz
+# Funkwiz
 
-A playful classroom quiz app built with React, TanStack Start, TypeScript,
-Tailwind CSS, and shadcn/ui. It targets Cloudflare Workers through the Cloudflare
-Vite plugin.
+Playful, self-hosted classroom quizzes. One teacher hosts; students join with a
+code or QR scan, choose a nickname, and play without creating an account.
 
-The agreed product behavior, architecture direction, and remaining work live in
-[the implementation plan](docs/PLAN.md).
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2FOSSAfrica%2Ffunkwiz)
+
+Deploy your own instance with Cloudflare Workers, D1 and Durable Objects. The
+setup form asks for your app URL, teacher email and two independent secrets.
+Google sign-in and email delivery are optional. Follow the
+[deployment guide](docs/DEPLOY.md) for the first teacher account and custom domains.
+
+![Funkwiz — A little curiosity. A lot of fun.](public/og/funkwiz-v1.png)
+
+## Features
+
+- Create four-choice quizzes or import and review structured JSON.
+- Set one time limit for all questions or customize each question.
+- Show questions on the shared screen, student devices, or both; change the mode
+  between questions during a game.
+- Choose teacher-led progression or automatic progression with a cooldown.
+- Live rooms with reconnects, server-controlled timers, locked answers and leaderboards.
+- Private teacher reports with PDF, CSV and JSON downloads.
+- Email/password sign-in, private-code recovery, and optional Google sign-in.
+- Optional password-reset email through Resend, Cloudflare Email, or SMTP.
+- Light, dark and system appearance; keyboard access and reduced-motion support.
+- Optional calming marimba music, gentle timer ticks and answer feedback.
+- Branded social previews with private quiz and learner data excluded.
+
+Each deployment supports **one teacher account** and separate student sessions.
+It is not a hosted multi-tenant service. A local capacity check exercises 150
+simultaneous students; production capacity depends on your Cloudflare account,
+network and workload.
 
 ## Run locally
 
-Use Bun 1.3.14 or newer:
+Use [Bun](https://bun.sh), pinned to `1.3.14` in `package.json`:
 
 ```sh
-bun install
-bun run setup:local your-teacher-email@example.com
+git clone https://github.com/OSSAfrica/funkwiz.git
+cd funkwiz
+bun install --frozen-lockfile
+bun run setup:local you@example.com
 bun run db:migrate:local
 bun run dev
 ```
 
-Open http://127.0.0.1:3000. See [teacher account setup](docs/AUTH.md) for your private setup code and optional Google sign-in.
+Open http://127.0.0.1:3000/login. Run `bun run setup:code` **in your own terminal**
+to read your private setup code, then create your teacher account. Keep that code
+in a password manager: it also enables password recovery.
 
-## What works now
+Local secrets stay in the ignored `.dev.vars`; local data stays under
+`.wrangler/`. Neither is copied to production. See [authentication](docs/AUTH.md)
+for optional Google sign-in and email delivery.
 
-- Responsive teacher library with search, example quizzes, and draft filters.
-- Create/edit quizzes with four-choice questions and one correct answer.
-- Apply a common time limit to all questions or customize individual durations.
-- Import JSON by pasting or uploading; validate and review before saving.
-- Teacher-only email/password sign-in and optional Google sign-in, hidden unless both Google credentials are configured.
-- Account-backed quiz storage in D1, with JSON backups and explicit browser-draft migration.
-- Account controls for adding/changing a password and signing out.
-- Forgot-password recovery using the private setup code or an email link.
-  Choose Resend, Cloudflare Email, or another SMTP service in your teacher account.
-  Delivery enables when the selected service and sender are configured.
-- Set display mode (shared screen, student devices, both), manual or automatic
-  progression, and an automatic cooldown.
-- Rehearse locally with host/student views, timers, answer reveal, pause/resume,
-  progression switching, and next-question display changes.
-- Colorful illustrations and brief feedback animations with reduced-motion support.
+## Use it
 
-Live games now support student join codes, reconnecting, authoritative timers,
-locked answers, leaderboards, and teacher-only saved reports. Sound and music are
-optional. See [live game instructions](docs/LIVE_GAMES.md).
+Create a quiz, add questions, and select **Host live**. Pick question visibility,
+progression, timing and cooldown settings before opening the lobby. Students use
+the join code or QR invitation. After the game, open the saved report to review
+answers or download PDF, CSV or JSON.
 
-Development uses local D1 and Durable Objects. Production D1 and secrets still
-need configuration before deployment. Google requires real OAuth credentials;
-its button stays hidden until both are configured.
+See [live games](docs/LIVE_GAMES.md) and [an example question import](docs/quiz-import-example.json).
+JSON imports accept up to 100 questions, exactly four answers per question, a
+zero-based `correctIndex`, and a `duration` from 5 to 300 seconds.
 
-See [authentication setup](docs/AUTH.md) and [the database schema](docs/DATABASE_SCHEMA.md).
+## Development
 
-## Question imports
+React, TanStack Start, TypeScript, Tailwind CSS and shadcn/ui run on Cloudflare
+Workers. D1 stores accounts, quizzes and reports; Durable Objects coordinate games.
+Fonts, illustrations, social cards and the original soundtrack are bundled locally.
 
-See [the example JSON](docs/quiz-import-example.json). Imports accept a quiz title,
-an optional description, and up to 100 questions. Each question has:
+| Command | Purpose |
+| --- | --- |
+| `bun run dev` | Start local development on port 3000 |
+| `bun run typecheck` | Generate routes and check TypeScript |
+| `bun run test` | Run library tests |
+| `bun run test:workers` | Run isolated Worker integration tests |
+| `bun run test:e2e` | Run desktop/phone browser scenarios |
+| `bun run build` | Build client and Worker bundles |
+| `bun run preview` | Build and preview locally |
+| `bun run deploy` | Build, apply production migrations, and deploy |
+| `bun run deploy:worker` | Apply production migrations and deploy an existing build |
+| `bun run check:public` | Check tracked files for local/private content |
+| `bun run check:client-secrets` | Check built client assets against configured private values |
+| `bun run email:dev` | Preview React Email templates on port 3002 |
+| `bun run og:generate` | Regenerate social cards with Playwright Chromium |
+| `bun run audio:generate` | Regenerate the soundtrack with ffmpeg |
+| `bun run cf-typegen` | Regenerate Worker runtime/binding types |
 
-- `prompt`: question text.
-- `answers`: exactly four nonempty strings.
-- `correctIndex`: zero-based correct answer (`0` through `3`).
-- `duration`: a whole number of seconds from `5` to `300` (defaults to `20`).
+Install Chromium with `bunx playwright install chromium` before browser tests or
+card generation. Deployment commands modify the configured **remote** D1 database;
+use the deployment guide before running them. Generated routes and runtime types
+should not be edited manually. There is no linter configured.
 
-Paste this format into your AI tool to request matching output, then review the
-result in the editor. Imports are processed locally; built-in AI generation and
-CSV imports are planned later.
+- [Contributing](CONTRIBUTING.md) and [security](SECURITY.md)
+- [Deploying to Cloudflare](docs/DEPLOY.md)
+- [Authentication and email templates](docs/AUTH.md)
+- [Database schema](docs/DATABASE_SCHEMA.md)
+- [Social previews](docs/SOCIAL_PREVIEWS.md)
+- [Roadmap and known limitations](docs/PLAN.md)
+- [Publishing checklist](docs/PUBLISHING.md)
 
-## Commands
+## License
 
-| Command                | Purpose                                               |
-| ---------------------- | ----------------------------------------------------- |
-| `bun run dev`          | Start development on port 3000                        |
-| `bun run typecheck`    | Generate routes and check TypeScript                  |
-| `bun test src/lib`     | Test validation, rehearsal, and live transitions      |
-| `bun run test:workers` | Test room persistence, alarms, and scoring in Workers |
-| `bun run test:e2e`     | Check desktop and phone flows with Playwright         |
-| `bun run build`        | Build browser and Cloudflare Worker bundles           |
-| `bun run preview`      | Build and preview the production app                  |
-| `bun run cf-typegen`   | Regenerate types after changing Worker bindings       |
-| `bun run deploy`       | Build and deploy to Cloudflare Workers                |
-
-For browser tests, install Chromium once with `bunx playwright install chromium`.
-There is no linter configured. Generated routes live in `src/routeTree.gen.ts`;
-do not edit them by hand.
-
-## UI components
-
-shadcn/ui configuration lives in `components.json`; shared primitives are in
-`src/components/ui`. Add components with `bunx --bun shadcn@latest add <component>`.
-Quiz screens live in `src/components/quiz`; data validation, browser storage, and
-rehearsal transitions live in `src/lib`.
-
-Fonts are bundled locally through Fontsource. The illustrations use CSS and
-Lucide icons, so the app does not depend on an external image service.
-
-## Cloudflare
-
-Authenticate with `bunx wrangler login` before deployment. D1 is bound locally, with a placeholder database ID that must be replaced before production deployment. Durable Objects are bound as `LIVE_ROOMS` and `LIVE_JOIN_LIMITER`, with a SQLite class migration. Object storage and AI bindings are not configured. After changing bindings in `wrangler.jsonc`, run `bun run cf-typegen`.
-
-Keep local secrets in `.dev.vars` (ignored by Git), and set production secrets
-with `bunx wrangler secret put SECRET_NAME`.
-
-The Cloudflare build currently emits an upstream CSS source-map warning. It does
-not prevent the production bundles from being generated.
-
-## Scaffold history
-
-Created with `npx wrangler init`, selecting TanStack Start / React / Cloudflare.
-The starter demo was removed, and package management has been migrated to Bun.
-
-The original creation log reported a failed TanStack Intent installation. To retry
-the optional agent integration, use `bunx @tanstack/intent install`. It is separate
-from building and running the application.
-
-## Development React runtime
-
-Vite resolves React and React DOM from the project root and prebundles their
-runtime entries consistently. Its cache is isolated by mode under
-`node_modules/.vite/<mode>` so normal development and parallel browser-test
-servers cannot overwrite each other's optimized modules. After changing
-runtime dependencies or restarting a previously broken dev session, reload any
-open app tabs to discard modules cached by that tab.
-
-### Emails, reports and appearance
-
-- `bun run email:dev` previews React Email templates at `localhost:3002`.
-  `bun run email:export` writes static HTML previews. See `docs/AUTH.md` for
-  welcome, recovery and password-change delivery behavior.
-- Open a saved game report and choose **Download report → PDF, CSV or JSON**.
-  PDF uses the forest, gold and cream palette, embedded Nunito fonts and page
-  numbers. CSV includes the leaderboard and question/answer breakdown, with
-  spreadsheet formula protection. JSON preserves the original complete report.
-  Exports stay on the teacher's device; PDF generation is loaded on demand.
-- **Appearance** offers **Light**, **Dark** and **System**, saved on the current
-  device and synchronized across tabs. System follows device changes. App dark
-  mode does not change the printable PDF palette or email styling.
-
-### Classroom audio
-
-Live games include **Curious Garden**, an original 48-second marimba-style loop.
-Use the music and sound buttons in the game header to enable them independently.
-Open **Audio settings** for music/effects volume and optional gentle clock ticks.
-Music lowers during questions and feedback. Audio rests while paused, offline,
-or in a hidden tab; answer correctness is heard only after the server reveals it.
-
-The soundtrack is fetched only after music is enabled. Listen directly at
-`/audio/curious-garden.mp3`, or regenerate it with `bun run audio:generate`
-(requires ffmpeg). See `public/audio/README.md` for the score and asset details.
-
-### Open Graph previews
-
-The app, student invitations and teacher pages have branded social cards and
-server-rendered Open Graph/Twitter metadata. Private quiz/report data and reset
-tokens stay out of previews. Cards use a fixed palette in light and dark mode.
-
-Regenerate the PNGs with `bun run og:generate` (Playwright Chromium required).
-See `docs/SOCIAL_PREVIEWS.md` for page mappings, canonical links and deployment
-checks, and `public/og/README.md` for the artwork source.
+[MIT](LICENSE). Bundled font and icon notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

@@ -31,7 +31,7 @@ export function csvCell(value: string | number | boolean | null) {
 export function reportCsv(report: GameReport) {
   const summary = reportSummary(report);
   const rows: (string | number | boolean | null)[][] = [
-    ["Fun Quiz classroom report"],
+    ["Funkwiz classroom report"],
     ["Quiz", report.title],
     ["Game code", report.code],
     ["Finished at (UTC)", new Date(report.endedAt).toISOString()],
@@ -94,7 +94,7 @@ export async function exportReport(report: GameReport, format: ReportFormat) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `fun-quiz-report-${report.code}.${format}`;
+  link.download = `funkwiz-report-${report.code}.${format}`;
   document.body.appendChild(link);
   link.click();
   link.remove();

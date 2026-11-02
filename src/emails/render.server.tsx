@@ -20,10 +20,10 @@ export async function renderAccountEmail(email: AccountEmail) {
   return {
     subject:
       email.kind === "password-reset"
-        ? "Reset your Fun Quiz password"
+        ? "Reset your Funkwiz password"
         : email.kind === "password-changed"
-          ? "Your Fun Quiz password was updated"
-          : "Welcome to your Fun Quiz classroom",
+          ? "Your Funkwiz password was updated"
+          : "Welcome to your Funkwiz classroom",
     html,
     text: toPlainText(html),
   };

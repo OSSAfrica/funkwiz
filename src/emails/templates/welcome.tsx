@@ -14,7 +14,7 @@ export default function WelcomeEmail({
       eyebrow="YOUR NEXT GREAT CLASS STARTS HERE"
       title="Hello, maker of “aha!” moments."
     >
-      <Text>Welcome, {name}! Your Fun Quiz teacher account is ready.</Text>
+      <Text>Welcome, {name}! Your Funkwiz teacher account is ready.</Text>
       <Text>
         Start with an example, bring your own questions, or invite your
         classroom into a live game. You set the pace; we bring the play.

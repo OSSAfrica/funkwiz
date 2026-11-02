@@ -11,7 +11,7 @@ export function AuthLayout({ children }: { children: ReactNode }) {
             <Zap size={26} fill="currentColor" />
           </span>
           <span>
-            fun<span className="brand-second">quiz</span>
+            fun<span className="brand-second">kwiz</span>
             <span className="brand-dot">.</span>
           </span>
         </div>

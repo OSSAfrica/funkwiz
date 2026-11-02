@@ -123,12 +123,12 @@ export async function reportPdf(report: GameReport) {
   const document = (
     <Document
       title={`${report.title} - Classroom report`}
-      author="Fun Quiz"
+      author="Funkwiz"
       subject={`Game ${report.code}`}
     >
       <Page size="A4" style={styles.page} wrap>
         <View style={styles.header} fixed>
-          <Text style={styles.brand}>funquiz.</Text>
+          <Text style={styles.brand}>funkwiz.</Text>
           <Text style={styles.headerNote}>
             Curious minds. Happy classrooms.
           </Text>
@@ -137,7 +137,7 @@ export async function reportPdf(report: GameReport) {
           style={styles.footer}
           fixed
           render={({ pageNumber, totalPages }) =>
-            `Fun Quiz | Game ${report.code} | Teacher report                                       ${pageNumber} / ${totalPages}`
+            `Funkwiz | Game ${report.code} | Teacher report                                       ${pageNumber} / ${totalPages}`
           }
         />
         <Text style={styles.eyebrow}>AFTER THE AHA!</Text>

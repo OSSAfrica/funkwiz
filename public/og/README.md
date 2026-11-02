@@ -2,9 +2,9 @@
 
 Three versioned, opaque PNGs at 1200 × 630:
 
-- `fun-quiz-v1.png`: default app branding and a playful question card.
-- `join-v1.png`: a student invitation with a phone and answer shapes.
-- `teacher-v1.png`: generic teacher branding with space, nature and world cards.
+- `funkwiz-v1.png`: default app branding and a playful question card.
+- `join-v2.png`: a student invitation with a phone and answer shapes.
+- `teacher-v2.png`: generic teacher branding with space, nature and world cards.
 
 The palette and typography are fixed to forest green, cream, gold, Fredoka and
 Nunito. App appearance settings do not affect these assets. The artwork contains

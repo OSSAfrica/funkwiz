@@ -59,7 +59,7 @@ export function EmailLayout({
                 fontWeight: 800,
               }}
             >
-              funquiz.
+              funkwiz.
             </Text>
             <Text
               style={{ margin: "8px 0 0", color: "#d6e5a7", fontSize: "12px" }}
@@ -98,7 +98,7 @@ export function EmailLayout({
             >
               Made for curious minds &amp; happy classrooms.
               <br />
-              This is an account notification from your Fun Quiz workspace.
+              This is an account notification from your Funkwiz workspace.
             </Text>
           </Section>
         </Container>

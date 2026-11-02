@@ -33,8 +33,8 @@ test("social origins prefer the configured app and discard paths, credentials an
 test("social cards include absolute Open Graph and large-image Twitter metadata", () => {
   const head = socialHead("join", origin);
   assert.equal(meta(head, "og:type"), "website");
-  assert.equal(meta(head, "og:image"), `${origin}/og/join-v1.png`);
-  assert.equal(meta(head, "og:image:secure_url"), `${origin}/og/join-v1.png`);
+  assert.equal(meta(head, "og:image"), `${origin}/og/join-v2.png`);
+  assert.equal(meta(head, "og:image:secure_url"), `${origin}/og/join-v2.png`);
   assert.equal(meta(head, "og:image:width"), "1200");
   assert.equal(meta(head, "og:image:height"), "630");
   assert.ok(meta(head, "og:image:alt"));
@@ -81,7 +81,7 @@ test("invalid codes and all recovery query data are excluded from preview URLs",
 test("teacher and report previews use generic images and destinations", () => {
   for (const page of ["teacher", "host", "report"] as const) {
     const head = socialHead(page, origin);
-    assert.equal(meta(head, "og:image"), `${origin}/og/teacher-v1.png`);
+    assert.equal(meta(head, "og:image"), `${origin}/og/teacher-v2.png`);
     assert.equal(meta(head, "og:url"), `${origin}/login`);
     assert.ok(meta(head, "robots")?.includes("noindex"));
   }
