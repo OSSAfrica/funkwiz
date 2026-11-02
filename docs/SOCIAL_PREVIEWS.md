@@ -1,5 +1,7 @@
 # Social previews
 
+[Documentation index](README.md) · [Project overview](../README.md)
+
 Open Graph and large-image Twitter tags are included in the initial server HTML.
 No crawler JavaScript, logged-in session, image-generation API or database query
 is needed to serve the PNGs. Image URLs, canonical links and `og:url` are absolute.

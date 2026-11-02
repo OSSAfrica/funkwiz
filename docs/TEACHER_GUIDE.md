@@ -1,0 +1,115 @@
+# Teacher guide
+
+[Documentation index](README.md) · [Student guide](STUDENT_GUIDE.md) · [Live game rules](LIVE_GAMES.md)
+
+You need the teacher account for the installation you are using. Students do not
+need accounts. If you have not signed in yet, follow [getting started](GETTING_STARTED.md).
+
+## Create or import a quiz
+
+Create a quiz from your library, give it a title, and add questions. Each question
+has exactly four answer choices, one correct choice and a duration from 5 to 300
+seconds. Select the correct choice before saving.
+
+The editor can apply a common duration to every question. You can then adjust
+individual questions; for example, use 15 seconds for recall and 60 seconds for
+a question that needs calculation. A quiz contains 1–100 questions.
+
+You can edit an included example to save your own account-backed version. Sample
+quizzes remain available. To bring questions from another tool, open **Import**,
+paste or upload JSON, and review it before saving. See [question imports](QUIZ_IMPORTS.md).
+
+Saved quizzes live in your teacher account's database. The library export action
+downloads quiz JSON, useful for backups or moving questions to another installation.
+A quiz export is different from a completed-game report.
+
+## Practice before hosting
+
+Choose **Practice** to rehearse question display, answer reveal and timing with
+simulated host/student views. Use it to check wording and correct answers.
+Practice does not create a live room, accept classroom participants or save a
+completed classroom report.
+
+## Choose display and timing
+
+Choose **Host live** to configure a game and open its lobby.
+
+| Setting | What it does |
+| --- | --- |
+| Shared screen | Show question content on the host screen. Players still answer from their own devices. |
+| Student devices | Show question content on player devices. |
+| Both screens | Show question content on both. |
+| Manual progression | Each timer expires and reveals the answer; you choose when to advance. No cooldown countdown runs. |
+| Automatic progression | Reveal the answer at expiry, wait the configured cooldown, then advance. |
+| Per-question duration | Use the durations saved in your quiz; there is no single forced game-wide duration. |
+
+The room uses a snapshot of the quiz made when the lobby opens. Subsequent
+library edits do not alter that game. Close it and open a new room if the question
+content needs to change.
+
+## Invite participants
+
+Share the six-digit lobby code and your app's join address. You can copy a link
+that fills in the game code or use **Show QR code** so phones open the invitation
+directly. Participants still choose a nickname.
+
+Open your host screen at an address students can reach. Invitations generated
+from a loopback address are unsuitable for other devices. Test a deployed URL
+before class. Start becomes available when at least one student is connected.
+
+Wait for the group before starting: new players cannot join after the game starts.
+Players already in the room can reconnect from the same browser.
+
+## Control the live game
+
+- **Pause/resume:** preserve the remaining question or cooldown time. Players
+  cannot answer while paused. Opening game settings pauses an active timer.
+- **Reveal early:** finish the current answering period and show the correct answer.
+- **Next question:** advance after a reveal in manual mode.
+- **Display changes:** change visibility between questions; it takes effect on the next one.
+- **Progression changes:** switching to manual cancels a cooldown; switching to
+  automatic during reveal begins a full cooldown.
+- **End game:** finish early. The current question is scored, and the report marks
+  only questions actually reached as asked.
+
+Each player can submit one answer per question. Correctness is revealed together,
+and a correct answer is worth 1,000 points with no speed bonus. Equal scores share
+a rank. See [live game rules](LIVE_GAMES.md) for the exact lifecycle.
+
+## Appearance and audio
+
+Use **Appearance** for Light, Dark or System. System follows the device preference;
+saved preferences apply to the current browser and synchronize across its tabs.
+
+Music and sound effects begin off and have separate controls. **Audio settings**
+lets you adjust volumes and optional clock ticks. Music softens during questions
+and feedback. Audio rests when paused, disconnected or in a hidden tab. Answer
+feedback plays after reveal rather than exposing correctness early.
+
+## Review and export results
+
+Open the saved report after the game or return through recent games in the library.
+Reports include a leaderboard and question response breakdown. Only the signed-in
+teacher can access them in the current single-teacher installation.
+
+Choose **Download report**:
+
+| Format | Use it for |
+| --- | --- |
+| PDF | A readable, branded report for printing or sharing with intended recipients. |
+| CSV | Spreadsheet analysis of results and question/answer breakdowns. |
+| JSON | The full structured report for your own tools. It is not a quiz-import file. |
+
+Downloads are generated on your device. They can contain participant nicknames
+and results, so choose appropriate names and recipients. There is no report-deletion
+interface yet; see [operations and retention](OPERATIONS.md#data-and-retention).
+
+## Move existing work
+
+Use quiz JSON exports/imports to move question sets between local and production
+installations. This does not transfer teacher accounts or completed reports.
+If an older browser-only version left drafts on your device, use **Browser drafts**
+to review and explicitly copy them into your signed-in account. Original browser
+drafts are preserved, and existing IDs are skipped rather than overwritten.
+
+For joining problems, see [troubleshooting](TROUBLESHOOTING.md).

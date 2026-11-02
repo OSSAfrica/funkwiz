@@ -1,5 +1,7 @@
 # Publishing Funkwiz
 
+[Documentation index](README.md) · [Project overview](../README.md)
+
 The source repository is `https://github.com/OSSAfrica/funkwiz`, licensed under MIT.
 The README and deployment guide already point their Deploy to Cloudflare buttons
 at that URL. Cloudflare needs the public source to be pushed before it can clone it.

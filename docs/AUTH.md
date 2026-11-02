@@ -1,5 +1,7 @@
 # Teacher sign-in and account storage
 
+[Documentation index](README.md) · [Project overview](../README.md)
+
 ## Local setup
 
 Use Bun. Run these commands from the repository root:

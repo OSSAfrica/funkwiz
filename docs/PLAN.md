@@ -1,11 +1,16 @@
 # Funkwiz roadmap
 
+[Documentation index](README.md) · [Project overview](../README.md)
+
 ## Product scope
 
 One teacher hosts classroom quizzes for students who join using a code and
 nickname. Each installation owns its teacher configuration and database.
-Multi-teacher organizations and a hosted multi-tenant service are outside the
-current scope.
+Multi-teacher workspaces are not implemented. The first audience agreed for that
+future work is a school/team operating its own installation. See
+[the discussion draft](FUTURE_FEATURES.md) for proposed Personal/School modes,
+permissions and migration questions. An open-registration public service is not
+part of that proposed first School release.
 
 ## Implemented
 
@@ -20,6 +25,8 @@ current scope.
 - MIT licensing, public repository documentation and guided Cloudflare deployment.
 - Private deployment configuration, isolated build output and target guards that
   keep operator account/resource details out of the public template.
+- Adoption/contribution guides, documentation index and glossary, teacher/student
+  guides, operations reference and a separate future-feature discussion.
 
 ## Next work
 

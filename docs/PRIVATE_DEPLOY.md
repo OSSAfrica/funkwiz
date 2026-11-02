@@ -1,5 +1,7 @@
 # Deploy your own instance without publishing account details
 
+[Documentation index](README.md) · [Project overview](../README.md)
+
 The tracked `wrangler.jsonc` remains a generic open-source template. Personal
 production configuration, resource IDs, secrets, logs and build output belong in
 the Git-ignored `.deploy/` directory. The deploy button continues to provision a

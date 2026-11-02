@@ -1,7 +1,10 @@
 # D1 schema
 
+[Documentation index](README.md) · [Project overview](../README.md)
+
 Source: `src/db/schema.ts`. Migrations:
-`migrations/0000_teacher_auth_and_quizzes.sql` and `migrations/0001_live_sessions.sql`.
+`migrations/0000_teacher_auth_and_quizzes.sql`, `migrations/0001_live_sessions.sql`,
+and `migrations/0002_fancy_microchip.sql`.
 
 | Table          | Stored data                                                         | Constraints and indexes                                                           |
 | -------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
@@ -11,6 +14,7 @@ Source: `src/db/schema.ts`. Migrations:
 | `verification` | Better Auth verification and OAuth state values                     | Identifier index and expiry                                                       |
 | `rate_limit`   | Authentication request counters                                     | Unique limiter key                                                                |
 | `live_session` | Owner, room code, title, lifecycle times, status, final JSON report | Owner foreign key with cascade delete; owner/created-time and code/expiry indexes |
+| `email_delivery_settings` | Teacher email-provider selection and update time | Teacher primary/foreign key with cascade delete |
 | `quiz`         | Title, description, cover, question array, timestamps, owner        | Owner foreign key with cascade delete; owner/updated-time index                   |
 
 Dates use SQLite integers with Drizzle `timestamp_ms` conversion. Booleans use
@@ -34,7 +38,8 @@ Never edit an already-applied migration to change the schema.
 
 Local development uses `.wrangler/state`. Browser tests use isolated
 `.wrangler/e2e-state` and `.wrangler/e2e-google-state` directories that are reset
-by the test runner. No production database has been provisioned by this change.
+by the test runner. Production resources belong to the installation operator;
+see [deployment](DEPLOY.md) and [private deployment](PRIVATE_DEPLOY.md).
 
 ## Live room storage
 

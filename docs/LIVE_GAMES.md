@@ -1,11 +1,13 @@
 # Live classroom games
 
+[Documentation index](README.md) · [Project overview](../README.md)
+
 From the teacher library, choose **Host live**, select the display and progression
 settings, and open the lobby. Students visit `/join`, enter the six-digit code and
 a nickname, and wait for the teacher. They do not need an account. Copy the lobby
 link to prefill the code, or choose **Show QR code** in the lobby. Students can
 scan it with their phone camera to open that same join page; only a nickname is
-needed. The code is generated locally in the app. It uses the address you opened
+needed. The QR graphic is generated in your browser. It uses the address you opened
 the host screen from, so use a reachable app address when sharing with phones.
 
 Start becomes available when at least one student is connected. A quiz is copied
@@ -50,12 +52,13 @@ status and reconnect feedback. Sound effects and background music have separate
 controls and begin disabled.
 
 Finished reports are available only to the signed-in teacher. They include the
-full leaderboard, question response counts, accuracy, and a JSON download.
+full leaderboard, question response counts, accuracy, and PDF/CSV/JSON downloads.
+See the [teacher report guide](TEACHER_GUIDE.md#review-and-export-results).
 
 ## Local development and production
 
 Run `bun run db:migrate:local` after updating. The local app uses D1 and Durable
-Objects emulated by the Cloudflare Vite plugin. No remote resources are created.
+Objects emulated by the Cloudflare Vite plugin. These local development commands create no remote resources.
 
 `127.0.0.1` links work only on the same computer. A classroom needs a reachable
 app address. Production still requires a real D1 database ID, migrations,

@@ -1,5 +1,7 @@
 # Deploy Funkwiz to Cloudflare
 
+[Documentation index](README.md) · [Project overview](../README.md)
+
 For your own deployment of this public repository, use the
 [private deployment workflow](PRIVATE_DEPLOY.md) to keep account IDs, database
 IDs, production settings and secrets out of Git. The guided template flow below

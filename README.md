@@ -1,40 +1,92 @@
 # Funkwiz
 
-Playful, self-hosted classroom quizzes. One teacher hosts; students join with a
-code or QR scan, choose a nickname, and play without creating an account.
+**A little curiosity. A lot of fun.**
+
+Funkwiz is an open-source app for running live, colorful quizzes with your class,
+workshop or study group. Create questions, share a game code or QR invitation,
+and let everyone answer from their own device. Students do not need accounts.
+
+You host the app in your own Cloudflare account, choose your teacher email, and
+keep control of your quizzes and reports. Funkwiz is available under the MIT license.
+
+[Documentation & glossary](docs/README.md) · [Quick start](docs/GETTING_STARTED.md) ·
+[Teacher guide](docs/TEACHER_GUIDE.md) · [Contribute](CONTRIBUTING.md)
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2FOSSAfrica%2Ffunkwiz)
 
-Deploy your own instance with Cloudflare Workers, D1 and Durable Objects. The
-setup form asks for your app URL, teacher email and two independent secrets.
-Google sign-in and email delivery are optional. Follow the
-[deployment guide](docs/DEPLOY.md) for the first teacher account and custom domains.
+![Funkwiz: A little curiosity. A lot of fun. Colorful quiz cards on a forest-green background.](public/og/funkwiz-v1.png)
 
-![Funkwiz — A little curiosity. A lot of fun.](public/og/funkwiz-v1.png)
+## What can I use it for?
 
-## Features
+| Situation | Try this |
+| --- | --- |
+| A classroom warm-up | Ask a few questions to see what learners remember before a lesson. |
+| Revision and exam practice | Review a topic, reveal answers together, and discuss common mistakes. |
+| A training workshop | Check understanding after a short presentation or practical exercise. |
+| Tutoring or a study group | Use longer question times and teacher-led progression to talk through answers. |
+| A club or friendly trivia event | Invite participants by QR code and finish with a leaderboard. |
 
-- Create four-choice quizzes or import and review structured JSON.
-- Set one time limit for all questions or customize each question.
-- Show questions on the shared screen, student devices, or both; change the mode
-  between questions during a game.
-- Choose teacher-led progression or automatic progression with a cooldown.
-- Live rooms with reconnects, server-controlled timers, locked answers and leaderboards.
-- Private teacher reports with PDF, CSV and JSON downloads.
-- Email/password sign-in, private-code recovery, and optional Google sign-in.
-- Optional password-reset email through Resend, Cloudflare Email, or SMTP.
-- Light, dark and system appearance; keyboard access and reduced-motion support.
-- Optional calming marimba music, gentle timer ticks and answer feedback.
-- Branded social previews with private quiz and learner data excluded.
+Participants can be children or adults. The interface uses the words *teacher*
+and *student*, but the same host-and-player flow works for trainers and groups.
 
-Each deployment supports **one teacher account** and separate student sessions.
-It is not a hosted multi-tenant service. A local capacity check exercises 150
-simultaneous students; production capacity depends on your Cloudflare account,
-network and workload.
+## How a game works
+
+1. **Make a quiz.** Write four-choice questions or import a JSON question set and
+   review it before saving. You can also start with the included examples.
+2. **Choose your pace.** Give each question its own timer, decide where questions
+   appear, and choose manual or automatic progression.
+3. **Invite the room.** Open **Host live** and share the six-digit code, join link
+   or QR code. Players enter a nickname and wait in the lobby.
+4. **Play and discuss.** Start the quiz, pause when needed, and reveal answers.
+   Correctness stays hidden until the reveal.
+5. **Review the results.** Open the private teacher report and download PDF, CSV
+   or JSON for later review.
+
+A projector is optional: show questions on a shared screen, on student devices,
+or on both. Players always have answer buttons on their devices.
+
+## What is available today?
+
+| Area | Included |
+| --- | --- |
+| Quiz authoring | Manual editing, examples, JSON imports, per-question or common time limits |
+| Live games | QR/code joining, reconnects, locked answers, server-controlled timers and leaderboards |
+| Host controls | Pause/resume, early reveal, manual/automatic progression and adjustable question visibility |
+| Reports | Teacher-only results, question breakdowns, themed PDF, CSV and JSON downloads |
+| Teacher access | Email/password, private-code recovery, optional Google sign-in and reset emails |
+| Appearance and sound | Light/dark/system themes, reduced-motion support, optional marimba music and sound effects |
+| Self-hosting | Cloudflare deployment, separate private configuration and local development with Bun |
+
+**Today, each installation has one teacher account.** Students join individual
+games without signing up. Multiple-teacher workspaces are a
+[proposal for discussion](docs/FUTURE_FEATURES.md), not an available setting.
+
+The implementation caps a room at 200 players; local testing exercises 150
+simultaneous students. Pilot on your own deployment and network before using it
+with a large class. See [current limits](docs/LIVE_GAMES.md#local-development-and-production).
+
+## Choose your starting point
+
+| I want to… | Start here |
+| --- | --- |
+| Join my teacher's game | [Student guide](docs/STUDENT_GUIDE.md) — no installation needed |
+| Try Funkwiz on my computer | [Local quick start](#run-locally) |
+| Deploy my own installation | [Deployment guide](docs/DEPLOY.md) |
+| Deploy this public repository without publishing my account IDs | [Private deployment](docs/PRIVATE_DEPLOY.md) |
+| Create and host my first quiz | [Teacher guide](docs/TEACHER_GUIDE.md) |
+| Import my questions | [Import format and example](docs/QUIZ_IMPORTS.md) |
+| Help build Funkwiz | [Contributing](CONTRIBUTING.md) and [development guide](docs/DEVELOPMENT.md) |
+
+The Cloudflare button guides you through creating your own repository and cloud
+resources. You supply your app URL, teacher email and two independent secrets.
+Cloudflare account limits and charges apply. Google and email delivery are optional;
+you can start with email/password sign-in and private-code recovery.
 
 ## Run locally
 
-Use [Bun](https://bun.sh), pinned to `1.3.14` in `package.json`:
+You need Git, **Bun 1.3.14** (pinned in `package.json`), and **Node.js 22.12 or
+newer** for the installed Vite/Wrangler tooling. Development has been tested with
+Node.js 24. Use Bun for the project commands:
 
 ```sh
 git clone https://github.com/OSSAfrica/funkwiz.git
@@ -45,63 +97,59 @@ bun run db:migrate:local
 bun run dev
 ```
 
-Open http://127.0.0.1:3000/login. Run `bun run setup:code` **in your own terminal**
-to read your private setup code, then create your teacher account. Keep that code
-in a password manager: it also enables password recovery.
+Open http://127.0.0.1:3000/login. In your own terminal, run `bun run setup:code`,
+then choose **Set up teacher account** and enter your configured email, a password
+and that private setup code. Keep the code in a password manager; it also enables
+password recovery. Never share it with players.
 
-Local secrets stay in the ignored `.dev.vars`; local data stays under
-`.wrangler/`. Neither is copied to production. See [authentication](docs/AUTH.md)
-for optional Google sign-in and email delivery.
+Local configuration lives in the ignored `.dev.vars`; local data lives under
+`.wrangler/`. Neither is transferred to production. A phone cannot reach your
+computer through a `127.0.0.1` invitation; use a reachable deployment for a real
+classroom. [Getting started](docs/GETTING_STARTED.md) explains these paths.
 
-## Use it
+## Built for contributors
 
-Create a quiz, add questions, and select **Host live**. Pick question visibility,
-progression, timing and cooldown settings before opening the lobby. Students use
-the join code or QR invitation. After the game, open the saved report to review
-answers or download PDF, CSV or JSON.
+Funkwiz uses React, TanStack Start, TypeScript, Tailwind CSS, shadcn/ui and Better
+Auth on Cloudflare Workers. D1 stores accounts, quizzes and reports; Durable
+Objects coordinate live rooms. Fonts, illustrations and the original soundtrack
+are bundled locally.
 
-See [live games](docs/LIVE_GAMES.md) and [an example question import](docs/quiz-import-example.json).
-JSON imports accept up to 100 questions, exactly four answers per question, a
-zero-based `correctIndex`, and a `duration` from 5 to 300 seconds.
+```sh
+bun run typecheck
+bun run test
+bun run test:workers
+bun run build
+bun run check:public
+```
 
-## Development
+See [development](docs/DEVELOPMENT.md) for browser tests, all commands, generated
+files and isolated test databases. The [architecture guide](docs/ARCHITECTURE.md)
+shows where to make changes. Contributions to docs, accessibility, teaching
+workflows and tests are welcome alongside code changes.
 
-React, TanStack Start, TypeScript, Tailwind CSS and shadcn/ui run on Cloudflare
-Workers. D1 stores accounts, quizzes and reports; Durable Objects coordinate games.
-Fonts, illustrations, social cards and the original soundtrack are bundled locally.
+## Where the project is heading
 
-| Command | Purpose |
-| --- | --- |
-| `bun run dev` | Start local development on port 3000 |
-| `bun run typecheck` | Generate routes and check TypeScript |
-| `bun run test` | Run library tests |
-| `bun run test:workers` | Run isolated Worker integration tests |
-| `bun run test:e2e` | Run desktop/phone browser scenarios |
-| `bun run build` | Build client and Worker bundles |
-| `bun run preview` | Build and preview locally |
-| `bun run deploy` | Build, apply production migrations, and deploy |
-| `bun run deploy:worker` | Apply production migrations and deploy an existing build |
-| `bun run check:public` | Check tracked files for local/private content |
-| `bun run check:client-secrets` | Check built client assets against configured private values |
-| `bun run email:dev` | Preview React Email templates on port 3002 |
-| `bun run og:generate` | Regenerate social cards with Playwright Chromium |
-| `bun run audio:generate` | Regenerate the soundtrack with ffmpeg |
-| `bun run cf-typegen` | Regenerate Worker runtime/binding types |
+The current focus is a dependable single-teacher app and straightforward
+self-hosting. We are discussing an invite-only School mode for teams running
+their own installation, while keeping Personal mode simple. Quiz sharing,
+report privacy, roles and migration need clear decisions before implementation.
 
-Install Chromium with `bunx playwright install chromium` before browser tests or
-card generation. Deployment commands modify the configured **remote** D1 database;
-use the deployment guide before running them. Generated routes and runtime types
-should not be edited manually. There is no linter configured.
+Read the [feature discussion](docs/FUTURE_FEATURES.md) and
+[roadmap](docs/PLAN.md), or open a [GitHub issue](https://github.com/OSSAfrica/funkwiz/issues)
+with your use case. A proposal is not a promised release date.
 
-- [Contributing](CONTRIBUTING.md) and [security](SECURITY.md)
-- [Deploying to Cloudflare](docs/DEPLOY.md)
-- [Deploying privately without publishing account details](docs/PRIVATE_DEPLOY.md)
-- [Authentication and email templates](docs/AUTH.md)
-- [Database schema](docs/DATABASE_SCHEMA.md)
-- [Social previews](docs/SOCIAL_PREVIEWS.md)
-- [Roadmap and known limitations](docs/PLAN.md)
-- [Publishing checklist](docs/PUBLISHING.md)
+## Get help and contribute
+
+Start with the [documentation index and glossary](docs/README.md) or
+[troubleshooting](docs/TROUBLESHOOTING.md). For a bug, include reproduction steps,
+your revision and fictional sample data in an issue. Follow
+[SECURITY.md](SECURITY.md) for vulnerabilities; keep credentials and learner
+reports out of public issues.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow and
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for bundled asset notices.
 
 ## License
 
-[MIT](LICENSE). Bundled font and icon notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Funkwiz is [MIT licensed](LICENSE). You can use, modify and redistribute it under
+those terms. Bundled dependencies, fonts and icons retain their own licenses.
