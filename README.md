@@ -1,3 +1,5 @@
+> **School / organization deployment template.** Generated from source commit `fb552a79262c7bd9da82a9ffb6ce1bd3d20d2943`. The mode is preselected in `wrangler.jsonc`. Contribute application changes to the upstream main branch.
+
 # Funkwiz
 
 **A little curiosity. A lot of fun.**

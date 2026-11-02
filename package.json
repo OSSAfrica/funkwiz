@@ -105,7 +105,7 @@
     "url": "https://github.com/OSSAfrica/funkwiz/issues"
   },
   "cloudflare": {
-    "label": "Funkwiz",
+    "label": "Funkwiz — School / organization",
     "products": [
       "Workers",
       "D1",
@@ -125,16 +125,16 @@
         "description": "Your final HTTPS app origin, e.g. https://funkwiz.YOUR-SUBDOMAIN.workers.dev (no trailing path). Update this when changing domains."
       },
       "TEACHER_EMAIL": {
-        "description": "The bootstrap teacher email for this installation. Personal mode uses this one teacher; opt-in School mode adds invited teachers."
+        "description": "The first administrator / installation owner email. Other teachers join through private invitations; do not list their addresses here."
       },
       "BETTER_AUTH_SECRET": {
         "description": "Generate a unique random secret of at least 32 characters, e.g. with `openssl rand -hex 32`. Do not reuse a sample value."
       },
       "TEACHER_SETUP_TOKEN": {
-        "description": "Generate a second unique secret with `openssl rand -hex 32`. Keep it in your password manager: it is required to create the teacher account and recover its password."
+        "description": "Generate a unique secret with openssl rand -hex 32. Only the installation owner uses it for first administrator email/password signup and owner recovery. Invited teachers and normal login do not need it."
       },
       "FUNKWIZ_MODE": {
-        "description": "Installation mode: personal for one teacher, or school for invited teachers and workspaces. The Personal and School deploy buttons preselect this non-secret value."
+        "description": "School mode is preselected: workspaces, invited teachers and roles. Keep the exact value school for this installation."
       }
     }
   }
