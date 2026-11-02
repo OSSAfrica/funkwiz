@@ -47,15 +47,15 @@ provider's supported tools and a tested backup plan.
 
 ## Data and retention
 
-| Data | Where it lives | Current lifecycle |
-| --- | --- | --- |
-| Teacher account, session and recovery records | D1 | Authentication/session expiry rules apply; account management is not an organization directory. |
-| Saved quizzes | D1 | Kept until the author deletes them. Removing workspace membership retains their work and existing sharing state. |
-| Workspaces, memberships, invitations and activity | D1 | School access records; invitation proofs expire/revoke and are consumed on acceptance. Workspace deletion is not available. |
-| Live room, player identity and answers | Durable Object SQLite | A room starts with an eight-hour lifetime; finishing sets a 24-hour results lifetime. Expiry clears the room's rows. |
-| Completed report | D1 `live_session` | Persists after room expiry. There is no report-deletion interface or automatic report-retention policy yet. |
-| Browser preferences and old local drafts | Player/teacher device | Remain until browser storage is changed/cleared or the browser handles it. |
-| Downloaded exports | The device where they were saved | Outside the app's retention controls. |
+| Data                                              | Where it lives                   | Current lifecycle                                                                                                           |
+| ------------------------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Teacher account, session and recovery records     | D1                               | Authentication/session expiry rules apply; account management is not an organization directory.                             |
+| Saved quizzes                                     | D1                               | Kept until the author deletes them. Removing workspace membership retains their work and existing sharing state.            |
+| Workspaces, memberships, invitations and activity | D1                               | School access records; invitation proofs expire/revoke and are consumed on acceptance. Workspace deletion is not available. |
+| Live room, player identity and answers            | Durable Object SQLite            | A room starts with an eight-hour lifetime; finishing sets a 24-hour results lifetime. Expiry clears the room's rows.        |
+| Completed report                                  | D1 `live_session`                | Persists after room expiry. There is no report-deletion interface or automatic report-retention policy yet.                 |
+| Browser preferences and old local drafts          | Player/teacher device            | Remain until browser storage is changed/cleared or the browser handles it.                                                  |
+| Downloaded exports                                | The device where they were saved | Outside the app's retention controls.                                                                                       |
 
 Use nicknames appropriate to the context and tell participants how you use results.
 Keep report downloads and database backups private. A room expiring does not delete

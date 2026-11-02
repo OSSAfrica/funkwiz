@@ -48,14 +48,12 @@ export async function recordWorkspaceAction(
   action: string,
   subjectId?: string,
 ) {
-  await database()
-    .insert(workspaceAudit)
-    .values({
-      id: crypto.randomUUID(),
-      workspaceId,
-      actorId,
-      action,
-      subjectId,
-      createdAt: new Date(),
-    });
+  await database().insert(workspaceAudit).values({
+    id: crypto.randomUUID(),
+    workspaceId,
+    actorId,
+    action,
+    subjectId,
+    createdAt: new Date(),
+  });
 }

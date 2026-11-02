@@ -52,17 +52,17 @@ to the Cloudflare account or operator-only email-delivery settings.
 
 ## Roles and boundaries
 
-| Action | Teacher | Admin | Owner |
-| --- | --- | --- | --- |
-| Create/edit own quizzes and host own games | Yes | Yes | Yes |
-| Read another author's unshared draft | No | No | No |
-| Copy shared workspace quizzes into own drafts | Yes | Yes | Yes |
-| Share/unshare own quizzes | Yes | Yes | Yes |
-| View own hosted reports | Yes | Yes | Yes |
-| View other hosts' reports in this workspace | No | Yes | Yes |
-| Invite Teachers/Admins and manage ordinary membership | No | Yes | Yes |
-| Grant/remove Owner role or remove an Owner | No | No | Yes, while preserving at least one Owner |
-| Create additional workspaces | No | No | Yes; the bootstrap/operator account can also create them |
+| Action                                                | Teacher | Admin | Owner                                                    |
+| ----------------------------------------------------- | ------- | ----- | -------------------------------------------------------- |
+| Create/edit own quizzes and host own games            | Yes     | Yes   | Yes                                                      |
+| Read another author's unshared draft                  | No      | No    | No                                                       |
+| Copy shared workspace quizzes into own drafts         | Yes     | Yes   | Yes                                                      |
+| Share/unshare own quizzes                             | Yes     | Yes   | Yes                                                      |
+| View own hosted reports                               | Yes     | Yes   | Yes                                                      |
+| View other hosts' reports in this workspace           | No      | Yes   | Yes                                                      |
+| Invite Teachers/Admins and manage ordinary membership | No      | Yes   | Yes                                                      |
+| Grant/remove Owner role or remove an Owner            | No      | No    | Yes, while preserving at least one Owner                 |
+| Create additional workspaces                          | No      | No    | Yes; the bootstrap/operator account can also create them |
 
 Report access does not grant host controls, authoring rights or access to another
 workspace. Owners/Admins reviewing someone else's report see the questions actually

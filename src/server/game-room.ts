@@ -17,7 +17,8 @@ import { roomView, type ViewData } from "@/lib/live/view";
 import { parseQuiz } from "@/lib/quiz";
 
 type Result<T> =
-  { ok: true; data: T } | { ok: false; status: number; message: string };
+  | { ok: true; data: T }
+  | { ok: false; status: number; message: string };
 type Connection = {
   role: RoomRole;
   playerId?: string;

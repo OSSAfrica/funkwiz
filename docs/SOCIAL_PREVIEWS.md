@@ -10,17 +10,17 @@ sign-in and recovery links; before auth setup it falls back to the request origi
 Client navigation reuses the origin in the existing canonical metadata, without
 an extra metadata request or exposing server configuration.
 
-| Page                             | Card            | Preview destination                          |
-| -------------------------------- | --------------- | -------------------------------------------- |
-| Teacher library `/`              | Default app     | `/`                                          |
-| Student `/join`                  | Join invitation | `/join`, preserving a valid six-digit `code` |
-| Student `/play/:code`            | Join invitation | `/join?code=…`                               |
-| Teacher `/login`                 | Teacher         | `/login`                                     |
-| Teacher `/host/:code`            | Teacher         | `/login`                                     |
-| Reports `/reports/:id`           | Teacher         | `/login`                                     |
-| Teacher invitation `/accept-invite` | Teacher | `/login`, without the invitation proof |
-| Recovery `/forgot-password`      | Teacher         | `/forgot-password`                           |
-| Password reset `/reset-password` | Teacher         | `/forgot-password`, without the token        |
+| Page                                | Card            | Preview destination                          |
+| ----------------------------------- | --------------- | -------------------------------------------- |
+| Teacher library `/`                 | Default app     | `/`                                          |
+| Student `/join`                     | Join invitation | `/join`, preserving a valid six-digit `code` |
+| Student `/play/:code`               | Join invitation | `/join?code=…`                               |
+| Teacher `/login`                    | Teacher         | `/login`                                     |
+| Teacher `/host/:code`               | Teacher         | `/login`                                     |
+| Reports `/reports/:id`              | Teacher         | `/login`                                     |
+| Teacher invitation `/accept-invite` | Teacher         | `/login`, without the invitation proof       |
+| Recovery `/forgot-password`         | Teacher         | `/forgot-password`                           |
+| Password reset `/reset-password`    | Teacher         | `/forgot-password`, without the token        |
 
 Authentication behavior is unchanged: anonymous library, host and report visits
 follow the existing sign-in redirect and receive the generic teacher preview.

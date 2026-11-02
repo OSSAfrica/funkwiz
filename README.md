@@ -18,16 +18,16 @@ keep control of your quizzes and reports. Funkwiz is available under the MIT lic
 
 ## What can I use it for?
 
-| Situation | Try this |
-| --- | --- |
-| A classroom warm-up | Ask a few questions to see what learners remember before a lesson. |
-| Revision and exam practice | Review a topic, reveal answers together, and discuss common mistakes. |
-| A training workshop | Check understanding after a short presentation or practical exercise. |
-| Tutoring or a study group | Use longer question times and teacher-led progression to talk through answers. |
-| A club or friendly trivia event | Invite participants by QR code and finish with a leaderboard. |
+| Situation                       | Try this                                                                       |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| A classroom warm-up             | Ask a few questions to see what learners remember before a lesson.             |
+| Revision and exam practice      | Review a topic, reveal answers together, and discuss common mistakes.          |
+| A training workshop             | Check understanding after a short presentation or practical exercise.          |
+| Tutoring or a study group       | Use longer question times and teacher-led progression to talk through answers. |
+| A club or friendly trivia event | Invite participants by QR code and finish with a leaderboard.                  |
 
-Participants can be children or adults. The interface uses the words *teacher*
-and *student*, but the same host-and-player flow works for trainers and groups.
+Participants can be children or adults. The interface uses the words _teacher_
+and _student_, but the same host-and-player flow works for trainers and groups.
 
 ## How a game works
 
@@ -47,15 +47,15 @@ or on both. Players always have answer buttons on their devices.
 
 ## What is available today?
 
-| Area | Included |
-| --- | --- |
-| Quiz authoring | Manual editing, examples, JSON imports, per-question or common time limits |
-| Live games | QR/code joining, reconnects, locked answers, server-controlled timers and leaderboards |
-| Host controls | Pause/resume, early reveal, manual/automatic progression and adjustable question visibility |
-| Reports | Private results, workspace-scoped Admin visibility in School mode, themed PDF/CSV/JSON downloads |
-| Teacher access | Email/password, private-code recovery, optional Google sign-in and reset emails |
-| Appearance and sound | Light/dark/system themes, reduced-motion support, optional marimba music and sound effects |
-| Self-hosting | Cloudflare deployment, separate private configuration and local development with Bun |
+| Area                 | Included                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------ |
+| Quiz authoring       | Manual editing, examples, JSON imports, per-question or common time limits                       |
+| Live games           | QR/code joining, reconnects, locked answers, server-controlled timers and leaderboards           |
+| Host controls        | Pause/resume, early reveal, manual/automatic progression and adjustable question visibility      |
+| Reports              | Private results, workspace-scoped Admin visibility in School mode, themed PDF/CSV/JSON downloads |
+| Teacher access       | Email/password, private-code recovery, optional Google sign-in and reset emails                  |
+| Appearance and sound | Light/dark/system themes, reduced-motion support, optional marimba music and sound effects       |
+| Self-hosting         | Cloudflare deployment, separate private configuration and local development with Bun             |
 
 **Choose Personal or School mode.** Personal is the default single-teacher
 experience. Opt-in [School mode](docs/WORKSPACES.md) adds invited teachers,
@@ -69,16 +69,16 @@ with a large class. See [current limits](docs/LIVE_GAMES.md#local-development-an
 
 ## Choose your starting point
 
-| I want to… | Start here |
-| --- | --- |
-| Join my teacher's game | [Student guide](docs/STUDENT_GUIDE.md) — no installation needed |
-| Try Funkwiz on my computer | [Local quick start](#run-locally) |
-| Deploy my own installation | [Deployment guide](docs/DEPLOY.md) |
-| Deploy this public repository without publishing my account IDs | [Private deployment](docs/PRIVATE_DEPLOY.md) |
-| Manage an invited teaching team | [School workspaces](docs/WORKSPACES.md) |
-| Create and host my first quiz | [Teacher guide](docs/TEACHER_GUIDE.md) |
-| Import my questions | [Import format and example](docs/QUIZ_IMPORTS.md) |
-| Help build Funkwiz | [Contributing](CONTRIBUTING.md) and [development guide](docs/DEVELOPMENT.md) |
+| I want to…                                                      | Start here                                                                   |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Join my teacher's game                                          | [Student guide](docs/STUDENT_GUIDE.md) — no installation needed              |
+| Try Funkwiz on my computer                                      | [Local quick start](#run-locally)                                            |
+| Deploy my own installation                                      | [Deployment guide](docs/DEPLOY.md)                                           |
+| Deploy this public repository without publishing my account IDs | [Private deployment](docs/PRIVATE_DEPLOY.md)                                 |
+| Manage an invited teaching team                                 | [School workspaces](docs/WORKSPACES.md)                                      |
+| Create and host my first quiz                                   | [Teacher guide](docs/TEACHER_GUIDE.md)                                       |
+| Import my questions                                             | [Import format and example](docs/QUIZ_IMPORTS.md)                            |
+| Help build Funkwiz                                              | [Contributing](CONTRIBUTING.md) and [development guide](docs/DEVELOPMENT.md) |
 
 The Cloudflare button guides you through creating your own repository and cloud
 resources. You supply your app URL, teacher email and two independent secrets.
@@ -118,6 +118,7 @@ Objects coordinate live rooms. Fonts, illustrations and the original soundtrack
 are bundled locally.
 
 ```sh
+bun run format:check
 bun run typecheck
 bun run test
 bun run test:workers

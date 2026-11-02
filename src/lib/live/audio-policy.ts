@@ -1,7 +1,12 @@
 import type { RoomView, RoomPhase } from "./protocol";
 
 export type AudioCue =
-  "question" | "selected" | "correct" | "incorrect" | "reveal" | "finished";
+  | "question"
+  | "selected"
+  | "correct"
+  | "incorrect"
+  | "reveal"
+  | "finished";
 export type AudioScene = {
   phase: RoomPhase | null;
   audible: boolean;

@@ -50,14 +50,14 @@ policy change.
 
 ## Automated checks
 
-| Source                                    | Scope                                                                                                                     |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| [Checks](../.github/workflows/ci.yml)     | Public-file hygiene, typecheck, library/Worker tests, build and client-secret guard; separate Gitleaks history scan       |
-| [CodeQL](../.github/workflows/codeql.yml) | JavaScript/TypeScript and GitHub Actions on PRs to `main`, pushes and a weekly schedule                                   |
-| GitHub-managed Code Quality               | JavaScript/TypeScript analysis, with the matching repository finding gate                                                 |
-| DCO app                                   | Commit sign-off validation on PRs                                                                                         |
-| Organization security apps                | GitGuardian, Kusari and Socket are installed for all organization repositories; inspect applicable findings when reported |
-| [Dependabot](../.github/dependabot.yml)   | Weekly Bun and GitHub Actions updates; related TanStack/React and CodeQL updates grouped                                  |
+| Source                                    | Scope                                                                                                                                 |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| [Checks](../.github/workflows/ci.yml)     | Oxfmt formatting, public-file hygiene, typecheck, library/Worker tests, build and client-secret guard; separate Gitleaks history scan |
+| [CodeQL](../.github/workflows/codeql.yml) | JavaScript/TypeScript and GitHub Actions on PRs to `main`, pushes and a weekly schedule                                               |
+| GitHub-managed Code Quality               | JavaScript/TypeScript analysis, with the matching repository finding gate                                                             |
+| DCO app                                   | Commit sign-off validation on PRs                                                                                                     |
+| Organization security apps                | GitGuardian, Kusari and Socket are installed for all organization repositories; inspect applicable findings when reported             |
+| [Dependabot](../.github/dependabot.yml)   | Weekly Bun and GitHub Actions updates; related TanStack/React and CodeQL updates grouped                                              |
 
 Actions are pinned to immutable commit SHAs. CI uses Bun 1.3.14 and Node.js 24.
 Workflows use `pull_request`, not `pull_request_target`, and do not receive

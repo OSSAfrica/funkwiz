@@ -41,7 +41,10 @@ test("crawler HTML provides complete social cards without JavaScript or authenti
       );
       await expect(
         page.locator('head meta[property="og:image"]'),
-      ).toHaveAttribute("content", `${liveOrigin}/og/${image === "join" ? "join-v2" : "teacher-v2"}.png`);
+      ).toHaveAttribute(
+        "content",
+        `${liveOrigin}/og/${image === "join" ? "join-v2" : "teacher-v2"}.png`,
+      );
       await expect(
         page.locator('head meta[property="og:url"]'),
       ).toHaveAttribute("content", `${liveOrigin}${canonical}`);

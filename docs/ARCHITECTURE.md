@@ -93,28 +93,28 @@ Preview copy excludes quiz/report content and reset tokens. See
 
 ## Where to make a change
 
-| Area | Main files/directories |
-| --- | --- |
-| Routes and root document | [`src/routes`](../src/routes), [`src/router.tsx`](../src/router.tsx) |
-| Worker entry and live routing | [`src/server.ts`](../src/server.ts), [`src/server/live-api.ts`](../src/server/live-api.ts) |
-| Live persistence and sockets | [`src/server/game-room.ts`](../src/server/game-room.ts) |
-| Quiz validation/model | [`src/lib/quiz.ts`](../src/lib/quiz.ts), [`src/lib/quiz-storage.ts`](../src/lib/quiz-storage.ts) |
-| Account-backed quiz operations | [`src/lib/quizzes.functions.ts`](../src/lib/quizzes.functions.ts) |
+| Area                           | Main files/directories                                                                                                                   |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Routes and root document       | [`src/routes`](../src/routes), [`src/router.tsx`](../src/router.tsx)                                                                     |
+| Worker entry and live routing  | [`src/server.ts`](../src/server.ts), [`src/server/live-api.ts`](../src/server/live-api.ts)                                               |
+| Live persistence and sockets   | [`src/server/game-room.ts`](../src/server/game-room.ts)                                                                                  |
+| Quiz validation/model          | [`src/lib/quiz.ts`](../src/lib/quiz.ts), [`src/lib/quiz-storage.ts`](../src/lib/quiz-storage.ts)                                         |
+| Account-backed quiz operations | [`src/lib/quizzes.functions.ts`](../src/lib/quizzes.functions.ts)                                                                        |
 | Workspace scope and operations | [`src/lib/workspace.server.ts`](../src/lib/workspace.server.ts), [`src/lib/workspaces.functions.ts`](../src/lib/workspaces.functions.ts) |
-| Workspace administration UI | [`src/components/workspaces`](../src/components/workspaces) |
-| Authentication and recovery | [`src/lib/auth.server.ts`](../src/lib/auth.server.ts), [`src/lib/recovery.server.ts`](../src/lib/recovery.server.ts) |
-| Pure game transitions | [`src/lib/live/engine.ts`](../src/lib/live/engine.ts) |
-| Shared game messages and views | [`src/lib/live/protocol.ts`](../src/lib/live/protocol.ts), [`src/lib/live/view.ts`](../src/lib/live/view.ts) |
-| Browser connection handling | [`src/lib/live/use-live-room.ts`](../src/lib/live/use-live-room.ts) |
-| Teacher/quiz/live screens | [`src/components/quiz`](../src/components/quiz), [`src/components/live`](../src/components/live) |
-| Shared UI primitives | [`src/components/ui`](../src/components/ui) |
-| Theme and styling | [`src/styles.css`](../src/styles.css), [`src/theme.css`](../src/theme.css), [`src/lib/theme.ts`](../src/lib/theme.ts) |
-| Audio policy and playback | [`src/lib/live/audio-policy.ts`](../src/lib/live/audio-policy.ts), [`src/lib/live/game-audio.ts`](../src/lib/live/game-audio.ts) |
-| Emails/provider delivery | [`src/emails`](../src/emails), [`src/lib/auth-email.server.ts`](../src/lib/auth-email.server.ts) |
-| Reports/PDF | [`src/lib/live/report-export.ts`](../src/lib/live/report-export.ts), [`src/lib/live/report-pdf.tsx`](../src/lib/live/report-pdf.tsx) |
-| Schema and migrations | [`src/db/schema.ts`](../src/db/schema.ts), [`migrations`](../migrations) |
-| Social metadata and artwork | [`src/lib/social.ts`](../src/lib/social.ts), [`scripts/social-card.ts`](../scripts/social-card.ts), [`public/og`](../public/og) |
-| Deployment tooling | [`scripts/private-deploy.ts`](../scripts/private-deploy.ts), [`scripts/deploy-worker.ts`](../scripts/deploy-worker.ts) |
+| Workspace administration UI    | [`src/components/workspaces`](../src/components/workspaces)                                                                              |
+| Authentication and recovery    | [`src/lib/auth.server.ts`](../src/lib/auth.server.ts), [`src/lib/recovery.server.ts`](../src/lib/recovery.server.ts)                     |
+| Pure game transitions          | [`src/lib/live/engine.ts`](../src/lib/live/engine.ts)                                                                                    |
+| Shared game messages and views | [`src/lib/live/protocol.ts`](../src/lib/live/protocol.ts), [`src/lib/live/view.ts`](../src/lib/live/view.ts)                             |
+| Browser connection handling    | [`src/lib/live/use-live-room.ts`](../src/lib/live/use-live-room.ts)                                                                      |
+| Teacher/quiz/live screens      | [`src/components/quiz`](../src/components/quiz), [`src/components/live`](../src/components/live)                                         |
+| Shared UI primitives           | [`src/components/ui`](../src/components/ui)                                                                                              |
+| Theme and styling              | [`src/styles.css`](../src/styles.css), [`src/theme.css`](../src/theme.css), [`src/lib/theme.ts`](../src/lib/theme.ts)                    |
+| Audio policy and playback      | [`src/lib/live/audio-policy.ts`](../src/lib/live/audio-policy.ts), [`src/lib/live/game-audio.ts`](../src/lib/live/game-audio.ts)         |
+| Emails/provider delivery       | [`src/emails`](../src/emails), [`src/lib/auth-email.server.ts`](../src/lib/auth-email.server.ts)                                         |
+| Reports/PDF                    | [`src/lib/live/report-export.ts`](../src/lib/live/report-export.ts), [`src/lib/live/report-pdf.tsx`](../src/lib/live/report-pdf.tsx)     |
+| Schema and migrations          | [`src/db/schema.ts`](../src/db/schema.ts), [`migrations`](../migrations)                                                                 |
+| Social metadata and artwork    | [`src/lib/social.ts`](../src/lib/social.ts), [`scripts/social-card.ts`](../scripts/social-card.ts), [`public/og`](../public/og)          |
+| Deployment tooling             | [`scripts/private-deploy.ts`](../scripts/private-deploy.ts), [`scripts/deploy-worker.ts`](../scripts/deploy-worker.ts)                   |
 
 ## Boundaries to preserve
 
