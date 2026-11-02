@@ -13,7 +13,8 @@ permissions and migration questions. An open-registration public service is not
 part of that proposed first School release.
 
 The agreed future library default is private teacher drafts with explicit
-workspace sharing. Report permissions and sharing/editing mechanics remain open
+workspace sharing. Workspace Admins will be able to view all reports in their own
+workspace. Sharing/editing mechanics and additional report permissions remain open
 in the discussion draft; no School-mode implementation has begun.
 
 ## Implemented

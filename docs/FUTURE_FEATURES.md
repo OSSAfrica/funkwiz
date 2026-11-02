@@ -14,9 +14,11 @@ recommendations still need agreement before coding.
 - Quizzes start as private drafts. Teachers explicitly choose **Share to workspace**
   to make selected quizzes available to colleagues. Workspace membership alone
   does not make a teacher's drafts shared.
+- Workspace Admins can view all reports in their workspace, including reports
+  hosted by other teachers. This permission is scoped to that workspace.
 
 These decisions describe future behavior, not an implemented School-mode setting.
-Sharing mechanics, editing rights and report access remain separate decisions.
+Sharing mechanics, editing rights and additional report permissions remain open.
 
 ## Personal and School modes
 
@@ -31,7 +33,7 @@ invite-only School mode. This does not require a monorepo or separate frontend.
 | Teacher access | One configured email and private setup code | Invited accounts and workspace memberships |
 | Organization UI | No workspace/member administration needed | Workspace switcher, invitations, membership and roles |
 | Quiz library | Teacher-owned | Private teacher work plus deliberately shared workspace content |
-| Learner reports | Current teacher only | Explicit report-access policy; sharing quizzes does not grant report access |
+| Learner reports | Current teacher only | Host access plus workspace-wide viewing for Admins; quiz sharing is separate |
 | Students | Join by code/QR without accounts | Keep the same account-free joining experience initially |
 | Operation | One configuration/database per installation | One operator manages the school deployment; workspaces are application boundaries |
 
@@ -69,13 +71,14 @@ being an owner of one workspace does not grant access to another.
 | Role | Proposed responsibility | Boundary |
 | --- | --- | --- |
 | Owner | Workspace lifecycle, ownership transfer, membership and policy | Prevent removing the last owner; require explicit transfer/deletion flows |
-| Admin | Invitations, membership and ordinary workspace settings | Cannot transfer ownership or delete the workspace |
+| Admin | Invitations, membership, ordinary workspace settings and viewing all workspace reports | Workspace-scoped; cannot transfer ownership or delete the workspace |
 | Teacher | Author quizzes, host games and review permitted results | Cannot administer membership or read unrelated teachers' private results |
 
-Administrative authority and access to learner data should be separate decisions.
-Recommendation: keep reports visible to their host by default, with a deliberate
-sharing/grant mechanism if a school needs broader access. Owner/Admin should not
-silently imply “read every learner report” in the user-facing permission model.
+**Agreed:** Admins can view every report belonging to their workspace. Ordinary
+teachers retain access to their own hosted reports; wider teacher-to-teacher
+sharing remains to be specified. Private quiz drafts remain private until shared.
+Report viewing does not by itself grant report deletion or access to another
+workspace. The Admin role and invitation flow should explain this report visibility.
 
 An installation operator with cloud/database access remains able to administer
 the underlying storage. Application roles do not remove that infrastructure access.
@@ -84,9 +87,9 @@ Schools needing separate operational ownership should use separate installations
 ## Quiz collaboration without accidental disclosure
 
 **Agreed:** quizzes start as private drafts, with an explicit **Share to workspace**
-action. This decision does not settle report access. For the first collaboration
-version, the recommendation is to let
-teachers copy a shared quiz into their own editable draft. This is easier to
+action, separate from the agreed Admin report-viewing permission. For the first
+collaboration version, the recommendation is to let teachers copy a shared quiz
+into their own editable draft. This is easier to
 understand than simultaneous editing and avoids overwriting another lesson's content.
 
 Questions to settle:
@@ -136,7 +139,8 @@ Proposed approach:
 1. Back up and verify the current instance; keep the existing owner and resource IDs.
 2. Create an initial workspace and owner membership with a versioned migration.
 3. Assign existing quizzes/games/reports to that scope while preserving their host
-   and privacy. Do not automatically share historical reports with new teachers.
+   and privacy. Historical reports stay restricted from unrelated ordinary teachers;
+   workspace Admins receive the agreed workspace-wide report visibility.
 4. Enable invitations only after scoped authorization and revocation tests pass.
 5. Pilot with two teachers and two workspaces, then verify existing Personal-mode
    installations remain usable without workspace setup screens.
@@ -178,12 +182,10 @@ per-question timing and audio controls. Those are not future promises.
 
 ## Decisions to discuss next
 
-1. **Report access:** host-only by default with grants (recommended), or automatic
-   visibility for workspace administrators?
-2. **Workspace creation:** owners/operators create them initially, or can every
+1. **Workspace creation:** owners/operators create them initially, or can every
    invited teacher create one?
-3. **Collaboration depth:** is share-and-copy enough for the first School release?
-4. **Next small feature:** which classroom problem should we address before the
+2. **Collaboration depth:** is share-and-copy enough for the first School release?
+3. **Next small feature:** which classroom problem should we address before the
    workspace migration—reuse, explanations, spreadsheet import or result retention?
 
 Bring a concrete example of the school/team workflow to an issue or design
