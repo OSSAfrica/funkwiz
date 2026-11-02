@@ -1,6 +1,14 @@
 {
+  "name": "funkwiz-personal",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_name": "funkwiz-personal",
+      "migrations_dir": "migrations",
+    },
+  ],
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "funkwiz",
   "compatibility_date": "2025-09-02",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/server.ts",
@@ -8,17 +16,6 @@
     "enabled": true,
   },
   "upload_source_maps": true,
-  // Optional Cloudflare Email: see docs/AUTH.md before adding a send_email binding.
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "funkwiz",
-      // Template placeholder: the deploy button replaces this with a new D1 ID.
-      // For CLI deployment, create a database and put its ID here first.
-      "database_id": "00000000-0000-0000-0000-000000000000",
-      "migrations_dir": "migrations",
-    },
-  ],
   "durable_objects": {
     "bindings": [
       {
@@ -37,4 +34,7 @@
       "new_sqlite_classes": ["GameRoom", "JoinLimiter"],
     },
   ],
+  "vars": {
+    "FUNKWIZ_MODE": "personal",
+  },
 }
