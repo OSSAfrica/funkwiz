@@ -7,6 +7,19 @@ School mode is an opt-in experience for a school/team operating its own Funkwiz
 installation. It adds invited teacher accounts, multiple workspaces and scoped roles.
 Students still join games by code or QR without choosing a workspace or creating an account.
 
+## Choose a new deployment
+
+Use the **School / organization** button in the [deployment guide](DEPLOY.md).
+It preselects School mode. The **Personal** button is for a single teacher.
+Organizations use the same School mode and workspace roles; there is no separate
+organization mode value.
+
+The owner chooses the first administrator email and a private setup code during
+deployment. **Set up first administrator** is for that owner's email/password
+signup only. Invited teachers register through their invitation links without
+that code. Normal login never asks for it. Configured Google setup uses the
+verified owner email instead of the email/password setup form.
+
 ## Enable School mode
 
 For a fresh local setup:

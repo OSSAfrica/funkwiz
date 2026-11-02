@@ -5,6 +5,7 @@ const templateSchema = z
   .object({
     name: z.string().min(1),
     account_id: z.string().optional(),
+    vars: z.record(z.string(), z.unknown()).optional(),
     d1_databases: z
       .array(
         z

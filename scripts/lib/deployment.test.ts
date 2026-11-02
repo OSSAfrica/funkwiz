@@ -46,3 +46,19 @@ test("template database IDs never reach remote deployment", () => {
   };
   assert.throws(() => assertDeploymentTarget(template, template));
 });
+
+test("a build from the wrong deployment mode is refused even with matching resources", () => {
+  const school = { ...source, vars: { FUNKWIZ_MODE: "school" } };
+  assert.doesNotThrow(() =>
+    assertDeploymentTarget(school, structuredClone(school)),
+  );
+  assert.throws(
+    () =>
+      assertDeploymentTarget(school, {
+        ...source,
+        vars: { FUNKWIZ_MODE: "personal" },
+      }),
+    /mode/,
+  );
+  assert.throws(() => assertDeploymentTarget(school, source), /mode/);
+});

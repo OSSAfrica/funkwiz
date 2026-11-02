@@ -134,3 +134,17 @@ Preview copy excludes quiz/report content and reset tokens. See
 Internal live endpoints and server-function URLs are implementation details, not
 a versioned public integration API. Discuss a stable integration contract before
 building a third-party client against them.
+
+## Decision: two generated deployment templates
+
+Cloudflare copies a chosen template into a standalone repository, so two wrappers
+that depend on parent-directory source would be incomplete. One link with a mode
+field is simpler but does not satisfy distinct, preselected deployment choices;
+two manually maintained app copies would drift.
+
+The Personal and School links therefore target generated branches from the same
+checked main source. Only public defaults and setup metadata differ. The tradeoff
+is an extra publishing workflow and a brief delay after source checks complete.
+A source-commit marker, source-only contribution policy, fast-forward publication
+and an upstream-only publisher job keep that process auditable.
+Revisit this choice if Cloudflare adds documented per-link variable presets.

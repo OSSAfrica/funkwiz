@@ -12,7 +12,12 @@ keep control of your quizzes and reports. Funkwiz is available under the MIT lic
 [Documentation & glossary](docs/README.md) · [Quick start](docs/GETTING_STARTED.md) ·
 [Teacher guide](docs/TEACHER_GUIDE.md) · [Contribute](CONTRIBUTING.md)
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2FOSSAfrica%2Ffunkwiz)
+| Personal — one teacher                                                                                                                                                                               | School / organization — a teaching team                                                                                                                                                                          |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [![Deploy Personal to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2FOSSAfrica%2Ffunkwiz%2Ftree%2Fdeploy-personal) | [![Deploy School or organization to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2FOSSAfrica%2Ffunkwiz%2Ftree%2Fdeploy-school) |
+
+Each button preselects its mode and provisions a separate installation. The
+[deployment guide](docs/DEPLOY.md) explains initial account setup and teacher invitations.
 
 [![Funkwiz’s teacher library with colorful quiz cards, private drafts and shared workspace quizzes.](docs/screenshots/library.jpg)](docs/SHOWCASE.md)
 
