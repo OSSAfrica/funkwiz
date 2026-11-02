@@ -284,7 +284,10 @@ function StudentFinish({ snapshot }: { snapshot: RoomView }) {
           </div>
           <div>
             <strong>#{snapshot.self?.rank ?? "—"}</strong>
-            <span>Your rank</span>
+            <span>
+              of {snapshot.playerCount}{" "}
+              {snapshot.playerCount === 1 ? "player" : "players"}
+            </span>
           </div>
           <div>
             <strong>{snapshot.self?.correctCount ?? 0}</strong>

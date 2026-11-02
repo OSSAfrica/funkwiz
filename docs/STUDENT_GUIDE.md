@@ -59,5 +59,5 @@ teacher what you see. Never send anyone the teacher's private setup code.
 ## Share your result
 
 After the game, choose **Share my result** to download a colorful PNG with your
-nickname, quiz title, rank, points and correct-answer count. Share that image
+nickname, quiz title, rank out of the total players, points and correct-answer count. Share that image
 wherever you like. It contains no room code or other players’ names.

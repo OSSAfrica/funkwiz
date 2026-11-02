@@ -289,6 +289,9 @@ test("capture a fictional classroom through the real application", async ({
     await expect(
       student.getByRole("button", { name: "Share my result", exact: true }),
     ).toBeVisible();
+    await expect(
+      student.locator(".student-score-cards > div").nth(1),
+    ).toContainText("of 6 players");
     await capture(student, "student-result");
     const image = student.waitForEvent("download");
     await student

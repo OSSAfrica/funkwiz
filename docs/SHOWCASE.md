@@ -60,7 +60,7 @@ Players earn 1,000, 900 and 800 points for the first three correct answers;
 all later correct answers earn 700. Order resets for each question.
 
 At the end, **Share my result** downloads a branded PNG with the player's own
-nickname, quiz title, rank, score and correct-answer count.
+nickname, quiz title, rank out of the total players, score and correct-answer count.
 
 <img src="screenshots/student-result.jpg" alt="Student final screen with rank, points, correct answers and the Share my result button." width="300">
 
