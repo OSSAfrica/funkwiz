@@ -3042,6 +3042,7 @@ button.teacher-profile {
   min-height: 41px;
   padding: 10px 13px;
   background: var(--surface-soft, #f1f2e9);
+  border: 1px solid transparent;
   border-radius: 7px;
   font-size: 12px;
 }
@@ -3054,6 +3055,42 @@ button.teacher-profile {
 }
 .review-correct-answer .review-answer-track {
   background: var(--surface-sage, #c3d7a8);
+}
+.review-answer-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.review-answer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 800;
+}
+.review-answer-status svg {
+  flex-shrink: 0;
+}
+.review-answer-list > .review-correct-answer {
+  border-color: var(--ring);
+}
+.review-answer-list > .review-incorrect-answer {
+  color: var(--destructive);
+  border-color: color-mix(in srgb, var(--destructive) 55%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--destructive) 7%,
+    var(--surface-soft, #f1f2e9)
+  );
+}
+/* Lift destructive text on dark surfaces without changing the shared token. */
+html[data-theme="dark"] .review-answer-list > .review-incorrect-answer {
+  color: color-mix(in srgb, var(--destructive) 55%, var(--foreground));
+}
+.review-incorrect-answer .review-answer-track {
+  background: color-mix(in srgb, var(--destructive) 15%, transparent);
 }
 .review-answer-list strong {
   margin-left: auto;

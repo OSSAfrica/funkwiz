@@ -106,6 +106,12 @@ confetti, fireworks or moving lights. Reports and navigation remain available.
 
 ## Review and export results
 
+Question reviews show class totals per choice. Incorrect choices that received
+responses use the theme's destructive color and an **Incorrect selection** label.
+The correct choice has a green highlight and **Correct answer** label, even when
+nobody chose it. Unused wrong choices stay neutral. These are class totals, not
+individual player answer histories.
+
 Open the saved report after the game or return through recent games in the library.
 Reports include a leaderboard and question response breakdown. The host can access their reports. In School mode, workspace Owners/Admins can
 also review all reports in that workspace; their view of another host’s report
