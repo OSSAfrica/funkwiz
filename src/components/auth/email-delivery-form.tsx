@@ -83,7 +83,7 @@ export function EmailDeliveryForm({ initial }: { initial: Settings }) {
               {settings.options.map((option) => (
                 <SelectItem value={option.id} key={option.id}>
                   {option.label}
-                  {option.configured ? "" : " — setup required"}
+                  {option.configured ? "" : " (setup required)"}
                 </SelectItem>
               ))}
             </SelectContent>

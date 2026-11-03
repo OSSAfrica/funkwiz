@@ -225,7 +225,7 @@ export function QuizEditor({
               <legend className="text-sm font-bold mb-2">
                 Answers{" "}
                 <span className="font-normal text-muted-foreground">
-                  — select the correct one
+                  (select the correct one)
                 </span>
               </legend>
               {question.answers.map((answer, i) => (
