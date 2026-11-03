@@ -42,6 +42,7 @@ export const listQuizzes = createServerFn({ method: "GET" }).handler(
         description: row.description,
         cover: row.cover,
         questions: row.questions,
+        createdAt: row.createdAt.toISOString(),
         updatedAt: row.updatedAt.toISOString(),
         isExample: false,
         visibility: row.visibility,
@@ -87,11 +88,16 @@ export const persistQuiz = createServerFn({ method: "POST" })
             : isNull(quizTable.workspaceId),
         ),
       })
-      .returning({ id: quizTable.id, visibility: quizTable.visibility });
+      .returning({
+        id: quizTable.id,
+        visibility: quizTable.visibility,
+        createdAt: quizTable.createdAt,
+      });
     if (!rows.length)
       throw new Error("This quiz could not be saved to your account.");
     return {
       ...data,
+      createdAt: rows[0].createdAt.toISOString(),
       updatedAt: now.toISOString(),
       isExample: false,
       canEdit: true,
