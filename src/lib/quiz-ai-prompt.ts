@@ -3,7 +3,7 @@ import { importExample } from "./quiz";
 /** A prompt for an external AI tool, not additional fields in the import JSON. */
 export const quizAiPrompt = `Create a multiple-choice quiz that I can import into Funkwiz.
 
-MY REQUEST — replace these bracketed values before generating:
+MY REQUEST: replace these bracketed values before generating:
 Topic: [enter a topic, or write "use the attached/pasted document"]
 Audience / level: [for example: ages 11–13, beginners]
 Number of questions: [10; choose a number from 1 to 100]
@@ -28,6 +28,6 @@ REQUIRED FUNKWIZ FORMAT:
 - Use plain text, JSON numbers for numeric fields, and proper JSON string escaping. Do not add explanations, IDs, timestamps or report data.
 - Keep the JSON comfortably below 500 KB. Validate the structure and answer keys before returning it.
 
-FORMAT EXAMPLE — replace the sample content with my requested quiz:
+FORMAT EXAMPLE: replace the sample content with my requested quiz:
 ${importExample}
 `;

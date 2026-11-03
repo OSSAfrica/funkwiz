@@ -33,7 +33,7 @@ const pages: Record<
   }
 > = {
   app: {
-    title: "Funkwiz — A little curiosity. A lot of fun.",
+    title: "Funkwiz: A little curiosity. A lot of fun.",
     description:
       "Create colorful classroom quizzes, set your pace, and turn learning into play.",
     image: "app",
