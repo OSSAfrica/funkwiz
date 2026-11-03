@@ -15,11 +15,19 @@ import { themeBootScript } from "@/lib/theme";
 
 import { socialHead } from "@/lib/social";
 import { getPublicSiteOrigin } from "@/lib/social-origin";
+import { getClassroomOrigin } from "@/lib/classroom.functions";
+import { ClassroomNotice } from "@/components/classroom-notice";
 
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
-  beforeLoad: async () => ({ siteOrigin: await getPublicSiteOrigin() }),
+  beforeLoad: async () => {
+    const [siteOrigin, classroomOrigin] = await Promise.all([
+      getPublicSiteOrigin(),
+      getClassroomOrigin(),
+    ]);
+    return { siteOrigin, classroomOrigin };
+  },
   head: ({ match }) => ({
     meta: [
       { charSet: "utf-8" },
@@ -36,6 +44,7 @@ export const Route = createRootRoute({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const { classroomOrigin } = Route.useRouteContext();
   return (
     <html lang="en" prefix="og: https://ogp.me/ns#" suppressHydrationWarning>
       <head>
@@ -43,6 +52,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <ClassroomNotice origin={classroomOrigin} />
         {children}
         <ThemeToggle />
         {import.meta.env.DEV && (

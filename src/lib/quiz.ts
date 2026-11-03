@@ -1,3 +1,5 @@
+import { quizId } from "./uuid";
+
 export const covers = ["space", "nature", "world", "confetti"] as const;
 export type Cover = (typeof covers)[number];
 export type Question = {
@@ -44,14 +46,14 @@ export const quizMinutes = (quiz: Quiz) =>
     Math.ceil(quiz.questions.reduce((sum, q) => sum + q.duration, 0) / 60),
   );
 export const newQuestion = (): Question => ({
-  id: crypto.randomUUID(),
+  id: quizId(),
   prompt: "",
   answers: ["", "", "", ""],
   correctIndex: 0,
   duration: 20,
 });
 export const newQuiz = (): Quiz => ({
-  id: crypto.randomUUID(),
+  id: quizId(),
   title: "",
   description: "",
   cover: "confetti",
@@ -121,7 +123,7 @@ export function parseQuiz(value: unknown): Quiz {
         );
       }
       return {
-        id: typeof q.id === "string" ? q.id : crypto.randomUUID(),
+        id: typeof q.id === "string" ? q.id : quizId(),
         prompt: q.prompt.trim(),
         answers: (q.answers as string[]).map((a) => a.trim()),
         correctIndex: Number(q.correctIndex),
@@ -130,7 +132,7 @@ export function parseQuiz(value: unknown): Quiz {
     },
   );
   return {
-    id: typeof data.id === "string" ? data.id : crypto.randomUUID(),
+    id: typeof data.id === "string" ? data.id : quizId(),
     title: data.title.trim(),
     description:
       typeof data.description === "string"
@@ -161,10 +163,10 @@ export function parseImport(text: string): Quiz {
   const quiz = parseQuiz(value);
   return {
     ...quiz,
-    id: crypto.randomUUID(),
+    id: quizId(),
     isExample: false,
     updatedAt: new Date().toISOString(),
-    questions: quiz.questions.map((q) => ({ ...q, id: crypto.randomUUID() })),
+    questions: quiz.questions.map((q) => ({ ...q, id: quizId() })),
   };
 }
 
