@@ -49,6 +49,12 @@ test("opening or reconnecting does not replay past result effects", () => {
   assert.deepEqual(audioCues(room, { ...reveal, sessionId: "different" }), []);
 });
 test("question and confirmed selection cues never disclose correctness", () => {
+  const selected = { ...room, self: { ...room.self!, answer: 0 } };
+  assert.deepEqual(
+    audioCues(selected, { ...selected, self: { ...selected.self, answer: 1 } }),
+    ["selected"],
+  );
+  assert.deepEqual(audioCues(selected, { ...selected }), []);
   assert.deepEqual(audioCues({ ...room, phase: "lobby" }, room), ["question"]);
   assert.deepEqual(
     audioCues(room, { ...room, self: { ...room.self!, answer: 1 } }),

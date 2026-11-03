@@ -128,6 +128,12 @@ export function transitionRoom(
     case "settings": {
       if (
         room.phase === "question" &&
+        Boolean(action.settings.allowAnswerChanges) !==
+          Boolean(room.settings.allowAnswerChanges)
+      )
+        throw new Error("Change answer editing between questions.");
+      if (
+        room.phase === "question" &&
         action.settings.display !== room.settings.display
       )
         throw new Error("Change question visibility between questions.");

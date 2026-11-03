@@ -208,12 +208,13 @@ export class GameRoom extends DurableObject<Env> {
       if (!Number.isInteger(choice) || Number(choice) < 0 || Number(choice) > 3)
         throw new GameFault("Choose one of the four answers.", 400);
       const inserted = this.ctx.storage.sql.exec(
-        "INSERT OR IGNORE INTO answers (player_id, question_index, choice, answered_at, submission_order) VALUES (?, ?, ?, ?, (SELECT COALESCE(MAX(submission_order), 0) + 1 FROM answers WHERE question_index = ?))",
+        "INSERT INTO answers (player_id, question_index, choice, answered_at, submission_order) VALUES (?, ?, ?, ?, (SELECT COALESCE(MAX(submission_order), 0) + 1 FROM answers WHERE question_index = ?)) ON CONFLICT(player_id, question_index) DO UPDATE SET choice = excluded.choice, answered_at = excluded.answered_at, submission_order = excluded.submission_order WHERE ? = 1 AND answers.choice != excluded.choice",
         player.id,
         room.index,
         Number(choice),
         Date.now(),
         room.index,
+        room.settings.allowAnswerChanges === true ? 1 : 0,
       );
       if (inserted.rowsWritten) {
         this.#bump();

@@ -57,7 +57,7 @@ export function audioCues(
   if (
     next.phase === "question" &&
     sameQuestion &&
-    previous.self?.answer == null &&
+    previous.self?.answer !== next.self?.answer &&
     next.self?.answer != null
   )
     return ["selected"];

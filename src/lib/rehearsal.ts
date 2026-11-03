@@ -86,7 +86,7 @@ export function rehearsalReducer(
     case "answer":
       return state.phase === "question" &&
         !state.paused &&
-        state.answer === null
+        (state.answer === null || state.settings.allowAnswerChanges === true)
         ? { ...state, answer: action.answer }
         : state;
     case "pause":
@@ -100,6 +100,12 @@ export function rehearsalReducer(
             deadline: null,
           };
     case "settings": {
+      if (
+        state.phase === "question" &&
+        Boolean(state.settings.allowAnswerChanges) !==
+          Boolean(action.settings.allowAnswerChanges)
+      )
+        return state;
       const changedProgression =
         state.settings.progression !== action.settings.progression;
       const deadline =

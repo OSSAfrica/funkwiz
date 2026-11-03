@@ -134,6 +134,11 @@ export function gameSettings(value: unknown): GameSettings {
     throw new Error("Choose your game settings.");
   const data = value as Record<string, unknown>;
   if (
+    data.allowAnswerChanges !== undefined &&
+    typeof data.allowAnswerChanges !== "boolean"
+  )
+    throw new Error("Choose whether players may change their answers.");
+  if (
     !["manual", "automatic"].includes(String(data.progression)) ||
     !["shared", "devices", "both"].includes(String(data.display)) ||
     !Number.isInteger(data.cooldown) ||
@@ -147,6 +152,7 @@ export function gameSettings(value: unknown): GameSettings {
     progression: data.progression as GameSettings["progression"],
     display: data.display as DisplayMode,
     cooldown: Number(data.cooldown),
+    allowAnswerChanges: data.allowAnswerChanges === true,
   };
 }
 export function hostAction(value: unknown): HostAction {
