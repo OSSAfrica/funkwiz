@@ -15,6 +15,18 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  quizSortOptions,
+  sortQuizzes,
+  type QuizSort,
+} from "@/lib/quiz-library";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   WorkspaceSidebar,
@@ -141,18 +153,22 @@ function Library({
   );
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
+  const [sort, setSort] = useState<QuizSort>("newest");
   const [notice, setNotice] = useState("");
-  const filtered = quizzes.filter(
-    (q) =>
-      (filter === "all" ||
-        (filter === "mine"
-          ? !q.isExample && q.canEdit !== false
-          : filter === "shared"
-            ? q.visibility === "workspace"
-            : q.isExample)) &&
-      `${q.title} ${q.description}`
-        .toLowerCase()
-        .includes(search.toLowerCase()),
+  const filtered = sortQuizzes(
+    quizzes.filter(
+      (q) =>
+        (filter === "all" ||
+          (filter === "mine"
+            ? !q.isExample && q.canEdit !== false
+            : filter === "shared"
+              ? q.visibility === "workspace"
+              : q.isExample)) &&
+        `${q.title} ${q.description}`
+          .toLowerCase()
+          .includes(search.toLowerCase()),
+    ),
+    sort,
   );
   const mine = quizzes.filter(
     (q) => !q.isExample && q.canEdit !== false,
@@ -278,6 +294,9 @@ function Library({
           <section
             className="library-section reveal-in"
             aria-labelledby="library-heading"
+            // Proton Pass injects data-protonpass-form here before hydration.
+            // This exception covers this element's attributes, not its children.
+            suppressHydrationWarning
           >
             <div className="library-heading">
               <div>
@@ -309,6 +328,24 @@ function Library({
                   <TabsTrigger value="examples">Try an example</TabsTrigger>
                 </TabsList>
               </Tabs>
+              <Select
+                value={sort}
+                onValueChange={(value) => setSort(value as QuizSort)}
+              >
+                <SelectTrigger
+                  className="library-sort"
+                  aria-label="Sort quizzes"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(quizSortOptions).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <span className="storage-label">
                 <ShieldCheck size={14} />
                 {initial.workspace.school
