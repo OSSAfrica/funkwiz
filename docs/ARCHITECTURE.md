@@ -148,3 +148,22 @@ is an extra publishing workflow and a brief delay after source checks complete.
 A source-commit marker, source-only contribution policy, fast-forward publication
 and an upstream-only publisher job keep that process auditable.
 Revisit this choice if Cloudflare adds documented per-link variable presets.
+
+## Decision: built Personal classroom on a private LAN
+
+Offline classrooms use the existing Worker/D1/Durable Object application with
+local runtime bindings and a prepared build. A separate `.classroom/` profile
+holds credentials, assets and persistent state. A cached build avoids requiring a
+development server or package downloads at the beginning of each class.
+
+The initial launcher supports one Personal teacher and one explicitly selected
+RFC1918 IPv4 origin over HTTP. Local-only configuration permits that origin for
+authentication; the cloud deployment helpers reject classroom builds. Google
+and email providers are unavailable in this profile. Students use existing
+same-origin HTTP/WebSocket and lobby QR flows.
+
+This reuses the proven application rather than introducing a second server or a
+desktop runtime. The trade-offs are installed Bun/Node tooling, a running teacher
+computer, unencrypted traffic on a trusted LAN and manual quiz JSON transfer
+between installations. Revisit packaging, local HTTPS and School support after
+physical-device classroom pilots.

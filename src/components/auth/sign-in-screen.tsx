@@ -219,7 +219,7 @@ function CredentialFields({
           type="email"
           autoComplete="username"
           required
-          placeholder="you@example.com"
+          placeholder="Enter your email address"
         />
       </div>
       <div className="space-y-2">

@@ -1,6 +1,7 @@
 export const emailProviders = ["resend", "cloudflare", "smtp"] as const;
 export type EmailProvider = (typeof emailProviders)[number];
 export type EmailProviderSettings = {
+  FUNKWIZ_LOCAL_CLASSROOM?: string;
   BETTER_AUTH_URL?: string;
   AUTH_EMAIL_PROVIDER?: string;
   AUTH_EMAIL_FROM?: string;
@@ -67,6 +68,7 @@ export function emailConfigured(
   settings: EmailProviderSettings,
   provider = defaultEmailProvider(settings),
 ) {
+  if (settings.FUNKWIZ_LOCAL_CLASSROOM === "true") return false;
   if (!emailSender(settings)) return false;
   switch (provider) {
     case "resend":

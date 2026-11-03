@@ -128,6 +128,9 @@ bun run format
 bun run format:check
 ```
 
+CI runs both commands and then `git diff --exit-code`. If formatting changes a
+tracked file, CI fails so the contributor can format and commit it locally.
+
 Oxfmt respects `.gitignore`; the config also excludes generated route/runtime
 declarations, the Bun lockfile, migration SQL/snapshots, private deployment files
 and local agent settings. Regenerate those files with their owning tools.

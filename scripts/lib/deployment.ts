@@ -10,6 +10,13 @@ export function assertDeploymentTarget(
   source: DeploymentConfig,
   built: DeploymentConfig,
 ) {
+  if (
+    source.vars?.FUNKWIZ_LOCAL_CLASSROOM === "true" ||
+    built.vars?.FUNKWIZ_LOCAL_CLASSROOM === "true"
+  )
+    throw new Error(
+      "Offline classroom builds cannot be deployed. Build the intended cloud target instead.",
+    );
   const expected = source.d1_databases?.find((db) => db.binding === "DB");
   const actual = built.d1_databases?.find((db) => db.binding === "DB");
   if (

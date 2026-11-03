@@ -1,4 +1,4 @@
-> **School / organization deployment template.** Generated from source commit `724d4be9f2cc7e4ce1138a14e6874c339d237c14`. The mode is preselected in `wrangler.jsonc`. Contribute application changes to the upstream main branch.
+> **School / organization deployment template.** Generated from source commit `7b29993e322b7ff7b5963a9abad88fb92d6dc544`. The mode is preselected in `wrangler.jsonc`. Contribute application changes to the upstream main branch.
 
 # Funkwiz
 
@@ -94,16 +94,17 @@ with a large class. See [current limits](docs/LIVE_GAMES.md#local-development-an
 
 ## Choose your starting point
 
-| I want to…                                                      | Start here                                                                   |
-| --------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Join my teacher's game                                          | [Student guide](docs/STUDENT_GUIDE.md) — no installation needed              |
-| Try Funkwiz on my computer                                      | [Local quick start](#run-locally)                                            |
-| Deploy my own installation                                      | [Deployment guide](docs/DEPLOY.md)                                           |
-| Deploy this public repository without publishing my account IDs | [Private deployment](docs/PRIVATE_DEPLOY.md)                                 |
-| Manage an invited teaching team                                 | [School workspaces](docs/WORKSPACES.md)                                      |
-| Create and host my first quiz                                   | [Teacher guide](docs/TEACHER_GUIDE.md)                                       |
-| Import my questions                                             | [Import format and example](docs/QUIZ_IMPORTS.md)                            |
-| Help build Funkwiz                                              | [Contributing](CONTRIBUTING.md) and [development guide](docs/DEVELOPMENT.md) |
+| I want to…                                                      | Start here                                                                                           |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Join my teacher's game                                          | [Student guide](docs/STUDENT_GUIDE.md) — no installation needed                                      |
+| Try Funkwiz on my computer                                      | [Local quick start](#run-locally)                                                                    |
+| Host a Personal classroom without internet                      | [Teacher walkthrough](docs/OFFLINE_TEACHER_GUIDE.md) and [one-time setup](docs/OFFLINE_CLASSROOM.md) |
+| Deploy my own installation                                      | [Deployment guide](docs/DEPLOY.md)                                                                   |
+| Deploy this public repository without publishing my account IDs | [Private deployment](docs/PRIVATE_DEPLOY.md)                                                         |
+| Manage an invited teaching team                                 | [School workspaces](docs/WORKSPACES.md)                                                              |
+| Create and host my first quiz                                   | [Teacher guide](docs/TEACHER_GUIDE.md)                                                               |
+| Import my questions                                             | [Import format and example](docs/QUIZ_IMPORTS.md)                                                    |
+| Help build Funkwiz                                              | [Contributing](CONTRIBUTING.md) and [development guide](docs/DEVELOPMENT.md)                         |
 
 The Cloudflare button guides you through creating your own repository and cloud
 resources. You supply your app URL, teacher email and two independent secrets.
