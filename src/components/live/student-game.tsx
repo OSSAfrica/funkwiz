@@ -131,7 +131,7 @@ function StudentRound({
       </div>
       {!snapshot.hostOnline && (
         <p className="teacher-offline-note">
-          Your teacher is reconnecting. Stay here—your place is saved.
+          Your teacher is reconnecting. Stay here. Your place is saved.
         </p>
       )}
       <section className="live-question-stage">
@@ -321,7 +321,11 @@ function StudentFinish({ snapshot }: { snapshot: RoomView }) {
             <span>Total points</span>
           </div>
           <div>
-            <strong>#{snapshot.self?.rank ?? "—"}</strong>
+            <strong>
+              {snapshot.self?.rank == null
+                ? "Unranked"
+                : `#${snapshot.self.rank}`}
+            </strong>
             <span>
               of {snapshot.playerCount}{" "}
               {snapshot.playerCount === 1 ? "player" : "players"}

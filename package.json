@@ -107,7 +107,7 @@
     "url": "https://github.com/OSSAfrica/funkwiz/issues"
   },
   "cloudflare": {
-    "label": "Funkwiz — Personal",
+    "label": "Funkwiz: Personal",
     "products": [
       "Workers",
       "D1",

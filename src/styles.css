@@ -320,7 +320,7 @@
   margin-top: 11px;
 }
 .page-heading > button {
-  background: var(--surface-peach, #c34420);
+  background: var(--primary, #c34420);
   height: 43px;
   border-radius: 9px;
   font-weight: 800;
@@ -1317,7 +1317,58 @@ button {
     color 150ms ease;
 }
 button:active:not(:disabled) {
-  transform: translateY(1px);
+  transform: translateY(2px);
+}
+.fk-button {
+  --button-shadow: var(--border);
+  transition:
+    transform 120ms var(--ease-out),
+    background-color 150ms ease,
+    color 150ms ease;
+}
+.fk-button:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 4px;
+}
+/* Primary actions use the brand token, even on theme-dependent art surfaces. */
+.fk-button[data-slot="button"][data-variant="default"] {
+  --button-shadow: color-mix(in srgb, var(--primary) 75%, #000);
+  background: var(--primary);
+  color: var(--color-primary-foreground, #fff);
+}
+@media (hover: hover) and (pointer: fine) {
+  .fk-button[data-slot="button"][data-variant="default"]:hover {
+    background: color-mix(in srgb, var(--primary) 90%, #000);
+  }
+}
+.fk-button[data-variant="destructive"] {
+  --button-shadow: color-mix(in srgb, var(--destructive) 65%, #000);
+}
+.fk-button[data-variant="secondary"] {
+  --button-shadow: color-mix(
+    in srgb,
+    var(--secondary) 75%,
+    var(--secondary-foreground)
+  );
+}
+.fk-button:is(
+  [data-variant="default"],
+  [data-variant="destructive"],
+  [data-variant="secondary"],
+  [data-variant="outline"]
+) {
+  box-shadow: 0 3px 0 var(--button-shadow);
+}
+.fk-button:not(:disabled):not([aria-disabled="true"]):active {
+  transform: translateY(2px);
+}
+.fk-button:is(
+    [data-variant="default"],
+    [data-variant="destructive"],
+    [data-variant="secondary"],
+    [data-variant="outline"]
+  ):not(:disabled):not([aria-disabled="true"]):active {
+  box-shadow: 0 1px 0 var(--button-shadow);
 }
 @media (hover: hover) and (pointer: fine) {
   .quiz-card:hover {
@@ -1727,8 +1778,14 @@ button:active:not(:disabled) {
       opacity 150ms ease;
   }
   .quiz-card:hover,
-  button:active:not(:disabled) {
+  button:active:not(:disabled),
+  .fk-button:not(:disabled):not([aria-disabled="true"]):active {
     transform: none;
+  }
+  .fk-button {
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
   }
   [data-state] {
     animation-duration: 1ms !important;
@@ -1966,8 +2023,12 @@ button:active:not(:disabled) {
   color: var(--color-destructive-foreground);
 }
 .sign-out-raised:active {
-  transform: translateY(2px);
   box-shadow: 0 1px 0 color-mix(in srgb, var(--destructive) 65%, #000);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sign-out-raised:active {
+    transform: translateY(2px);
+  }
 }
 button.teacher-profile {
   width: 100%;
