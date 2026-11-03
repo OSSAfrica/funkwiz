@@ -15,6 +15,9 @@ test("password changes revoke other sessions", async ({ page, browser }) => {
     .getByRole("button", { name: "Teacher account", exact: true })
     .click();
   await page
+    .getByRole("menuitem", { name: "Change password", exact: true })
+    .click();
+  await page
     .getByLabel("Current password", { exact: true })
     .fill("Only-a-local-test-password-42!");
   await page

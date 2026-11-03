@@ -67,12 +67,109 @@ test("signs in with email and signs out", async ({ page }) => {
   await page
     .getByRole("button", { name: "Teacher account", exact: true })
     .click();
-  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await page.getByRole("menuitem", { name: "Sign out", exact: true }).click();
+  await page
+    .getByRole("alertdialog")
+    .getByRole("button", { name: "Sign out", exact: true })
+    .click();
   await expect(page).toHaveURL(/\/login/);
   await page.waitForLoadState("networkidle");
   const response = await page.request.get("/api/auth/get-session");
   expect(await response.json()).toBeNull();
 });
+test("confirms account menu sign out, opens settings and retries failures", async ({
+  page,
+}, info) => {
+  await page.goto("/login");
+  await page.getByLabel("Email address").fill("teacher@example.test");
+  await page
+    .getByLabel("Password", { exact: true })
+    .fill("Only-a-local-test-password-42!");
+  await page.getByRole("button", { name: "Let’s go", exact: true }).click();
+  const account = page.getByRole("button", {
+    name: "Teacher account",
+    exact: true,
+  });
+  await expect(account).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await account.click();
+  await page
+    .getByRole("menuitem", { name: "Change password", exact: true })
+    .click();
+  await expect(
+    page.getByLabel("Current password", { exact: true }),
+  ).toBeFocused();
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Close", exact: true })
+    .click();
+  await account.click();
+  await page
+    .getByRole("menuitem", { name: "Email delivery", exact: true })
+    .click();
+  await expect(
+    page.getByRole("form", { name: "Password reset email settings" }),
+  ).toBeVisible();
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Close", exact: true })
+    .click();
+  await account.click();
+  await page.screenshot({
+    path: `/tmp/funkwiz-account-menu-${info.project.name}.png`,
+    fullPage: true,
+  });
+  await page.getByRole("menuitem", { name: "Sign out", exact: true }).click();
+  const confirmation = page.getByRole("alertdialog");
+  await expect(
+    confirmation.getByRole("button", { name: "Stay signed in" }),
+  ).toBeFocused();
+  await confirmation.getByRole("button", { name: "Stay signed in" }).click();
+  await expect(confirmation).toHaveCount(0);
+  await expect(account).toBeFocused();
+  expect(
+    await (await page.request.get("/api/auth/get-session")).json(),
+  ).not.toBeNull();
+  await account.click();
+  await page.getByRole("menuitem", { name: "Sign out", exact: true }).click();
+  await page.screenshot({
+    path: `/tmp/funkwiz-sign-out-confirmation-${info.project.name}.png`,
+    fullPage: true,
+  });
+  await page.route("**/api/auth/sign-out", (route) =>
+    route.fulfill({
+      status: 500,
+      contentType: "application/json",
+      body: JSON.stringify({ message: "Temporary test failure" }),
+    }),
+  );
+  const logout = confirmation.getByRole("button", {
+    name: "Sign out",
+    exact: true,
+  });
+  await logout.click();
+  await expect(confirmation.getByRole("alert")).toContainText(
+    "We couldn’t sign you out",
+  );
+  await expect(logout).toBeEnabled();
+  expect(
+    await (await page.request.get("/api/auth/get-session")).json(),
+  ).not.toBeNull();
+  await page.unroute("**/api/auth/sign-out");
+  await logout.click();
+  await expect(page).toHaveURL(/\/login/);
+  await page.waitForLoadState("networkidle");
+  expect(
+    await (await page.request.get("/api/auth/get-session")).json(),
+  ).toBeNull();
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/login/);
+});
+
 test("unauthenticated clients cannot read or mutate quizzes through server functions", async ({
   page,
 }) => {

@@ -9,6 +9,18 @@ In [School mode](WORKSPACES.md), select the workspace before authoring or hostin
 Your drafts are private until you explicitly share them. Shared workspace quizzes
 can be copied into your own drafts; their original author keeps editing rights.
 
+## Log out
+
+Open the account icon in the library header and choose **Sign out**. Confirm
+**Sign out** in the dialog, or choose **Stay signed in** to cancel. School users
+can use the same account menu on the welcome screen before choosing a workspace.
+Funkwiz ends your current sign-in session and returns to the login page. Saved
+quizzes and reports stay in your account. Offline teachers can leave the classroom
+server running and sign in again later.
+
+The account menu also opens account settings, password settings and, for the
+installation owner, email delivery settings.
+
 ## Create or import a quiz
 
 Create a quiz from your library, give it a title, and add questions. Each question
