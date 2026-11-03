@@ -40,8 +40,8 @@ export function configureDeploymentTemplate(
     throw new Error("Missing Cloudflare template metadata.");
   pkg.cloudflare.label =
     mode === "personal"
-      ? "Funkwiz — Personal"
-      : "Funkwiz — School / organization";
+      ? "Funkwiz: Personal"
+      : "Funkwiz: School / organization";
   pkg.cloudflare.bindings.FUNKWIZ_MODE = {
     description:
       mode === "personal"
