@@ -87,6 +87,10 @@ if (!existsSync(secretsPath))
     { mode: 0o600, flag: "wx" },
   );
 const secrets = JSON.parse(readFileSync(secretsPath, "utf8"));
+if (secrets.FUNKWIZ_LOCAL_CLASSROOM === "true")
+  throw new Error(
+    "Offline classroom settings cannot be deployed to Cloudflare.",
+  );
 if (
   secrets.BETTER_AUTH_URL !== origin.origin ||
   secrets.TEACHER_EMAIL !== target.teacherEmail.trim().toLowerCase() ||

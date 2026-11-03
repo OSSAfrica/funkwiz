@@ -1,16 +1,24 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { parseEnv } from "node:util";
+import { isPrivateSettingValue } from "./lib/private-values";
 
 const production = process.argv.includes("--private");
-const directory = production ? ".deploy/dist/client" : "dist/client";
+const classroom = process.argv.includes("--classroom");
+const directory = classroom
+  ? ".classroom/dist/client"
+  : production
+    ? ".deploy/dist/client"
+    : "dist/client";
 if (!existsSync(directory))
   throw new Error("Build the intended public or private target first.");
-const config = production
-  ? JSON.parse(readFileSync(".deploy/secrets.json", "utf8"))
-  : existsSync(".dev.vars")
-    ? parseEnv(readFileSync(".dev.vars", "utf8"))
-    : {};
+const config = classroom
+  ? JSON.parse(readFileSync(".classroom/settings.json", "utf8"))
+  : production
+    ? JSON.parse(readFileSync(".deploy/secrets.json", "utf8"))
+    : existsSync(".dev.vars")
+      ? parseEnv(readFileSync(".dev.vars", "utf8"))
+      : {};
 const privateValues = [
   "BETTER_AUTH_SECRET",
   "TEACHER_SETUP_TOKEN",
@@ -18,11 +26,9 @@ const privateValues = [
   "GOOGLE_CLIENT_SECRET",
   "RESEND_API_KEY",
   "SMTP_PASSWORD",
-]
-  .map((key) => config[key])
-  .filter(
-    (value): value is string => typeof value === "string" && value.length >= 8,
-  );
+].flatMap((key) =>
+  isPrivateSettingValue(key, config[key]) ? [config[key] as string] : [],
+);
 if (production) {
   const target = JSON.parse(readFileSync(".deploy/target.json", "utf8"));
   privateValues.push(target.accountId, target.databaseId);

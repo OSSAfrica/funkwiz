@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { parseEnv } from "node:util";
+import { isPrivateSettingValue } from "./lib/private-values";
 
 // A release-hygiene guard, not a replacement for a dedicated secret scanner.
 const files = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" })
@@ -16,13 +17,16 @@ const privateValues = [
   "GOOGLE_CLIENT_SECRET",
   "RESEND_API_KEY",
   "SMTP_PASSWORD",
-]
-  .flatMap((key) => [privateConfig[key], process.env[key]])
-  .filter((value): value is string => Boolean(value && value.length >= 8));
+].flatMap(
+  (key) =>
+    [privateConfig[key], process.env[key]].filter((value) =>
+      isPrivateSettingValue(key, value),
+    ) as string[],
+);
 if (existsSync(".deploy/target.json")) {
   const target = JSON.parse(readFileSync(".deploy/target.json", "utf8"));
   for (const key of ["accountId", "databaseId", "origin", "teacherEmail"]) {
-    if (typeof target[key] === "string" && target[key].length >= 8)
+    if (isPrivateSettingValue(key, target[key]))
       privateValues.push(target[key]);
   }
 }
@@ -38,10 +42,20 @@ if (existsSync(".deploy/secrets.json")) {
     if (typeof secrets[key] === "string" && secrets[key].length >= 8)
       privateValues.push(secrets[key]);
 }
+if (existsSync(".classroom/settings.json")) {
+  const settings = JSON.parse(readFileSync(".classroom/settings.json", "utf8"));
+  for (const key of [
+    "TEACHER_EMAIL",
+    "BETTER_AUTH_SECRET",
+    "TEACHER_SETUP_TOKEN",
+  ])
+    if (isPrivateSettingValue(key, settings[key]))
+      privateValues.push(settings[key]);
+}
 const findings = new Set<string>();
 for (const path of files) {
   if (
-    /(^|\/)(\.deploy|\.idea|\.wrangler|\.playwright|node_modules|dist|test-results|playwright-report)(\/|$)/.test(
+    /(^|\/)(\.classroom|\.deploy|\.idea|\.wrangler|\.playwright|node_modules|dist|test-results|playwright-report)(\/|$)/.test(
       path,
     ) ||
     (/(^|\/)(\.env(?:\..*)?|\.dev\.vars(?:\..*)?)$/.test(path) &&
