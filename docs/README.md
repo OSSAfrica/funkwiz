@@ -19,6 +19,7 @@ in both. Further collaboration/learning ideas remain [proposals](FUTURE_FEATURES
 | Write and run a quiz                  | [Teacher guide](TEACHER_GUIDE.md)                             | [Live game rules](LIVE_GAMES.md)                               |
 | Bring an existing question set        | [Question imports](QUIZ_IMPORTS.md)                           | [Example JSON](quiz-import-example.json)                       |
 | Try it locally                        | [Getting started](GETTING_STARTED.md#try-it-on-your-computer) | [Troubleshooting](TROUBLESHOOTING.md)                          |
+| Host without internet                 | [Offline teacher walkthrough](OFFLINE_TEACHER_GUIDE.md)       | [One-time technical setup](OFFLINE_CLASSROOM.md)               |
 | Deploy a new copy                     | [Cloudflare deployment](DEPLOY.md)                            | [Authentication setup](AUTH.md)                                |
 | Keep my production details out of Git | [Private deployment](PRIVATE_DEPLOY.md)                       | [Operations](OPERATIONS.md)                                    |
 | Manage teachers and workspace access  | [School mode](WORKSPACES.md)                                  | [Authentication](AUTH.md)                                      |
@@ -34,6 +35,7 @@ in both. Further collaboration/learning ideas remain [proposals](FUTURE_FEATURES
 
 - [Getting started](GETTING_STARTED.md): the first account, first game and choice of setup path.
 - [Teacher guide](TEACHER_GUIDE.md): authoring, practice, hosting, timing, podium celebrations, reports and audio.
+- [Offline teacher walkthrough](OFFLINE_TEACHER_GUIDE.md): first account, daily classroom checklist and joining help in plain language.
 - [Student guide](STUDENT_GUIDE.md): invitations, answering, scoring, reconnecting and sharing a result image.
 - [School workspaces](WORKSPACES.md): modes, invitations, roles, private sharing and migration.
 - [Question imports](QUIZ_IMPORTS.md): AI generation prompt, supported JSON fields, limits and validation.

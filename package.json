@@ -36,7 +36,9 @@
     "db:migrate:e2e-school": "wrangler d1 migrations apply DB --local --config e2e/worker/school.jsonc --persist-to .wrangler/e2e-school-state",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
-    "screenshots": "playwright test --config playwright.showcase.config.ts"
+    "screenshots": "playwright test --config playwright.showcase.config.ts",
+    "classroom": "bun scripts/classroom.ts",
+    "classroom:code": "bun scripts/show-setup-code.ts --classroom"
   },
   "dependencies": {
     "@fontsource-variable/fredoka": "^5.3.0",

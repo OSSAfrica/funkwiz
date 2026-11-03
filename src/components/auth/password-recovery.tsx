@@ -247,7 +247,7 @@ export function PasswordRecovery({ options }: { options: Options }) {
                   autoComplete="username"
                   required
                   maxLength={254}
-                  placeholder="you@example.com"
+                  placeholder="Enter your email address"
                 />
               </div>
               {method === "setup" && (

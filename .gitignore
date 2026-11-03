@@ -42,3 +42,6 @@ todos.json
 
 # Personal production targets, secrets, logs and build output
 /.deploy/
+
+# Offline Personal classroom credentials, builds and local data
+/.classroom/

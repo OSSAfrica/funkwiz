@@ -9,6 +9,7 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 
 const config = defineConfig(({ mode }) => ({
   ...(mode === "private" ? { build: { outDir: ".deploy/dist" } } : {}),
+  ...(mode === "classroom" ? { build: { outDir: ".classroom/dist" } } : {}),
   // Concurrent dev/test servers must not overwrite each other's React chunks.
   cacheDir: `node_modules/.vite/${mode}`,
   resolve: { tsconfigPaths: true, dedupe: ["react", "react-dom"] },
@@ -38,6 +39,9 @@ const config = defineConfig(({ mode }) => ({
     cloudflare({
       viteEnvironment: { name: "ssr" },
       ...(mode === "private" ? { configPath: "./.deploy/wrangler.json" } : {}),
+      ...(mode === "classroom"
+        ? { configPath: "./.classroom/wrangler.json" }
+        : {}),
       ...(mode.startsWith("e2e")
         ? {
             configPath:

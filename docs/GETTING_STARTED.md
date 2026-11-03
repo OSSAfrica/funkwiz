@@ -75,6 +75,10 @@ quiz when it opens, so editing the library quiz does not change that game.
 
 ## Move to a real classroom
 
+For Personal-mode play on Wi-Fi without internet, use the
+[offline classroom launcher](OFFLINE_CLASSROOM.md). It supplies a reachable LAN
+address and keeps classroom data separate from development and cloud deployments.
+
 A `127.0.0.1` or `localhost` address points to the device opening it. A student
 phone cannot use that link to reach the app on your computer. Use a reachable
 deployment and open the teacher screen at that same address before sharing QR
