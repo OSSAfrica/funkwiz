@@ -253,3 +253,108 @@ test("legacy rooms migrate the answer table and retain flat points", async () =>
     pointsPerCorrect: 1000,
   });
 });
+
+test("editable answers use final choice order, survive eviction and preserve idempotent retries", async () => {
+  const { stub, token } = await room();
+  const settings = { ...defaultSettings, allowAnswerChanges: true };
+  expect((await stub.control(owner, { type: "settings", settings })).ok).toBe(
+    true,
+  );
+  const others = [];
+  for (const name of ["Early Correct", "Later Correct", "Fourth Correct"]) {
+    const joined = await stub.join(name, "");
+    if (!joined.ok) throw new Error(joined.message);
+    others.push(joined.data.token);
+  }
+  const started = await stub.control(owner, { type: "start" });
+  if (!started.ok) throw new Error(started.message);
+  const question = started.data.question!.id;
+  await stub.answer(token, question, 0);
+  await stub.answer(others[0], question, 1);
+  await stub.answer(token, question, 1);
+  await stub.answer(others[1], question, 1);
+  await stub.answer(token, question, 0);
+  const final = await stub.answer(token, question, 1);
+  if (!final.ok) throw new Error(final.message);
+  expect(final.data.self?.correct).toBeNull();
+  expect(final.data.self?.pointsEarned).toBeNull();
+  await stub.answer(others[2], question, 1);
+  const before = await stub.read("student", token);
+  await stub.answer(token, question, 1);
+  const duplicate = await stub.read("student", token);
+  if (!before.ok || !duplicate.ok) throw new Error("Missing player state");
+  expect(duplicate.data.revision).toBe(before.data.revision);
+  expect(duplicate.data.answeredCount).toBe(4);
+  await runInDurableObject(stub, (_instance, state) => {
+    state.storage.sql.exec("UPDATE answers SET answered_at = 42");
+  });
+  await evictDurableObject(stub);
+  const restored = await stub.read("student", token);
+  if (!restored.ok) throw new Error(restored.message);
+  expect(restored.data.self?.answer).toBe(1);
+  expect(restored.data.settings.allowAnswerChanges).toBe(true);
+  await stub.control(owner, { type: "reveal", questionIndex: 0 });
+  for (const [identity, points, order] of [
+    [others[0], 1000, 1],
+    [others[1], 900, 2],
+    [token, 800, 3],
+    [others[2], 700, 4],
+  ] as const) {
+    const view = await stub.read("student", identity);
+    if (!view.ok) throw new Error(view.message);
+    expect(view.data.self?.pointsEarned).toBe(points);
+    expect(view.data.self?.correctOrder).toBe(order);
+  }
+  expect((await stub.answer(token, question, 0)).ok).toBe(false);
+  const end = await stub.control(owner, { type: "end" });
+  if (!end.ok) throw new Error(end.message);
+  const row = await env.DB.prepare(
+    "SELECT report FROM live_session WHERE id = ?",
+  )
+    .bind(end.data.sessionId)
+    .first<{ report: string }>();
+  const report = JSON.parse(row!.report);
+  expect(report.questions[0].counts).toEqual([0, 4, 0, 0]);
+  expect(report.questions[0].answered).toBe(4);
+});
+
+test("answer editing rejects paused, expired and stale questions and can be disabled for the next question", async () => {
+  const { stub, token } = await room();
+  expect(
+    (
+      await stub.control(owner, {
+        type: "settings",
+        settings: { ...defaultSettings, allowAnswerChanges: true },
+      })
+    ).ok,
+  ).toBe(true);
+  const start = await stub.control(owner, { type: "start" });
+  if (!start.ok) throw new Error(start.message);
+  const first = start.data.question!.id;
+  await stub.answer(token, first, 0);
+  expect(
+    (await stub.control(owner, { type: "settings", settings: defaultSettings }))
+      .ok,
+  ).toBe(false);
+  await stub.control(owner, { type: "pause" });
+  expect((await stub.answer(token, first, 1)).ok).toBe(false);
+  await stub.control(owner, { type: "resume" });
+  await rewrite(stub, { deadline: Date.now() - 1 });
+  expect((await stub.answer(token, first, 1)).ok).toBe(false);
+  const reveal = await stub.read("student", token);
+  if (!reveal.ok) throw new Error(reveal.message);
+  expect(reveal.data.self?.answer).toBe(0);
+  expect(reveal.data.self?.score).toBe(0);
+  expect(
+    (await stub.control(owner, { type: "settings", settings: defaultSettings }))
+      .ok,
+  ).toBe(true);
+  const next = await stub.control(owner, { type: "next", questionIndex: 0 });
+  if (!next.ok) throw new Error(next.message);
+  expect(next.data.settings.allowAnswerChanges).toBe(false);
+  expect((await stub.answer(token, first, 1)).ok).toBe(false);
+  await stub.answer(token, next.data.question!.id, 0);
+  const locked = await stub.answer(token, next.data.question!.id, 1);
+  if (!locked.ok) throw new Error(locked.message);
+  expect(locked.data.self?.answer).toBe(0);
+});

@@ -71,12 +71,20 @@ Players already in the room can reconnect from the same browser.
 - **Reveal early:** finish the current answering period and show the correct answer.
 - **Next question:** advance after a reveal in manual mode.
 - **Display changes:** change visibility between questions; it takes effect on the next one.
+- **Answer changes:** enable **Allow answer changes** at setup for the quiz, or
+  adjust it in **Game settings** between questions. It applies to the next
+  question and stays until you change it again. Answers remain locked by default.
 - **Progression changes:** switching to manual cancels a cooldown; switching to
   automatic during reveal begins a full cooldown.
 - **End game:** finish early. The current question is scored, and the report marks
   only questions actually reached as asked.
 
-Each player can submit one answer per question. Correctness is revealed together,
+Each player has one saved choice per question. If you allow changes, they can
+replace it until time expires or you reveal; pausing disables answers and changes.
+Their final choice determines correctness and its submission position determines
+the scoring tier. Changing away from a correct answer and returning to it earns
+a new position. Tapping the same saved choice again does not change that position.
+Correctness is revealed together,
 with 1,000 points for the first correct answer, 900 for the second, 800 for the
 third and 700 for every remaining correct answer. Wrong answers earn 0 and do not
 consume a tier. Order resets for each question. Equal scores share a rank. See [live game rules](LIVE_GAMES.md) for the exact lifecycle.
