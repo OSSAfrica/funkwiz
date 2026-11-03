@@ -88,3 +88,24 @@ test("locks the first practice answer and ignores answers after reveal", () => {
   state = reduce(state, { type: "answer", answer: 3 });
   assert.equal(state.answer, 1);
 });
+
+test("practice allows answer changes when enabled and locks the next question when disabled", () => {
+  let state = beginRehearsal(
+    quiz,
+    { ...defaultSettings, allowAnswerChanges: true },
+    0,
+  );
+  state = reduce(state, { type: "answer", answer: 0 });
+  state = reduce(state, { type: "answer", answer: 1 });
+  assert.equal(state.answer, 1);
+  state = reduce(state, { type: "reveal", now: 100 });
+  state = reduce(state, {
+    type: "settings",
+    settings: defaultSettings,
+    now: 101,
+  });
+  state = reduce(state, { type: "next", now: 102 });
+  state = reduce(state, { type: "answer", answer: 0 });
+  state = reduce(state, { type: "answer", answer: 1 });
+  assert.equal(state.answer, 0);
+});

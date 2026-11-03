@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import {
   displayLabels,
@@ -70,6 +71,31 @@ export function GameSettings({
         value={value.display}
         onChange={(display) => onChange({ ...value, display })}
       />
+      <div className="rounded-xl border border-border bg-muted/40 p-4">
+        <div className="flex items-center justify-between gap-4">
+          <Label htmlFor="allow-answer-changes">Allow answer changes</Label>
+          <Switch
+            id="allow-answer-changes"
+            checked={value.allowAnswerChanges === true}
+            onCheckedChange={(allowAnswerChanges) =>
+              onChange({ ...value, allowAnswerChanges })
+            }
+            aria-describedby="answer-changes-help"
+          />
+        </div>
+        <p
+          id="answer-changes-help"
+          className="mt-2 text-sm text-muted-foreground"
+        >
+          {value.allowAnswerChanges
+            ? "Players can change their choice until time runs out or you reveal the answer. Their final choice sets their scoring position."
+            : "Each player’s first answer is locked in."}
+        </p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Set this for the quiz here, or adjust it between questions in Game
+          settings.
+        </p>
+      </div>
       <fieldset>
         <legend className="setting-label">Who keeps the game moving?</legend>
         <div className="grid grid-cols-2 gap-3">

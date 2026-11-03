@@ -71,31 +71,34 @@ export async function state(
   expect(response.ok(), await response.text()).toBe(true);
   return (await response.json()) as RoomView;
 }
-export async function quickQuiz(page: Page, title: string) {
+export async function quickQuiz(page: Page, title: string, duration = 5) {
   await page.goto("/");
   await page.waitForLoadState("networkidle");
-  return page.evaluate(async (title) => {
-    const path = "/src/lib/quizzes.functions.ts";
-    const api = await import(/* @vite-ignore */ path);
-    const quiz = await api.persistQuiz({
-      data: {
-        title,
-        questions: [
-          {
-            prompt: "Which planet is red?",
-            answers: ["Earth", "Mars", "Venus", "Saturn"],
-            correctIndex: 1,
-            duration: 5,
-          },
-          {
-            prompt: "What is at the center of our solar system?",
-            answers: ["Earth", "The Moon", "The Sun", "Mars"],
-            correctIndex: 2,
-            duration: 6,
-          },
-        ],
-      },
-    });
-    return quiz.id as string;
-  }, title);
+  return page.evaluate(
+    async ({ title, duration }) => {
+      const path = "/src/lib/quizzes.functions.ts";
+      const api = await import(/* @vite-ignore */ path);
+      const quiz = await api.persistQuiz({
+        data: {
+          title,
+          questions: [
+            {
+              prompt: "Which planet is red?",
+              answers: ["Earth", "Mars", "Venus", "Saturn"],
+              correctIndex: 1,
+              duration,
+            },
+            {
+              prompt: "What is at the center of our solar system?",
+              answers: ["Earth", "The Moon", "The Sun", "Mars"],
+              correctIndex: 2,
+              duration: duration + 1,
+            },
+          ],
+        },
+      });
+      return quiz.id as string;
+    },
+    { title, duration },
+  );
 }

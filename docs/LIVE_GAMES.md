@@ -33,12 +33,21 @@ duration to every question and then changing individual durations.
   screens so students can review their choice.
 - Opening settings pauses an active timer; resume explicitly when ready.
 
-The server owns deadlines, accepts only the first answer, and awards points only
+**Allow answer changes** defaults to off. Hosts can set it before opening the
+lobby, then adjust it between questions just like visibility. The chosen setting
+applies to the next question and persists until changed again; it cannot change
+during an active question. Practice uses the same answer-choice rule.
+
+The server owns deadlines and awards points only
 when the answer is revealed. Correct answers earn **1,000 / 900 / 800 / 700** points for
 first / second / third / all later correct submissions. Wrong or missing answers
 earn 0 and do not consume a tier. Order resets per question and follows server
 acceptance order, including when submissions have identical timestamps. Equal
-scores share a rank. Ending early scores the current question
+scores share a rank. With editing disabled, the first choice stays locked. With
+editing enabled, a different choice replaces the saved answer and receives a new
+server acceptance position. Repeating the currently saved choice is a no-op,
+including retries. Only final correct choices participate in scoring. Paused,
+expired and revealed questions cannot be edited. Ending early scores the current question
 and records only questions reached as asked.
 
 Rooms already in progress when this scoring change is installed keep their
@@ -49,7 +58,7 @@ and PDF exports describe the scoring rules that applied to that game.
 ## Reconnecting and reports
 
 Refreshing or reconnecting from the same browser restores a student's identity,
-score, and locked answer through a private HttpOnly room cookie. Opening the same
+score, and latest saved answer through a private HttpOnly room cookie. Opening the same
 student session in another tab replaces the previous connection. Clearing cookies
 or switching browsers loses that identity. New students cannot join after start;
 existing students can reconnect. Nicknames must be unique within the room.

@@ -9,6 +9,47 @@ const quiz = sampleQuizzes[0];
 const make = () =>
   createRoomMeta("session", "123456", "teacher", quiz, defaultSettings, 0);
 
+test("answer editing defaults to locked and can change only between questions", () => {
+  assert.equal(
+    gameSettings({ progression: "manual", display: "both", cooldown: 5 })
+      .allowAnswerChanges,
+    false,
+  );
+  for (const value of ["true", 1, null, []])
+    assert.throws(
+      () => gameSettings({ ...defaultSettings, allowAnswerChanges: value }),
+      /change their answers/,
+    );
+  const editable = { ...defaultSettings, allowAnswerChanges: true };
+  let room = transitionRoom(
+    make(),
+    { type: "settings", settings: editable },
+    0,
+    1,
+  );
+  room = transitionRoom(room, { type: "start" }, 10, 1);
+  assert.equal(room.settings.allowAnswerChanges, true);
+  assert.throws(
+    () =>
+      transitionRoom(
+        room,
+        { type: "settings", settings: defaultSettings },
+        11,
+        1,
+      ),
+    /between questions/,
+  );
+  room = transitionRoom(room, { type: "reveal", questionIndex: 0 }, 12, 1);
+  room = transitionRoom(
+    room,
+    { type: "settings", settings: defaultSettings },
+    13,
+    1,
+  );
+  room = transitionRoom(room, { type: "next", questionIndex: 0 }, 14, 1);
+  assert.equal(room.settings.allowAnswerChanges, false);
+});
+
 test("a live room waits for students and starts with its first question duration", () => {
   const room = make();
   assert.equal(room.phase, "lobby");

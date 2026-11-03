@@ -25,11 +25,14 @@ export type GameSettings = {
   progression: "manual" | "automatic";
   cooldown: number;
   display: DisplayMode;
+  /** Omitted in older games: the first answer stays locked. */
+  allowAnswerChanges?: boolean;
 };
 export const defaultSettings: GameSettings = {
   progression: "manual",
   cooldown: 5,
   display: "both",
+  allowAnswerChanges: false,
 };
 export const displayLabels: Record<DisplayMode, string> = {
   shared: "Shared screen",

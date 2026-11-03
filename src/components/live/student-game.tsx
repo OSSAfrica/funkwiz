@@ -43,7 +43,13 @@ export function StudentGame({ code }: { code: string }) {
   const snapshot = room.snapshot;
   async function answer(index: number) {
     const question = room.snapshot?.question;
-    if (!question || pending || !room.connected) return;
+    if (
+      !question ||
+      pending ||
+      !room.connected ||
+      index === room.snapshot?.self?.answer
+    )
+      return;
     setPending(question.id);
     setAnswerError(null);
     try {
@@ -147,7 +153,8 @@ function StudentRound({
           disabled={
             !connected ||
             snapshot.paused ||
-            snapshot.self?.answer !== null ||
+            (snapshot.self?.answer !== null &&
+              !snapshot.settings.allowAnswerChanges) ||
             pending ||
             seconds <= 0
           }
@@ -220,6 +227,29 @@ function StudentLobby({ snapshot }: { snapshot: RoomView }) {
     </section>
   );
 }
+function questionFeedback(
+  snapshot: RoomView,
+  pending: boolean,
+  seconds: number,
+) {
+  if (snapshot.paused) return "Paused. A little time to think.";
+  if (pending)
+    return snapshot.settings.allowAnswerChanges
+      ? "Saving your answer…"
+      : "Locking in your answer…";
+  if (snapshot.self?.answer != null) {
+    if (!snapshot.settings.allowAnswerChanges)
+      return "Answer locked in. The suspense is real!";
+    return seconds <= 0
+      ? "Time’s up. Waiting for the reveal…"
+      : "Answer saved. You can choose another before time runs out.";
+  }
+  if (seconds <= 0) return "Time’s up. Waiting for the reveal…";
+  return snapshot.settings.allowAnswerChanges
+    ? "Choose an answer. You can change your mind while the timer runs."
+    : "Choose one answer. Make it count!";
+}
+
 function AnswerFeedback({
   snapshot,
   pending,
@@ -239,15 +269,16 @@ function AnswerFeedback({
       text = "A good try. You’ve got the next one!";
       mood = "try-again";
     } else text = "Time’s up. Catch the next question!";
-  } else if (snapshot.paused) text = "Paused. A little time to think.";
-  else if (pending) text = "Locking in your answer…";
-  else if (snapshot.self?.answer !== null)
-    text = "Answer locked in. The suspense is real!";
-  else if (seconds <= 0) text = "Time’s up. Waiting for the reveal…";
-  else text = "Choose one answer. Make it count!";
+  } else text = questionFeedback(snapshot, pending, seconds);
   return (
     <div className={`answer-feedback ${mood}`} role="status">
       {text}
+      {snapshot.phase === "question" &&
+        snapshot.settings.allowAnswerChanges && (
+          <small>
+            Your latest choice sets your place in the scoring order.
+          </small>
+        )}
       {snapshot.phase === "reveal" && (
         <small>
           {snapshot.deadline !== null
