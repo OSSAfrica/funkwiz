@@ -79,6 +79,57 @@ test.beforeAll(async ({ playwright, browser }) => {
   await request.dispose();
 });
 
+test("shows logout on School welcome and in the workspace library", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    baseURL: base,
+    viewport: { width: 390, height: 844 },
+    extraHTTPHeaders: fixtureHeaders(),
+  });
+  try {
+    const signedIn = await context.request.post("/api/auth/sign-in/email", {
+      headers: { origin: base },
+      data: { email: "teacher@example.test", password },
+    });
+    expect(signedIn.ok()).toBe(true);
+    const page = await context.newPage();
+    await page.goto("/");
+    await expect(
+      page.getByRole("heading", { name: "Make room for more “aha!” moments." }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Teacher account", exact: true }),
+    ).toBeVisible();
+    await workspaceCall(page, "createWorkspace", { name: "Logout check" });
+    await page.reload();
+    await expect(
+      page
+        .locator(".workspace-header-actions")
+        .getByRole("button", { name: "Teacher account", exact: true }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await page
+      .getByRole("button", { name: "Teacher account", exact: true })
+      .click();
+    await page.getByRole("menuitem", { name: "Sign out", exact: true }).click();
+    await page
+      .getByRole("alertdialog")
+      .getByRole("button", { name: "Sign out", exact: true })
+      .click();
+    await expect(page).toHaveURL(/\/login/);
+    expect(
+      await (await context.request.get("/api/auth/get-session")).json(),
+    ).toBeNull();
+  } finally {
+    await context.close();
+  }
+});
+
 test("distinguishes administrator setup from returning login and invited teacher signup", async ({
   browser,
 }) => {

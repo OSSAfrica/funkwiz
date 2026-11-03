@@ -8,6 +8,9 @@ test("saves the teacher's choice of Resend, Cloudflare Email, or another SMTP se
   await page
     .getByRole("button", { name: "Teacher account", exact: true })
     .click();
+  await page
+    .getByRole("menuitem", { name: "Email delivery", exact: true })
+    .click();
   let form = page.getByRole("form", { name: "Password reset email settings" });
   const provider = () => form.getByLabel("Email provider", { exact: true });
   await provider().click();
@@ -39,11 +42,17 @@ test("saves the teacher's choice of Resend, Cloudflare Email, or another SMTP se
     await page
       .getByRole("button", { name: "Teacher account", exact: true })
       .click();
+    await page
+      .getByRole("menuitem", { name: "Email delivery", exact: true })
+      .click();
     form = page.getByRole("form", { name: "Password reset email settings" });
     await expect(provider()).toContainText("Other SMTP service");
     await page.reload();
     await page
       .getByRole("button", { name: "Teacher account", exact: true })
+      .click();
+    await page
+      .getByRole("menuitem", { name: "Email delivery", exact: true })
       .click();
     form = page.getByRole("form", { name: "Password reset email settings" });
     await expect(provider()).toContainText("Other SMTP service");

@@ -106,11 +106,11 @@
   transform: translateY(0);
 }
 .app-shell {
-  min-height: 100dvh;
+  min-height: calc(100dvh - var(--classroom-notice-height, 0px));
 }
 .sidebar {
   position: fixed;
-  inset: 0 auto 0 0;
+  inset: var(--classroom-notice-height, 0px) auto 0 0;
   width: 238px;
   padding: 32px 20px 0;
   display: flex;
@@ -1747,7 +1747,8 @@ button:active:not(:disabled) {
 
 /* A welcoming front door for the private teacher workspace. */
 .auth-page {
-  min-height: 100dvh;
+  position: relative;
+  min-height: calc(100dvh - var(--classroom-notice-height, 0px));
   display: grid;
   grid-template-columns: 1fr 1fr;
   background: var(--surface, #fffefb);
@@ -1942,6 +1943,31 @@ button:active:not(:disabled) {
   display: flex;
   align-items: center;
   gap: 24px;
+}
+.library-topbar {
+  height: auto;
+  min-height: 72px;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-block: 12px;
+}
+.sign-out-raised {
+  border-radius: 8px;
+  padding: 9px 12px;
+  background: var(--destructive);
+  color: var(--color-destructive-foreground);
+  font-weight: 800;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--destructive) 65%, #000);
+}
+.sign-out-raised:hover,
+.sign-out-raised:focus,
+.sign-out-raised[data-highlighted] {
+  background: color-mix(in srgb, var(--destructive) 90%, #000);
+  color: var(--color-destructive-foreground);
+}
+.sign-out-raised:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--destructive) 65%, #000);
 }
 button.teacher-profile {
   width: 100%;

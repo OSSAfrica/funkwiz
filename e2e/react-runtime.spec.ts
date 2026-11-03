@@ -43,6 +43,9 @@ test("renders Radix dialogs without hook errors on localhost and the numeric loo
     await page
       .getByRole("button", { name: "Teacher account", exact: true })
       .click();
+    await page
+      .getByRole("menuitem", { name: "Account settings", exact: true })
+      .click();
     await expect(
       dialog.getByRole("heading", { name: "A space that’s all yours." }),
     ).toBeVisible();

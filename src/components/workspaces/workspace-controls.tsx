@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import {
   Building2,
@@ -31,7 +31,6 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { canManageMembers } from "@/lib/workspace-policy";
-import { authClient } from "@/lib/auth-client";
 import {
   cancelWorkspaceInvitation,
   changeWorkspaceMember,
@@ -594,11 +593,12 @@ function WorkspaceManager({
 export function SchoolWelcome({
   state,
   name,
+  accountMenu,
 }: {
   state: WorkspaceState;
   name: string;
+  accountMenu: ReactNode;
 }) {
-  const router = useRouter();
   return (
     <main className="min-h-dvh bg-background px-4 py-10 sm:px-8">
       <div className="mx-auto max-w-3xl space-y-8">
@@ -606,15 +606,7 @@ export function SchoolWelcome({
           <span className="flex items-center gap-2 text-2xl font-bold text-primary">
             <Zap fill="currentColor" /> funkwiz.
           </span>
-          <Button
-            variant="ghost"
-            onClick={async () => {
-              await authClient.signOut();
-              await router.navigate({ to: "/login", search: {} });
-            }}
-          >
-            Sign out
-          </Button>
+          {accountMenu}
         </div>
         <section className="rounded-3xl border bg-secondary/30 p-6 sm:p-10 reveal-in">
           <span className="mb-4 inline-flex rounded-full bg-secondary p-3">
