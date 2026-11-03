@@ -141,6 +141,12 @@ export function HostGame({ code }: { code: string }) {
             onEnd={() => setDialog("end")}
           />
         )}
+        {snapshot.phase === "reveal" && (
+          <Leaderboard
+            scoring={scoringFor(snapshot)}
+            players={snapshot.leaderboard}
+          />
+        )}
       </div>
       <Dialog
         open={dialog !== null}
@@ -326,12 +332,6 @@ function HostQuestion({
           {hostStatus(snapshot, seconds)}
         </p>
       </section>
-      {snapshot.phase === "reveal" && (
-        <Leaderboard
-          scoring={scoringFor(snapshot)}
-          players={snapshot.leaderboard}
-        />
-      )}
     </>
   );
 }

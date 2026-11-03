@@ -15,6 +15,8 @@ export type Quiz = {
   description: string;
   cover: Cover;
   questions: Question[];
+  /** Account creation time; absent on examples and older browser drafts. */
+  createdAt?: string;
   updatedAt: string;
   isExample?: boolean;
   visibility?: "private" | "workspace";
@@ -145,6 +147,11 @@ export function parseQuiz(value: unknown): Quiz {
       ? (data.cover as Cover)
       : "confetti",
     questions,
+    createdAt:
+      typeof data.createdAt === "string" &&
+      Number.isFinite(Date.parse(data.createdAt))
+        ? new Date(data.createdAt).toISOString()
+        : undefined,
     updatedAt:
       typeof data.updatedAt === "string"
         ? data.updatedAt
@@ -168,6 +175,7 @@ export function parseImport(text: string): Quiz {
     ...quiz,
     id: quizId(),
     isExample: false,
+    createdAt: undefined,
     updatedAt: new Date().toISOString(),
     questions: quiz.questions.map((q) => ({ ...q, id: quizId() })),
   };
