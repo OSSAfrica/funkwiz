@@ -578,11 +578,24 @@
   box-shadow: none;
 }
 .library-toolbar {
+  flex-wrap: wrap;
   margin: 20px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+.library-sort {
+  width: min(100%, 235px);
+  margin-left: auto;
+  color: var(--ink);
+  background: var(--surface);
+}
+.quiz-created {
+  color: var(--ink-muted, #757e6e);
+  font-size: 11px;
+  line-height: 1.5;
+  margin: -4px 0 14px;
 }
 .library-toolbar [role="tablist"] {
   background: var(--surface-soft, #eeeee6);

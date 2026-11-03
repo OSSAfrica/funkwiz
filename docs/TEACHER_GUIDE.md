@@ -35,6 +35,12 @@ You can edit an included example to save your own account-backed version. Sample
 quizzes remain available. To bring questions from another tool, open **Import**,
 paste or upload JSON, and review it before saving. See [question imports](QUIZ_IMPORTS.md).
 
+Saved quiz cards show their creation date and time in your local time zone.
+Use **Sort quizzes** to choose newest first, oldest first, name A–Z or name Z–A.
+Editing a quiz preserves its creation date. Copies and imports receive a new
+creation date when saved to your account. Example quizzes have no creation date;
+quizzes without one appear last when sorting by date.
+
 Saved quizzes live in your teacher account's database. The library export action
 downloads quiz JSON, useful for backups or moving questions to another installation.
 A quiz export is different from a completed-game report.

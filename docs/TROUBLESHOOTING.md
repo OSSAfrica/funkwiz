@@ -62,6 +62,12 @@ See [workspace guidance](WORKSPACES.md).
 
 ## Development and deployment
 
+- **Hydration warning mentions `data-protonpass-form`:** Proton Pass can add this
+  attribute before React starts. The library section tolerates that known
+  attribute difference; its contents still receive normal hydration checks.
+  For a warning elsewhere, try a browser profile with extensions disabled to
+  distinguish extension changes from an app bug. Do not suppress warnings across
+  the whole app. See [TanStack's hydration guidance](https://tanstack.com/start/latest/docs/framework/react/guide/hydration-errors).
 - **Dependency/runtime mismatch:** use the pinned Bun version, a supported Node
   version and `bun install --frozen-lockfile`. See [development](DEVELOPMENT.md).
 - **Invalid React hook call after dependency changes:** stop/restart the dev

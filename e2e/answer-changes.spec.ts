@@ -1,5 +1,31 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { guest, hostControl, quickQuiz, state, post } from "./live.helpers";
+
+async function expectControlsAboveLeaderboard(page: Page) {
+  const controls = page.locator(".host-control-bar");
+  const leaderboard = page.getByRole("region", {
+    name: "Leaderboard",
+    exact: true,
+  });
+  await expect(controls).toHaveCount(1);
+  await expect(leaderboard).toBeVisible();
+  expect(
+    await controls.evaluate((element) =>
+      Boolean(
+        element.compareDocumentPosition(
+          document.querySelector(".live-leaderboard")!,
+        ) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ),
+  ).toBe(true);
+  const controlsBox = await controls.boundingBox();
+  const leaderboardBox = await leaderboard.boundingBox();
+  expect(controlsBox).not.toBeNull();
+  expect(leaderboardBox).not.toBeNull();
+  expect(controlsBox!.y + controlsBox!.height).toBeLessThanOrEqual(
+    leaderboardBox!.y,
+  );
+}
 
 test("allows changing a saved answer and switches back to locked answers between questions", async ({
   page,
@@ -62,6 +88,10 @@ test("allows changing a saved answer and switches back to locked answers between
     await page
       .getByRole("button", { name: "Reveal answer", exact: true })
       .click();
+    await expectControlsAboveLeaderboard(page);
+    await expect(
+      page.getByRole("button", { name: "Next question", exact: true }),
+    ).toBeVisible();
     await expect(first.page.locator(".answer-feedback")).toContainText(
       "+900 points",
     );
@@ -103,6 +133,13 @@ test("allows changing a saved answer and switches back to locked answers between
     );
     expect(retry.ok()).toBe(true);
     expect((await retry.json()).self.answer).toBe(0);
+    await page
+      .getByRole("button", { name: "Reveal answer", exact: true })
+      .click();
+    await expectControlsAboveLeaderboard(page);
+    await expect(
+      page.getByRole("button", { name: "Finish game", exact: true }),
+    ).toBeVisible();
     await hostControl(request, code, { type: "end" });
   } finally {
     await first.context.close();

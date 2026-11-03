@@ -11,6 +11,8 @@ import {
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ClientOnly } from "@tanstack/react-router";
+import { formatQuizCreatedAt } from "@/lib/quiz-library";
 import { QuizArt } from "./quiz-art";
 import { exportQuiz } from "@/lib/quiz-store";
 import { quizMinutes, type Quiz } from "@/lib/quiz";
@@ -68,6 +70,28 @@ export function QuizCard({
             <Clock3 size={14} />~{quizMinutes(quiz)} min
           </span>
         </div>
+        {!quiz.isExample && (
+          <div className="quiz-created">
+            {quiz.createdAt && formatQuizCreatedAt(quiz.createdAt) ? (
+              <>
+                Created{" "}
+                <ClientOnly
+                  fallback={
+                    <time dateTime={quiz.createdAt}>
+                      {formatQuizCreatedAt(quiz.createdAt)}
+                    </time>
+                  }
+                >
+                  <time dateTime={quiz.createdAt} title="Your local time">
+                    {formatQuizCreatedAt(quiz.createdAt, true)}
+                  </time>
+                </ClientOnly>
+              </>
+            ) : (
+              "Creation date unavailable"
+            )}
+          </div>
+        )}
         <div className="quiz-card-footer">
           <div className="quiz-play-actions">
             <Button
