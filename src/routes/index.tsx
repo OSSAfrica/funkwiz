@@ -1,5 +1,5 @@
 import { socialHead } from "@/lib/social";
-import { useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore, type ReactNode } from "react";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -8,7 +8,6 @@ import {
   CircleHelp,
   FileJson,
   FolderInput,
-  UserRound,
   Monitor,
   Plus,
   Search,
@@ -28,6 +27,10 @@ import {
 import { QuizCard } from "@/components/quiz/quiz-card";
 import { readBrowserDrafts, useQuizLibrary } from "@/lib/quiz-store";
 import { AccountDialog } from "@/components/auth/account-dialog";
+import {
+  AccountMenu,
+  type AccountSection,
+} from "@/components/auth/account-menu";
 import { getEmailDeliverySettings } from "@/lib/email.functions";
 import { getTeacher, getPasswordStatus } from "@/lib/auth.functions";
 import { listQuizzes } from "@/lib/quizzes.functions";
@@ -76,22 +79,59 @@ const serverReady = () => false;
 function Home() {
   const initial = Route.useLoaderData();
   const { teacher } = Route.useRouteContext();
-  if (initial.workspace.school && !initial.workspace.active)
-    return <SchoolWelcome state={initial.workspace} name={teacher.name} />;
-  return (
-    <Library
-      key={`${initial.workspace.active?.id ?? "personal"}:${initial.workspace.active?.role ?? "teacher"}:${initial.quizzes.map((quiz) => quiz.id).join(",")}`}
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [section, setSection] = useState<AccountSection>("account");
+  function openAccount(next: AccountSection = "account") {
+    setSection(next);
+    setAccountOpen(true);
+  }
+  const accountMenu = (
+    <AccountMenu
+      teacher={teacher}
+      hasPassword={initial.hasPassword}
+      canManageEmail={initial.emailSettings.canManage}
+      onSettings={openAccount}
     />
   );
+  return (
+    <>
+      {initial.workspace.school && !initial.workspace.active ? (
+        <SchoolWelcome
+          state={initial.workspace}
+          name={teacher.name}
+          accountMenu={accountMenu}
+        />
+      ) : (
+        <Library
+          key={`${initial.workspace.active?.id ?? "personal"}:${initial.workspace.active?.role ?? "teacher"}:${initial.quizzes.map((quiz) => quiz.id).join(",")}`}
+          accountMenu={accountMenu}
+          onAccount={() => openAccount()}
+        />
+      )}
+      <AccountDialog
+        open={accountOpen}
+        onOpenChange={setAccountOpen}
+        section={section}
+        teacher={teacher}
+        hasPassword={initial.hasPassword}
+        emailSettings={initial.emailSettings}
+      />
+    </>
+  );
 }
-function Library() {
+function Library({
+  accountMenu,
+  onAccount,
+}: {
+  accountMenu: ReactNode;
+  onAccount: () => void;
+}) {
   const initial = Route.useLoaderData();
   const navigate = useNavigate();
   const [hosting, setHosting] = useState(false);
   const { teacher } = Route.useRouteContext();
   const { quizzes, error, busy, save, remove, migrate, share, copy } =
     useQuizLibrary(initial.quizzes);
-  const [accountOpen, setAccountOpen] = useState(false);
   const [migrationError, setMigrationError] = useState("");
   const [modal, setModal] = useState<WorkspaceModal>(null);
   const hydrated = useSyncExternalStore(
@@ -145,7 +185,7 @@ function Library() {
         count={quizzes.length}
         teacher={teacher}
         workspaceName={initial.workspace.active?.name}
-        onAccount={() => setAccountOpen(true)}
+        onAccount={onAccount}
         onCreate={openEditor}
         onImport={() => setModal({ type: "import" })}
         onGuide={() => setModal({ type: "guide" })}
@@ -160,7 +200,9 @@ function Library() {
       <div className="main-shell">
         <header
           className={
-            initial.workspace.school ? "topbar school-topbar" : "topbar"
+            initial.workspace.school
+              ? "topbar library-topbar school-topbar"
+              : "topbar library-topbar"
           }
         >
           {initial.workspace.school ? (
@@ -188,13 +230,7 @@ function Library() {
               <CircleHelp size={17} />
               <span>Quick guide</span>
             </button>
-            <button
-              className="help-link"
-              aria-label="Teacher account"
-              onClick={() => setAccountOpen(true)}
-            >
-              <UserRound size={17} />
-            </button>
+            {accountMenu}
           </div>
         </header>
         <main id="main" className="workspace-main">
@@ -421,13 +457,6 @@ function Library() {
             /* Originals remain untouched and the dialog shows the error. */
           }
         }}
-      />
-      <AccountDialog
-        open={accountOpen}
-        onOpenChange={setAccountOpen}
-        teacher={teacher}
-        hasPassword={initial.hasPassword}
-        emailSettings={initial.emailSettings}
       />
     </div>
   );
