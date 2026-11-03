@@ -23,7 +23,11 @@ registration code.
 ## Answer questions
 
 Select one of the four answer buttons before time runs out. Your first answer
-locks, so check it before choosing. The correct answer appears when the teacher
+locks by default. If your teacher allows changes, the feedback says **Answer
+saved** and you can tap another choice before time ends or the teacher reveals.
+Your latest choice sets your position for scoring; an early incorrect choice
+does not reserve first place. The teacher can change this rule between questions.
+The correct answer appears when the teacher
 reveals it or the question timer ends.
 
 The teacher decides where the question appears. If you see only answer buttons,
@@ -45,7 +49,7 @@ celebration with a still result.
 ## Reconnect safely
 
 If the connection drops, wait for reconnect feedback or refresh in the same
-browser. Your room identity and locked answers are restored using a private
+browser. Your room identity and latest saved answers are restored using a private
 browser cookie. Do not clear cookies or switch browsers if you want to keep that
 identity. Opening the same game session in another tab replaces the older connection.
 

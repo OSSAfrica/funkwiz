@@ -483,8 +483,8 @@ function LiveSettings({
       <DialogHeader>
         <DialogTitle>Find your classroom rhythm.</DialogTitle>
         <DialogDescription>
-          Display changes apply to the next question and stay until you change
-          them again.
+          Question visibility and answer changes apply to the next question and
+          stay until you change them again.
         </DialogDescription>
       </DialogHeader>
       <div className="dialog-scroll">

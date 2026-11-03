@@ -247,7 +247,7 @@ function GameAnswers({
     view === "host" ||
     state.phase !== "question" ||
     state.paused ||
-    state.answer !== null;
+    (state.answer !== null && !state.settings.allowAnswerChanges);
   return (
     <div className="game-answers">
       {q.answers.map((answer, i) => {
@@ -342,6 +342,18 @@ function RuntimeControls({
             onChange={(display) => update({ ...state.settings, display })}
           />
           <p>Applies to the next question and stays until you change it.</p>
+          <div className="mt-4 flex items-center justify-between gap-4">
+            <Label htmlFor="practice-answer-changes">
+              Allow answer changes
+            </Label>
+            <Switch
+              id="practice-answer-changes"
+              checked={state.settings.allowAnswerChanges === true}
+              onCheckedChange={(allowAnswerChanges) =>
+                update({ ...state.settings, allowAnswerChanges })
+              }
+            />
+          </div>
         </div>
       )}
     </>
@@ -357,7 +369,10 @@ function statusText(state: Rehearsal, seconds: number, view: string) {
       ? "That’s the last one! Finish when you’re ready."
       : "Take a moment to discuss. You decide when to move on.";
   }
-  if (state.answer !== null) return "Answer locked in. Let’s see how you did!";
+  if (state.answer !== null)
+    return state.settings.allowAnswerChanges
+      ? "Answer saved. You can choose another before time runs out."
+      : "Answer locked in. Let’s see how you did!";
   return view === "student"
     ? "Choose one answer. You’ve got this!"
     : "The question timer is running.";
