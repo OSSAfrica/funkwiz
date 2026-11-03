@@ -155,6 +155,10 @@ export function QuizEditor({
           </div>
           <p>Or adjust each question below. New questions use this duration.</p>
         </div>
+        <p className="text-sm text-muted-foreground">
+          Keep it fun: aim for 7–10 questions per quiz. We recommend no more
+          than 20 to keep everyone engaged.
+        </p>
         <div className="question-editor">
           <div className="question-list" aria-label="Questions">
             {draft.questions.map((q, i) => (
@@ -165,8 +169,12 @@ export function QuizEditor({
                 onClick={() => setActive(i)}
                 className={cn("question-index", i === active && "selected")}
               >
-                {i + 1}
-                <span className="truncate">{q.prompt || "New question"}</span>
+                <span className="w-[3ch] shrink-0 whitespace-nowrap text-center tabular-nums">
+                  {i + 1}
+                </span>
+                <span className="min-w-0 flex-1 truncate">
+                  {q.prompt || "New question"}
+                </span>
               </button>
             ))}
             <Button
