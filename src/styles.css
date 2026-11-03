@@ -1943,6 +1943,31 @@ button:active:not(:disabled) {
   align-items: center;
   gap: 24px;
 }
+.library-topbar {
+  height: auto;
+  min-height: 72px;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-block: 12px;
+}
+.sign-out-raised {
+  border-radius: 8px;
+  padding: 9px 12px;
+  background: var(--destructive);
+  color: var(--color-destructive-foreground);
+  font-weight: 800;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--destructive) 65%, #000);
+}
+.sign-out-raised:hover,
+.sign-out-raised:focus,
+.sign-out-raised[data-highlighted] {
+  background: color-mix(in srgb, var(--destructive) 90%, #000);
+  color: var(--color-destructive-foreground);
+}
+.sign-out-raised:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--destructive) 65%, #000);
+}
 button.teacher-profile {
   width: 100%;
   text-align: left;
