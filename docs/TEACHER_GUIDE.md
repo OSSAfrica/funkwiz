@@ -144,6 +144,11 @@ also review all reports in that workspace; their view of another host’s report
 includes questions actually asked, preserving unasked question content. Downloads
 use the authorized view. See [workspace report permissions](WORKSPACES.md#reports-and-offboarding).
 
+Each question shows its correct-answer percentage alongside the correct/answered
+count. For example, 6 correct out of 8 submitted answers is **75% correct**.
+Unanswered players are excluded from this percentage. Questions that received no
+responses show **No answers**; questions the host skipped show **Not asked**.
+
 Choose **Download report**:
 
 | Format | Use it for                                                                   |

@@ -81,7 +81,7 @@ export function GameReportScreen({ report }: { report: GameReport | null }) {
           <h2>A closer look at the questions.</h2>
           <p>
             Class totals: selected wrong choices are marked red, and the correct
-            answer is labeled.
+            answer is labeled. Percentages use submitted answers.
           </p>
           {report.questions.map((question, index) => (
             <article className="question-review-card" key={question.id}>
@@ -89,9 +89,20 @@ export function GameReportScreen({ report }: { report: GameReport | null }) {
                 <span>Q{index + 1}</span>
                 <h3>{question.prompt}</h3>
                 <strong>
-                  {question.asked
-                    ? `${question.correct} / ${question.answered} correct`
-                    : "Not asked"}
+                  {question.asked ? (
+                    <>
+                      <span className="review-question-accuracy">
+                        {question.answered
+                          ? `${Math.round((question.correct / question.answered) * 100)}% correct`
+                          : "No answers"}
+                      </span>
+                      <span>
+                        {question.correct} / {question.answered} correct
+                      </span>
+                    </>
+                  ) : (
+                    "Not asked"
+                  )}
                 </strong>
               </div>
               <div className="review-answer-list">
