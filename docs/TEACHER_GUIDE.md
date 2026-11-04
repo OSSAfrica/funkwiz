@@ -152,6 +152,11 @@ Choose **Download report**:
 | CSV    | Spreadsheet analysis of results and question/answer breakdowns.              |
 | JSON   | The full structured report for your own tools. It is not a quiz-import file. |
 
+Report filenames combine the quiz title, room code and the game's finish time
+in UTC, with hyphens instead of spaces. For example:
+`world-history-room-123456-2026-11-04-09-30-00-utc.pdf`.
+PDF, CSV and JSON use the same name apart from the file extension.
+
 Downloads are generated on your device. They can contain participant nicknames
 and results, so choose appropriate names and recipients. There is no report-deletion
 interface yet; see [operations and retention](OPERATIONS.md#data-and-retention).

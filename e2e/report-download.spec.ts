@@ -21,6 +21,7 @@ test("downloads the complete report as JSON, spreadsheet CSV and branded PDF", a
     await page
       .getByRole("menuitemradio", { name: "Dark", exact: true })
       .click();
+    let filenameStem = "";
     for (const format of ["JSON", "CSV", "PDF"]) {
       await page
         .getByRole("button", { name: "Download report", exact: true })
@@ -30,9 +31,15 @@ test("downloads the complete report as JSON, spreadsheet CSV and branded PDF", a
         .getByRole("menuitem", { name: new RegExp(`^${format}`) })
         .click();
       const download = await pending;
-      expect(download.suggestedFilename()).toBe(
-        `funkwiz-report-${code}.${format.toLowerCase()}`,
+      const filename = download.suggestedFilename();
+      expect(filename).toMatch(
+        new RegExp(
+          `^out-of-this-world-room-${code}-\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-utc\\.${format.toLowerCase()}$`,
+        ),
       );
+      const stem = filename.slice(0, filename.lastIndexOf("."));
+      if (filenameStem) expect(stem).toBe(filenameStem);
+      filenameStem = stem;
       const target = `/tmp/fun-quiz-export-${info.project.name}.${format.toLowerCase()}`;
       await download.saveAs(target);
       const bytes = await readFile(target);
