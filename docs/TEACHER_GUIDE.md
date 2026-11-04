@@ -144,6 +144,11 @@ also review all reports in that workspace; their view of another host’s report
 includes questions actually asked, preserving unasked question content. Downloads
 use the authorized view. See [workspace report permissions](WORKSPACES.md#reports-and-offboarding).
 
+Each question shows its correct-answer percentage alongside the correct/answered
+count. For example, 6 correct out of 8 submitted answers is **75% correct**.
+Unanswered players are excluded from this percentage. Questions that received no
+responses show **No answers**; questions the host skipped show **Not asked**.
+
 Choose **Download report**:
 
 | Format | Use it for                                                                   |
@@ -151,6 +156,11 @@ Choose **Download report**:
 | PDF    | A readable, branded report for printing or sharing with intended recipients. |
 | CSV    | Spreadsheet analysis of results and question/answer breakdowns.              |
 | JSON   | The full structured report for your own tools. It is not a quiz-import file. |
+
+Report filenames combine the quiz title, room code and the game's finish time
+in UTC, with hyphens instead of spaces. For example:
+`world-history-room-123456-2026-11-04-09-30-00-utc.pdf`.
+PDF, CSV and JSON use the same name apart from the file extension.
 
 Downloads are generated on your device. They can contain participant nicknames
 and results, so choose appropriate names and recipients. There is no report-deletion

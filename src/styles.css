@@ -3128,6 +3128,12 @@ button.teacher-profile {
   color: var(--ink-muted, #69745d);
   white-space: nowrap;
 }
+.review-question-accuracy {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--ink, #283f34);
+  font-size: 14px;
+}
 .review-answer-list {
   display: grid;
   gap: 7px;
