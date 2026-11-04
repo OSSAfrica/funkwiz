@@ -1,7 +1,28 @@
 import { scoringFor, scoringSummary } from "./scoring";
 import type { GameReport } from "./protocol";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export type ReportFormat = "pdf" | "csv" | "json";
+export function reportFilename(report: GameReport, format: ReportFormat) {
+  const slug = report.title
+    .normalize("NFKD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "-")
+    .replace(/^-+|-+$/g, "");
+  // Bound Unicode titles too, leaving room for the code, timestamp and extension.
+  const title =
+    Array.from(slug).slice(0, 48).join("").replace(/-+$/, "") || "quiz";
+  const code = /^\d{6}$/.test(report.code) ? report.code : "unknown";
+  const ended = dayjs.utc(report.endedAt);
+  const timestamp = ended.isValid()
+    ? ended.format("YYYY-MM-DD-HH-mm-ss-[utc]")
+    : "unknown-date";
+  return `${title}-room-${code}-${timestamp}.${format}`;
+}
 export function reportSummary(report: GameReport) {
   const answered = report.questions.reduce((sum, q) => sum + q.answered, 0);
   const correct = report.questions.reduce((sum, q) => sum + q.correct, 0);
@@ -106,7 +127,7 @@ export async function exportReport(report: GameReport, format: ReportFormat) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `funkwiz-report-${report.code}.${format}`;
+  link.download = reportFilename(report, format);
   document.body.appendChild(link);
   link.click();
   link.remove();

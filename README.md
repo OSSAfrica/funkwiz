@@ -1,4 +1,4 @@
-> **Personal deployment template.** Generated from source commit `a39248fb5a9877a53d0867edf7a8562d84e6c006`. The mode is preselected in `wrangler.jsonc`. Contribute application changes to the upstream main branch.
+> **Personal deployment template.** Generated from source commit `a70b453b34cecca2881d99e61136c0e0abb6fb51`. The mode is preselected in `wrangler.jsonc`. Contribute application changes to the upstream main branch.
 
 # Funkwiz
 

@@ -1,6 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { csvCell, reportCsv, reportSummary } from "./report-export";
+import {
+  csvCell,
+  reportCsv,
+  reportSummary,
+  reportFilename,
+} from "./report-export";
 import type { GameReport } from "./protocol";
 const report: GameReport = {
   id: "test",
@@ -35,6 +40,41 @@ test("CSV preserves quotes, commas and line breaks and neutralizes spreadsheet f
   assert.ok(csv.includes('"\'=HYPERLINK(1)"'));
   assert.ok(csv.includes('"Mars","true","1"'));
   assert.ok(csv.includes('"Earth","false","0"'));
+});
+test("report filenames use quiz title, room and the stable UTC finish time for every format", () => {
+  const game = {
+    ...report,
+    code: "001234",
+    endedAt: Date.UTC(2026, 10, 4, 9, 30, 5),
+  };
+  for (const format of ["pdf", "csv", "json"] as const) {
+    assert.equal(
+      reportFilename(game, format),
+      `a-great-quiz-room-001234-2026-11-04-09-30-05-utc.${format}`,
+    );
+  }
+  assert.notEqual(
+    reportFilename(game, "pdf"),
+    reportFilename({ ...game, endedAt: game.endedAt + 1000 }, "pdf"),
+  );
+});
+
+test("report filenames handle unsafe punctuation, accents, non-Latin titles and empty slugs", () => {
+  assert.equal(
+    reportFilename(
+      { ...report, title: '  Café / 世界: "quiz"? <fun> | **  ' },
+      "csv",
+    ).split("-room-")[0],
+    "cafe-世界-quiz-fun",
+  );
+  const fallback = reportFilename(
+    { ...report, title: "../💥 :?", code: "../bad", endedAt: NaN },
+    "json",
+  );
+  assert.equal(fallback, "quiz-room-unknown-unknown-date.json");
+  const long = reportFilename({ ...report, title: "𐐀".repeat(120) }, "pdf");
+  assert.ok(new TextEncoder().encode(long).length < 255);
+  assert.ok(!/[\s/\\:*?"<>|]/u.test(long));
 });
 test("report accuracy uses actual answers and handles an empty game", () => {
   assert.deepEqual(reportSummary(report), {
