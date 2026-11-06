@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 import { guest, hostControl, openRoom, post, state } from "./live.helpers";
 
-test("second correct player gets 900 points and downloads their final result PNG", async ({
+test("correct player receives time-based points and downloads their final result PNG", async ({
   browser,
   request,
 }, info) => {
@@ -28,14 +28,15 @@ test("second correct player gets 900 points and downloads their final result PNG
     ).toBeNull();
     await hostControl(request, code, { type: "reveal", questionIndex: 0 });
     await expect(second.page.locator(".answer-feedback")).toContainText(
-      "+900 points",
+      /\+[\d,]+ points/,
     );
     await hostControl(request, code, { type: "end" });
     await second.page.reload();
     await second.page.waitForLoadState("networkidle");
     const result = await state(second.context.request, code);
     expect(result.self?.rank).toBe(2);
-    expect(result.self?.score).toBe(900);
+    expect(result.self!.score).toBeGreaterThanOrEqual(700);
+    expect(result.self!.score).toBeLessThanOrEqual(1000);
     await expect(
       second.page.locator(".student-score-cards > div").nth(1),
     ).toContainText("of 2 players");

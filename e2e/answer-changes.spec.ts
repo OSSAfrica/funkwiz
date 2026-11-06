@@ -93,10 +93,10 @@ test("allows changing a saved answer and switches back to locked answers between
       page.getByRole("button", { name: "Next question", exact: true }),
     ).toBeVisible();
     await expect(first.page.locator(".answer-feedback")).toContainText(
-      "+900 points",
+      /\+[\d,]+ points/,
     );
     await expect(second.page.locator(".answer-feedback")).toContainText(
-      "+1,000 points",
+      /\+[\d,]+ points/,
     );
     const rejected = await post(
       first.context.request,

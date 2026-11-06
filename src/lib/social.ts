@@ -21,7 +21,8 @@ export type SocialPage =
   | "reset"
   | "host"
   | "play"
-  | "report";
+  | "report"
+  | "help";
 const pages: Record<
   SocialPage,
   {
@@ -32,6 +33,14 @@ const pages: Record<
     robots: string;
   }
 > = {
+  help: {
+    title: "Help, scoring and FAQs | Funkwiz",
+    description:
+      "Learn how Funkwiz scoring, quiz timers, answer changes, reports and classrooms work.",
+    image: "app",
+    path: "/help",
+    robots: "index, follow",
+  },
   app: {
     title: "Funkwiz: A little curiosity. A lot of fun.",
     description:

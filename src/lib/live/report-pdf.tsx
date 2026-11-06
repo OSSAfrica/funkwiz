@@ -165,7 +165,12 @@ export async function reportPdf(report: GameReport) {
         </Text>
         <View style={[styles.row, styles.columnHead]} wrap={false}>
           <Text style={styles.rank}>Rank</Text>
-          <Text style={styles.name}>Nickname</Text>
+          <Text style={styles.name}>
+            Nickname
+            {scoringFor(report).type === "accuracy-first"
+              ? " / Correct answers"
+              : ""}
+          </Text>
           <Text style={styles.score}>Points</Text>
         </View>
         {report.leaderboard.map((p, index) => (
@@ -178,7 +183,12 @@ export async function reportPdf(report: GameReport) {
             wrap={false}
           >
             <Text style={styles.rank}>{p.rank}</Text>
-            <Text style={styles.name}>{p.nickname}</Text>
+            <Text style={styles.name}>
+              {p.nickname}
+              {scoringFor(report).type === "accuracy-first"
+                ? ` · ${p.correctCount ?? 0} correct`
+                : ""}
+            </Text>
             <Text style={styles.score}>{p.score.toLocaleString("en-GB")}</Text>
           </View>
         ))}
@@ -186,7 +196,10 @@ export async function reportPdf(report: GameReport) {
           <Text>No players joined this game.</Text>
         )}
         <Text style={{ color: "#68736e", fontSize: 9, marginTop: 8 }}>
-          {scoringSummary(scoringFor(report))} Equal scores share a rank.
+          {scoringSummary(scoringFor(report))}
+          {scoringFor(report).type !== "accuracy-first"
+            ? " Equal scores share a rank."
+            : ""}
         </Text>
         <Text style={styles.section} minPresenceAhead={100}>
           A closer look at the questions.

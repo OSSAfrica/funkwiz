@@ -55,11 +55,11 @@ see [deployment](DEPLOY.md) and [private deployment](PRIVATE_DEPLOY.md).
 
 Each `GameRoom` Durable Object uses its own SQLite database:
 
-| Table     | Purpose                                                                |
-| --------- | ---------------------------------------------------------------------- |
-| `room`    | One private quiz snapshot, authoritative state, deadlines and revision |
-| `players` | Random ID, hashed reconnect token, unique normalized nickname, score   |
-| `answers` | First choice per player/question, awarded flag, answer timestamp       |
+| Table     | Purpose                                                                                                                       |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `room`    | One private quiz snapshot, authoritative state, deadlines and revision                                                        |
+| `players` | Random ID, hashed reconnect token, unique normalized nickname, score, correct count, normalized timing total                  |
+| `answers` | Saved final choice per player/question, awarded flag, acceptance timestamp, submission order and active response milliseconds |
 
 Room transitions and score awards use synchronous SQLite transactions. Correct
 answers and future questions stay in private room storage until their reveal.
@@ -99,3 +99,9 @@ Live room metadata also carries workspace scope, including final report insertio
 after transient failures. Host reads/commands/socket updates check current
 membership; removal closes active host sockets. Membership deletion retains user
 accounts, quiz records, reports and shared entries. See [workspaces](WORKSPACES.md).
+
+Accuracy-first scoring adds nullable `answers.response_ms` and default-zero
+`players.speed_cost` columns to each Durable Object using idempotent additive
+SQLite upgrades. No D1 migration is needed. Existing room metadata retains its
+original scoring rule. Time and score aggregates are updated in the same local
+transaction as reveal, and survive eviction. See [scoring](SCORING.md).

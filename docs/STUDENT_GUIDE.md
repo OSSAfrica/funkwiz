@@ -25,16 +25,20 @@ registration code.
 Select one of the four answer buttons before time runs out. Your first answer
 locks by default. If your teacher allows changes, the feedback says **Answer
 saved** and you can tap another choice before time ends or the teacher reveals.
-Your latest choice sets your position for scoring; an early incorrect choice
-does not reserve first place. The teacher can change this rule between questions.
+Your latest choice and its submission time determine your points; an early
+incorrect choice does not reserve a speed bonus. The teacher can change this rule between questions.
 The correct answer appears when the teacher
 reveals it or the question timer ends.
 
 The teacher decides where the question appears. If you see only answer buttons,
 look at the shared screen. When the teacher pauses, answering is disabled until
-the game resumes. The first correct answer earns 1,000 points, the second 900, the third 800,
-and all later correct answers 700. Wrong or unanswered questions earn 0.
-The order resets for each question, and points appear only at reveal.
+the game resumes. New games rank by **most correct answers first**. Each correct
+answer earns 700–1,000 time-based points; faster correct answers earn more.
+With equal correct-answer counts, higher points win. Precise timing breaks remaining
+ties; identical results share a rank. Wrong or unanswered questions earn 0.
+Points appear at reveal, and paused time does not count. Earlier games may show
+different rules; read the note in your lobby or report. Open **Help & scoring**
+or read the [FAQ](FAQ.md) and [scoring examples](SCORING.md).
 
 You can choose a light/dark appearance and control audio on your device. Music
 and effects try to start automatically, including in the lobby and results. If

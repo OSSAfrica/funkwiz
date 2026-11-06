@@ -38,22 +38,27 @@ lobby, then adjust it between questions just like visibility. The chosen setting
 applies to the next question and persists until changed again; it cannot change
 during an active question. Practice uses the same answer-choice rule.
 
-The server owns deadlines and awards points only
-when the answer is revealed. Correct answers earn **1,000 / 900 / 800 / 700** points for
-first / second / third / all later correct submissions. Wrong or missing answers
-earn 0 and do not consume a tier. Order resets per question and follows server
-acceptance order, including when submissions have identical timestamps. Equal
-scores share a rank. With editing disabled, the first choice stays locked. With
-editing enabled, a different choice replaces the saved answer and receives a new
-server acceptance position. Repeating the currently saved choice is a no-op,
-including retries. Only final correct choices participate in scoring. Paused,
-expired and revealed questions cannot be edited. Ending early scores the current question
-and records only questions reached as asked.
+The server owns deadlines and awards points only when an answer is revealed.
+New games use **accuracy-first** ranking: correct-answer count descending, then
+time-based points descending, then precise normalized response time ascending.
+Identical results share a rank. Joining earlier never breaks a genuine tie.
 
-Rooms already in progress when this scoring change is installed keep their
-original flat scoring. Older reports retain their original values. New report
-JSON includes a `scoring` object; older exports may use `pointsPerCorrect`. CSV
-and PDF exports describe the scoring rules that applied to that game.
+A correct answer earns **700 + round(300 × remaining time / question duration)**
+points, between 700 and 1,000. Wrong/missing answers earn zero. Speed uses the
+question's configured duration, excludes paused time and is recorded when the
+server accepts the final choice. Only correct answers add to the timing tie-break.
+See [scoring examples and technical details](SCORING.md).
+
+With editing disabled, the first choice stays locked. With editing enabled, a
+different choice replaces the saved answer and its timing. Repeating the saved
+choice, including a retry, is a no-op. Paused, expired and revealed questions cannot
+be edited. Ending early scores the current question and records only questions
+reached as asked.
+
+Existing rooms retain their stored scoring rules, including historical flat or
+1,000 / 900 / 800 / 700 tier scoring. Saved reports and exports are not recalculated.
+New report JSON includes `scoring`; older exports may use `pointsPerCorrect`.
+CSV/PDF explain the applicable rules and include correct-answer counts for new games.
 
 ## Reconnecting and reports
 

@@ -9,6 +9,7 @@ import {
 export type ViewData = {
   players: Player[];
   answers: Map<string, number>;
+  answerTimes?: Map<string, number>;
   connected: Set<string>;
   hostOnline: boolean;
   counts: number[];
@@ -28,8 +29,8 @@ export function roomView(
     room.display === "both" ||
     (role === "host" ? room.display === "shared" : room.display === "devices");
   const q = room.quiz.questions[room.index];
-  const ranked = rankPlayers(data.players);
   const scoring = scoringFor(room);
+  const ranked = rankPlayers(data.players, scoring);
   const correctIds = revealed
     ? [...data.answers]
         .filter(([, choice]) => choice === q.correctIndex)
@@ -92,7 +93,12 @@ export function roomView(
           correctCount: player.correctCount,
           answer,
           pointsEarned: revealed
-            ? correctAnswerPoints(correctPosition, scoring)
+            ? correctAnswerPoints(
+                correctPosition,
+                scoring,
+                playerId ? data.answerTimes?.get(playerId) : undefined,
+                q.duration * 1000,
+              )
             : null,
           correctOrder:
             revealed && correctPosition >= 0 ? correctPosition + 1 : null,
