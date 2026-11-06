@@ -395,7 +395,7 @@ function FinishedRehearsal({
         another run.
       </p>
       <p className="text-sm">
-        Live student joining and scores will arrive with multiplayer.
+        Open a live lobby to play with your class and save a scored report.
       </p>
       <Button onClick={onRestart}>
         <RotateCcw size={16} />

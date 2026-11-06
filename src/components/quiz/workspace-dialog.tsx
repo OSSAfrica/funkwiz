@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Gamepad2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -150,6 +151,9 @@ function Guide() {
         </DialogDescription>
       </DialogHeader>
       <div className="dialog-scroll guide-steps">
+        <Button asChild variant="outline">
+          <Link to="/help">Read the full help and scoring FAQ</Link>
+        </Button>
         {[
           [
             "01",

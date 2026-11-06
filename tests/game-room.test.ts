@@ -33,7 +33,7 @@ beforeAll(async () => {
 afterEach(() => {
   for (const ws of sockets.splice(0)) ws.close(1000, "Test complete");
 });
-async function room() {
+async function room(legacy = true) {
   const code = String(randomInt(100000, 1000000));
   const stub = env.LIVE_ROOMS.getByName(code);
   expect(
@@ -45,6 +45,10 @@ async function room() {
       defaultSettings,
     ),
   ).toBe(true);
+  if (legacy)
+    await rewrite(stub, {
+      scoring: { type: "answer-order", points: [1000, 900, 800, 700] },
+    });
   const joined = await stub.join("Curious Ada", "");
   if (!joined.ok) throw new Error(joined.message);
   const response = await stub.fetch(
@@ -237,6 +241,8 @@ test("legacy rooms migrate the answer table and retain flat points", async () =>
     state.storage.sql.exec("UPDATE room SET meta = ?", JSON.stringify(meta));
     state.storage.sql.exec("DROP INDEX answers_question_order_idx");
     state.storage.sql.exec("ALTER TABLE answers DROP COLUMN submission_order");
+    state.storage.sql.exec("ALTER TABLE answers DROP COLUMN response_ms");
+    state.storage.sql.exec("ALTER TABLE players DROP COLUMN speed_cost");
   });
   await evictDurableObject(stub);
   const start = await stub.control(owner, { type: "start" });
@@ -357,4 +363,126 @@ test("answer editing rejects paused, expired and stale questions and can be disa
   const locked = await stub.answer(token, next.data.question!.id, 1);
   if (!locked.ok) throw new Error(locked.message);
   expect(locked.data.self?.answer).toBe(0);
+});
+
+test("accuracy-first room records final active time, ignores paused time and survives eviction", async () => {
+  const { stub, token } = await room(false);
+  const start = await stub.control(owner, { type: "start" });
+  if (!start.ok) throw new Error(start.message);
+  expect(start.data.scoring?.type).toBe("accuracy-first");
+  await rewrite(stub, {
+    paused: true,
+    deadline: null,
+    remainingMs: 15000,
+    startedAt: Date.now() - 100000,
+  });
+  await stub.control(owner, { type: "resume" });
+  const answer = await stub.answer(token, start.data.question!.id, 1);
+  expect(answer.ok).toBe(true);
+  const before = await runInDurableObject(
+    stub,
+    (_instance, state) =>
+      state.storage.sql
+        .exec<{ response_ms: number }>("SELECT response_ms FROM answers")
+        .one().response_ms,
+  );
+  expect(before).toBeGreaterThanOrEqual(5000);
+  expect(before).toBeLessThan(5500);
+  await stub.answer(token, start.data.question!.id, 1);
+  expect(
+    await runInDurableObject(
+      stub,
+      (_instance, state) =>
+        state.storage.sql
+          .exec<{ response_ms: number }>("SELECT response_ms FROM answers")
+          .one().response_ms,
+    ),
+  ).toBe(before);
+  await evictDurableObject(stub);
+  await stub.control(owner, { type: "reveal", questionIndex: 0 });
+  const revealed = await stub.read("student", token);
+  if (!revealed.ok) throw new Error(revealed.message);
+  expect(revealed.data.self?.pointsEarned).toBe(revealed.data.self?.score);
+  expect(revealed.data.self!.score).toBeGreaterThanOrEqual(917);
+  expect(revealed.data.self!.score).toBeLessThanOrEqual(925);
+  expect(revealed.data.leaderboard[0].correctCount).toBe(1);
+  await stub.control(owner, { type: "end" });
+  const again = await stub.read("student", token);
+  if (!again.ok) throw new Error(again.message);
+  expect(again.data.self?.score).toBe(revealed.data.self?.score);
+});
+
+test("accuracy-first ranking persists to the report even when the winner has fewer points", async () => {
+  const { stub, token } = await room(false);
+  const second = await stub.join("Fast Ben", "");
+  if (!second.ok) throw new Error(second.message);
+  const start = await stub.control(owner, { type: "start" });
+  if (!start.ok) throw new Error(start.message);
+  await runInDurableObject(stub, (_instance, state) => {
+    state.storage.sql.exec(
+      "UPDATE players SET correct_count=8,score=5600,speed_cost=8000000 WHERE nickname='Curious Ada'",
+    );
+    state.storage.sql.exec(
+      "UPDATE players SET correct_count=7,score=7000,speed_cost=0 WHERE nickname='Fast Ben'",
+    );
+  });
+  await evictDurableObject(stub);
+  await stub.control(owner, { type: "end" });
+  const result = await stub.read("student", token);
+  if (!result.ok) throw new Error(result.message);
+  expect(result.data.self?.rank).toBe(1);
+  expect(result.data.leaderboard.map((p) => p.nickname)).toEqual([
+    "Curious Ada",
+    "Fast Ben",
+  ]);
+  const row = await env.DB.prepare(
+    "SELECT report FROM live_session WHERE id = ?",
+  )
+    .bind(result.data.sessionId)
+    .first<{ report: string }>();
+  const report = JSON.parse(row!.report);
+  expect(report.scoring.type).toBe("accuracy-first");
+  expect(report.leaderboard[0]).toMatchObject({
+    nickname: "Curious Ada",
+    score: 5600,
+    correctCount: 8,
+    rank: 1,
+  });
+});
+
+test("editing a new game's answer replaces its timing; identical retries preserve the final time", async () => {
+  const { stub, token } = await room(false);
+  await stub.control(owner, {
+    type: "settings",
+    settings: { ...defaultSettings, allowAnswerChanges: true },
+  });
+  const start = await stub.control(owner, { type: "start" });
+  if (!start.ok) throw new Error(start.message);
+  await stub.answer(token, start.data.question!.id, 0);
+  await rewrite(stub, { deadline: Date.now() + 10000 });
+  await stub.answer(token, start.data.question!.id, 1);
+  const elapsed = await runInDurableObject(
+    stub,
+    (_instance, state) =>
+      state.storage.sql
+        .exec<{ response_ms: number }>("SELECT response_ms FROM answers")
+        .one().response_ms,
+  );
+  expect(elapsed).toBeGreaterThanOrEqual(10000);
+  await evictDurableObject(stub);
+  await stub.answer(token, start.data.question!.id, 1);
+  const after = await runInDurableObject(
+    stub,
+    (_instance, state) =>
+      state.storage.sql
+        .exec<{ response_ms: number }>("SELECT response_ms FROM answers")
+        .one().response_ms,
+  );
+  expect(after).toBe(elapsed);
+  await stub.control(owner, { type: "reveal", questionIndex: 0 });
+  const result = await stub.read("student", token);
+  if (!result.ok) throw new Error(result.message);
+  expect(result.data.self?.correctCount).toBe(1);
+  expect(result.data.self!.score).toBeGreaterThanOrEqual(842);
+  expect(result.data.self!.score).toBeLessThanOrEqual(850);
 });
