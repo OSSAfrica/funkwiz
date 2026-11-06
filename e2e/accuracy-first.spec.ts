@@ -121,6 +121,7 @@ test.describe("public help", () => {
         errors.push(message.text());
     });
     await page.goto("/help");
+    await page.waitForLoadState("networkidle");
     await expect(
       page.getByRole("heading", { name: "Accuracy wins. Speed breaks ties." }),
     ).toBeVisible();
