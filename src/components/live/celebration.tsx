@@ -167,6 +167,9 @@ export function Podium({
                     )}
                   </div>
                   <span className="podium-points">
+                    {tied[0].correctCount !== undefined
+                      ? `${tied[0].correctCount} correct · `
+                      : ""}
                     {tied[0].score.toLocaleString()} points
                     {tied.length > 1 ? " · shared rank" : ""}
                   </span>

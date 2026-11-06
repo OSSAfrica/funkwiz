@@ -99,13 +99,16 @@ Players already in the room can reconnect from the same browser.
 
 Each player has one saved choice per question. If you allow changes, they can
 replace it until time expires or you reveal; pausing disables answers and changes.
-Their final choice determines correctness and its submission position determines
-the scoring tier. Changing away from a correct answer and returning to it earns
-a new position. Tapping the same saved choice again does not change that position.
-Correctness is revealed together,
-with 1,000 points for the first correct answer, 900 for the second, 800 for the
-third and 700 for every remaining correct answer. Wrong answers earn 0 and do not
-consume a tier. Order resets for each question. Equal scores share a rank. See [live game rules](LIVE_GAMES.md) for the exact lifecycle.
+Their final choice determines correctness and response timing. Repeating the saved
+choice does not change its timing. Correctness and points appear at reveal.
+
+New games rank by **correct-answer count first**, then time-based points, then
+precise response timing relative to question duration. A correct answer earns
+700–1,000 points; wrong or missing answers earn zero. Pauses do not consume scoring
+time. Someone with eight correct answers always ranks above someone with seven,
+even if the latter has more points. Identical results share a rank.
+See [scoring](SCORING.md), the [FAQ](FAQ.md), or open **Help & FAQ** in the app.
+Older games retain the scoring rules shown in their reports.
 
 ## Appearance and audio
 

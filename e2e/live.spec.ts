@@ -71,7 +71,7 @@ test("hosts a real lobby, locks answers, changes visibility, reconnects, and sav
       .getByRole("button", { name: "Reveal answer", exact: true })
       .click();
     await expect(student.page.locator(".answer-feedback")).toContainText(
-      "+1,000 points",
+      /\+[\d,]+ points/,
     );
     await student.page.screenshot({
       path: `/tmp/fun-quiz-student-reveal-${info.project.name}.png`,
@@ -172,7 +172,7 @@ test("server alarms advance custom timers automatically and pause survives a hos
       .getByRole("button", { name: "Mars", exact: true })
       .click();
     await expect(student.page.locator(".answer-feedback")).toContainText(
-      "+1,000 points",
+      /\+[\d,]+ points/,
       { timeout: 8000 },
     );
     await expect(
@@ -195,7 +195,9 @@ test("server alarms advance custom timers automatically and pause survives a hos
     await expect(
       student.page.getByRole("heading", { name: "Look at that brain power." }),
     ).toBeVisible({ timeout: 10_000 });
-    expect((await state(student.context.request, code)).self?.score).toBe(1000);
+    expect(
+      (await state(student.context.request, code)).self!.score,
+    ).toBeGreaterThanOrEqual(700);
   } finally {
     await post(request, `/api/live/rooms/${code}/control`, { type: "end" });
     await student.context.close();
@@ -305,7 +307,9 @@ test("protects host controls, preserves first answers, and cancels automatic coo
         })
       ).status(),
     ).toBe(409);
-    expect((await state(student.context.request, code)).self?.score).toBe(1000);
+    expect(
+      (await state(student.context.request, code)).self!.score,
+    ).toBeGreaterThanOrEqual(700);
     const resumed = await post(
       student.context.request,
       `/api/live/rooms/${code}/join`,

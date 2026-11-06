@@ -102,3 +102,33 @@ test("CSV describes ordered rules while preserving legacy report scores", () => 
   assert.ok(csv.includes('"Remaining correct answers","700"'));
   assert.ok(!csv.includes('"Points per correct answer"'));
 });
+
+test("accuracy-first CSV preserves saved rank order and includes correct counts and normalized timing", () => {
+  const csv = reportCsv({
+    ...report,
+    scoring: { type: "accuracy-first", basePoints: 700, speedBonus: 300 },
+    leaderboard: [
+      {
+        id: "accurate",
+        nickname: "Thoughtful",
+        rank: 1,
+        score: 5600,
+        correctCount: 8,
+        speedCost: 8000000,
+      },
+      {
+        id: "quick",
+        nickname: "Quick",
+        rank: 2,
+        score: 7000,
+        correctCount: 7,
+        speedCost: 0,
+      },
+    ],
+  });
+  assert.ok(csv.includes('"Correct answers"'));
+  assert.ok(csv.includes('"1","Thoughtful","8","5600","8"'));
+  assert.ok(csv.includes('"2","Quick","7","7000","0"'));
+  assert.ok(csv.includes("Accuracy first"));
+  assert.ok(!csv.includes('"Correct answer 2","900"'));
+});

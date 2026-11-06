@@ -78,8 +78,9 @@ follow each device's preferences; this capture uses reduced motion.
 
 ## A quiz moment worth sharing
 
-Players earn 1,000, 900 and 800 points for the first three correct answers;
-all later correct answers earn 700. Order resets for each question.
+New games rank by correct-answer count first, then time-based points and precise
+response timing. Correct answers earn 700–1,000 points. Historical screenshots may
+show earlier scoring rules; see [current scoring](SCORING.md).
 
 At the end, **Share my result** downloads a branded PNG with the player's own
 nickname, quiz title, rank out of the total players, score and correct-answer count.
@@ -122,3 +123,12 @@ All have descriptive alt text in these guides.
 Keep demo identities fictional and never capture a personal installation, private
 setup/invitation links, real learner reports or cloud account details for this gallery.
 Update the captions and README previews when refreshing a changed feature.
+
+## Accuracy-first ranking
+
+More correct answers always rank higher. In this fictional classroom example,
+Thoughtful Ada has four correct answers and ranks above Speedy Ben's three,
+even though Ben has more time-based points. See [scoring](SCORING.md) and the
+[in-app FAQ guide](FAQ.md).
+
+![Fictional report showing four correct answers and 2,899 points ranked above three correct answers and 2,996 points.](screenshots/accuracy-first-report.png)

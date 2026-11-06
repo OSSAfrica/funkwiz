@@ -29,7 +29,10 @@ export function AuthLayout({ children }: { children: ReactNode }) {
           <HeroArt />
         </div>
         <p className="auth-story-footer">
-          Made for curious minds & happy classrooms.
+          Made for curious minds & happy classrooms.{" "}
+          <Link to="/help" className="underline">
+            Help & FAQ
+          </Link>
         </p>
       </section>
       <section className="auth-form-side">{children}</section>

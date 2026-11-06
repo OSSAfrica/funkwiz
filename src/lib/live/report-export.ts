@@ -62,6 +62,8 @@ export function reportCsv(report: GameReport) {
     ["Answer accuracy (%)", summary.accuracy],
     ...((): (string | number)[][] => {
       const scoring = scoringFor(report);
+      if (scoring.type === "accuracy-first")
+        return [["Scoring", scoringSummary(scoring)]];
       return scoring.type === "flat"
         ? [["Points per correct answer", scoring.pointsPerCorrect]]
         : [
@@ -74,8 +76,27 @@ export function reportCsv(report: GameReport) {
     })(),
     [],
     ["Leaderboard"],
-    ["Rank", "Nickname", "Score"],
-    ...report.leaderboard.map((p) => [p.rank, p.nickname, p.score]),
+    ...(scoringFor(report).type === "accuracy-first"
+      ? [
+          [
+            "Rank",
+            "Nickname",
+            "Correct answers",
+            "Score",
+            "Normalized response time total",
+          ],
+          ...report.leaderboard.map((p) => [
+            p.rank,
+            p.nickname,
+            p.correctCount ?? 0,
+            p.score,
+            (p.speedCost ?? 0) / 1_000_000,
+          ]),
+        ]
+      : [
+          ["Rank", "Nickname", "Score"],
+          ...report.leaderboard.map((p) => [p.rank, p.nickname, p.score]),
+        ]),
     [],
     ["Question review"],
     [

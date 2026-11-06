@@ -66,6 +66,10 @@ export function WorkspaceSidebar({
           <CircleHelp size={19} />
           <span>How to play</span>
         </button>
+        <Link className="nav-item" to="/help">
+          <CircleHelp size={19} />
+          <span>Help & FAQ</span>
+        </Link>
       </nav>
       <div className="sidebar-bottom">
         <div className="sidebar-note">

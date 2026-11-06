@@ -12,24 +12,28 @@ in both. Further collaboration/learning ideas remain [proposals](FUTURE_FEATURES
 
 ## Start with your goal
 
-| Your goal                             | Read this first                                               | Then                                                           |
-| ------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------- |
-| Understand what Funkwiz does          | [Project README](../README.md)                                | [Getting started](GETTING_STARTED.md)                          |
-| Join a game                           | [Student guide](STUDENT_GUIDE.md)                             | Ask your teacher for the app link and game code                |
-| Write and run a quiz                  | [Teacher guide](TEACHER_GUIDE.md)                             | [Live game rules](LIVE_GAMES.md)                               |
-| Bring an existing question set        | [Question imports](QUIZ_IMPORTS.md)                           | [Example JSON](quiz-import-example.json)                       |
-| Try it locally                        | [Getting started](GETTING_STARTED.md#try-it-on-your-computer) | [Troubleshooting](TROUBLESHOOTING.md)                          |
-| Host without internet                 | [Offline teacher walkthrough](OFFLINE_TEACHER_GUIDE.md)       | [One-time technical setup](OFFLINE_CLASSROOM.md)               |
-| Deploy a new copy                     | [Cloudflare deployment](DEPLOY.md)                            | [Authentication setup](AUTH.md)                                |
-| Keep my production details out of Git | [Private deployment](PRIVATE_DEPLOY.md)                       | [Operations](OPERATIONS.md)                                    |
-| Manage teachers and workspace access  | [School mode](WORKSPACES.md)                                  | [Authentication](AUTH.md)                                      |
-| Maintain an installation              | [Operations](OPERATIONS.md)                                   | [Security policy](../SECURITY.md)                              |
-| Contribute a change                   | [Contributing](../CONTRIBUTING.md)                            | [Development](DEVELOPMENT.md), [architecture](ARCHITECTURE.md) |
-| Discuss the next features             | [Feature proposals](FUTURE_FEATURES.md)                       | [Roadmap](PLAN.md)                                             |
+| Your goal                                 | Read this first                                               | Then                                                           |
+| ----------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------- |
+| Understand what Funkwiz does              | [Project README](../README.md)                                | [Getting started](GETTING_STARTED.md)                          |
+| Join a game                               | [Student guide](STUDENT_GUIDE.md)                             | Ask your teacher for the app link and game code                |
+| Write and run a quiz                      | [Teacher guide](TEACHER_GUIDE.md)                             | [Live game rules](LIVE_GAMES.md)                               |
+| Bring an existing question set            | [Question imports](QUIZ_IMPORTS.md)                           | [Example JSON](quiz-import-example.json)                       |
+| Try it locally                            | [Getting started](GETTING_STARTED.md#try-it-on-your-computer) | [Troubleshooting](TROUBLESHOOTING.md)                          |
+| Host without internet                     | [Offline teacher walkthrough](OFFLINE_TEACHER_GUIDE.md)       | [One-time technical setup](OFFLINE_CLASSROOM.md)               |
+| Deploy a new copy                         | [Cloudflare deployment](DEPLOY.md)                            | [Authentication setup](AUTH.md)                                |
+| Keep my production details out of Git     | [Private deployment](PRIVATE_DEPLOY.md)                       | [Operations](OPERATIONS.md)                                    |
+| Manage teachers and workspace access      | [School mode](WORKSPACES.md)                                  | [Authentication](AUTH.md)                                      |
+| Maintain an installation                  | [Operations](OPERATIONS.md)                                   | [Security policy](../SECURITY.md)                              |
+| Contribute a change                       | [Contributing](../CONTRIBUTING.md)                            | [Development](DEVELOPMENT.md), [architecture](ARCHITECTURE.md) |
+| Understand scoring and classroom features | [FAQ](FAQ.md)                                                 | [Scoring rules](SCORING.md)                                    |
+| Discuss the next features                 | [Feature proposals](FUTURE_FEATURES.md)                       | [Roadmap](PLAN.md)                                             |
 
 ## Guides and reference
 
 ### Teachers and students
+
+- [FAQ](FAQ.md): answers to common playing, hosting, scoring and report questions; available in-app at `/help`.
+- [Scoring rules](SCORING.md): accuracy-first ranking, timing examples, tie-breaks and legacy compatibility.
 
 - [Screenshot tour](SHOWCASE.md): real app screens and a downloadable student result card.
 
@@ -94,6 +98,9 @@ in both. Further collaboration/learning ideas remain [proposals](FUTURE_FEATURES
 | Workspace                  | A School-mode boundary for a team’s members, private/shared quizzes and reports.                                                      | [Workspaces](WORKSPACES.md)                           |
 | Personal mode              | The default single-teacher experience.                                                                                                | [Workspaces](WORKSPACES.md)                           |
 | School mode                | An opt-in invite-only, multi-teacher experience for a school/team operating its own installation.                                     | [Workspaces](WORKSPACES.md)                           |
+| Accuracy-first ranking     | Correct-answer count determines rank before time-based points.                                                                        | [Scoring](SCORING.md)                                 |
+| Speed bonus                | Up to 300 extra points for using less of a question's active timer.                                                                   | [Scoring](SCORING.md#points-per-question)             |
+| Normalized response time   | Time used as a proportion of the question duration, excluding pauses.                                                                 | [Timing](SCORING.md#timing-and-fairness)              |
 
 ## Help improve these docs
 

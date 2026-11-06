@@ -67,6 +67,15 @@ export function LiveHeader({
           <LiveBrand />
         </Link>
         <div className="live-header-right">
+          <Link
+            to="/help"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs underline"
+            aria-label="Help and scoring (opens in a new tab)"
+          >
+            Help & scoring
+          </Link>
           <span className="live-code-chip">
             GAME <strong>{code}</strong>
           </span>
@@ -184,6 +193,11 @@ export function Leaderboard({
               </span>
               <strong>
                 {player.nickname}
+                {scoring.type === "accuracy-first" && (
+                  <span className="block text-xs text-muted-foreground">
+                    {player.correctCount ?? 0} correct
+                  </span>
+                )}
                 {player.id === selfId && <small>You</small>}
               </strong>
               <span>
@@ -198,7 +212,8 @@ export function Leaderboard({
         </p>
       )}
       <p className="scoring-note">
-        {scoringSummary(scoring)} Equal scores share a rank.
+        {scoringSummary(scoring)}
+        {scoring.type !== "accuracy-first" && " Equal scores share a rank."}
       </p>
     </section>
   );

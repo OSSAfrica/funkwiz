@@ -1,4 +1,4 @@
-import type { ScoringRules } from "./scoring";
+import { scoringFor, type ScoringRules } from "./scoring";
 import type { GameSettings, DisplayMode, Quiz } from "../quiz";
 
 export const MAX_PLAYERS = 200;
@@ -38,8 +38,11 @@ export type Player = {
   score: number;
   correctCount: number;
   joinedAt: number;
+  speedCost?: number;
 };
 export type RankedPlayer = {
+  correctCount?: number;
+  speedCost?: number;
   id: string;
   nickname: string;
   score: number;
@@ -177,18 +180,32 @@ export function hostAction(value: unknown): HostAction {
     return { type: data.type, questionIndex: Number(data.questionIndex) };
   throw new Error("That game control is not valid.");
 }
-export function rankPlayers(players: Player[]): RankedPlayer[] {
+export function rankPlayers(
+  players: Player[],
+  scoring: ScoringRules = scoringFor({}),
+): RankedPlayer[] {
+  const accuracy = scoring.type === "accuracy-first";
+  const compare = (a: Player, b: Player) =>
+    (accuracy ? b.correctCount - a.correctCount : 0) ||
+    b.score - a.score ||
+    (accuracy ? (a.speedCost ?? 0) - (b.speedCost ?? 0) : 0);
   const sorted = [...players].sort(
     (a, b) =>
-      b.score - a.score || a.joinedAt - b.joinedAt || a.id.localeCompare(b.id),
+      compare(a, b) || a.joinedAt - b.joinedAt || a.id.localeCompare(b.id),
   );
   let rank = 1;
   return sorted.map((player, index) => {
-    if (index > 0 && player.score !== sorted[index - 1].score) rank = index + 1;
+    if (index > 0 && compare(player, sorted[index - 1]) !== 0) rank = index + 1;
     return {
       id: player.id,
       nickname: player.nickname,
       score: player.score,
+      ...(accuracy
+        ? {
+            correctCount: player.correctCount,
+            speedCost: player.speedCost ?? 0,
+          }
+        : {}),
       rank,
     };
   });
