@@ -137,7 +137,12 @@ export function JoinGame({ initialCode }: { initialCode: string }) {
           </p>
         </section>
       </div>
-      <footer>Good questions bring people together.</footer>
+      <footer>
+        Good questions bring people together.{" "}
+        <Link to="/help" className="underline">
+          Help & scoring
+        </Link>
+      </footer>
     </main>
   );
 }

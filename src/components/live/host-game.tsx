@@ -1,5 +1,5 @@
 import { Podium } from "./celebration";
-import { scoringFor } from "@/lib/live/scoring";
+import { scoringFor, scoringSummary } from "@/lib/live/scoring";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
@@ -382,6 +382,7 @@ function HostLobby({
           Invite your class, then let the good questions roll.
         </p>
       </div>
+      <p className="scoring-note">{scoringSummary(scoringFor(snapshot))}</p>
       <div className="game-code-board">
         <span>
           JOIN AT <strong>{location.host}/join</strong>

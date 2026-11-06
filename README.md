@@ -1,4 +1,4 @@
-> **School / organization deployment template.** Generated from source commit `a70b453b34cecca2881d99e61136c0e0abb6fb51`. The mode is preselected in `wrangler.jsonc`. Contribute application changes to the upstream main branch.
+> **School / organization deployment template.** Generated from source commit `9cc13eb918dcb659b5391488e6a2cbd98542aff5`. The mode is preselected in `wrangler.jsonc`. Contribute application changes to the upstream main branch.
 
 # Funkwiz
 
@@ -187,3 +187,11 @@ signing setup, local checks and review requirements.
 
 Funkwiz is [MIT licensed](LICENSE). You can use, modify and redistribute it under
 those terms. Bundled dependencies, fonts and icons retain their own licenses.
+
+### Help and scoring
+
+Every installation includes a public **Help & FAQ** page at `/help`, linked from
+the teacher library, sign-in, student join and live-game screens. New games rank
+by most correct answers first, then speed-based points and precise response timing.
+Read the [FAQ](docs/FAQ.md) and [scoring guide](docs/SCORING.md) for examples and
+explanations of timers, answer changes, reports, Personal/School modes and offline play.
