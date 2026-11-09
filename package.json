@@ -54,7 +54,7 @@
     "@radix-ui/react-tabs": "^1.2.1",
     "@react-email/ui": "^6.11.6",
     "@react-pdf/renderer": "^4.9.0",
-    "@tailwindcss/vite": "^4.1.18",
+    "@tailwindcss/vite": "^4.3.5",
     "@tanstack/react-devtools": "0.10.14",
     "@tanstack/react-router": "1.170.46",
     "@tanstack/react-router-devtools": "1.167.2",
