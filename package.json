@@ -89,7 +89,7 @@
     "jsonc-parser": "^3.3.1",
     "jsqr": "^1.4.0",
     "oxfmt": "^0.75.0",
-    "react-email": "^6.11.6",
+    "react-email": "^6.11.8",
     "typescript": "^7.0.2",
     "vite": "^8.0.0",
     "vitest": "^5.0.5",
